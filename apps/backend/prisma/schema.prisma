@@ -46,6 +46,7 @@ model Card {
 
   answer         String
   options        String[]
+  explanation    String
 
   nextReviewDate DateTime?
   
