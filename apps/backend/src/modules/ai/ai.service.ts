@@ -7,7 +7,7 @@ import { systemPrompt } from './prompt.js';
 export class AiService {
   private ai: GoogleGenAI;
 
-  constructor(private configService: ConfigService) {
+  constructor(private readonly configService: ConfigService) {
     this.ai = new GoogleGenAI({
       apiKey: this.configService.get('GEMINI_API_KEY') as string,
     });

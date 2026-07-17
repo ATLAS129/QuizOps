@@ -17,10 +17,10 @@ import { UserService } from '../users/user.service.js';
 @Injectable()
 export class AuthService {
   constructor(
-    private prisma: PrismaService,
-    private jwt: JwtService,
-    private configService: ConfigService,
-    private userService: UserService,
+    private readonly prisma: PrismaService,
+    private readonly jwt: JwtService,
+    private readonly configService: ConfigService,
+    private readonly userService: UserService,
   ) {}
 
   async signup(dto: SignupUserDto) {

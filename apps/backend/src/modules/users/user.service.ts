@@ -8,7 +8,7 @@ import { User } from '../../../prisma/generated/prisma/client.js';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async findById(userId: string) {
     try {
