@@ -1,0 +1,124 @@
+import {
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+  UnauthorizedException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service.js';
+import { SignupUserDto } from './dto/signup-user.dto.js';
+import * as argon2 from 'argon2';
+import { LoginUserDto } from './dto/login-user.dto.js';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+import { UserService } from '../users/user.service.js';
+
+@Injectable()
+export class AuthService {
+  constructor(
+    private prisma: PrismaService,
+    private jwt: JwtService,
+    private configService: ConfigService,
+    private userService: UserService,
+  ) {}
+
+  async signup(dto: SignupUserDto) {
+    const { email, name, password, repeatPassword } = dto;
+
+    try {
+      const isUserExist = await this.prisma.user.findUnique({
+        where: { email },
+      });
+
+      if (isUserExist) {
+        throw new ConflictException('User already exists.');
+      }
+
+      const isPasswordsMatch = password === repeatPassword;
+
+      if (!isPasswordsMatch) {
+        throw new UnprocessableEntityException("Passwords don't match");
+      }
+
+      const passwordHash = await argon2.hash(password);
+
+      const response = await this.prisma.user.create({
+        data: {
+          email,
+          name,
+          passwordHash,
+        },
+      });
+
+      const result = await this.signTokens(response);
+
+      await this.updateRefreshToken(result.user.id, result.refreshToken);
+
+      return result;
+    } catch (error) {
+      throw new InternalServerErrorException('Something went wrong');
+    }
+  }
+
+  async login(dto: LoginUserDto) {
+    const { email, password } = dto;
+
+    try {
+      const user = await this.prisma.user.findUnique({ where: { email } });
+
+      if (!user) {
+        throw new NotFoundException('User is not found.');
+      }
+
+      const isPasswordsMatch = await argon2.verify(user.passwordHash, password);
+
+      if (!isPasswordsMatch) {
+        throw new UnauthorizedException('Check credentials.');
+      }
+
+      const result = await this.signTokens(user);
+
+      await this.updateRefreshToken(result.user.id, result.refreshToken);
+
+      return result;
+    } catch (error) {
+      throw new InternalServerErrorException('Something went wrong');
+    }
+  }
+
+  private async signTokens(user: any) {
+    const payload = { sub: user.id, email: user.email };
+    try {
+      const [accessToken, refreshToken] = await Promise.all([
+        this.jwt.signAsync(payload, {
+          secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
+          expiresIn: '15m',
+        }),
+        this.jwt.signAsync(payload, {
+          secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+          expiresIn: '7d',
+        }),
+      ]);
+      return {
+        user: await this.userService.sanitizeUser(user),
+        accessToken,
+        refreshToken,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException('Something went wrong');
+    }
+  }
+
+  async updateRefreshToken(userId: string, refreshToken: string) {
+    try {
+      const refreshTokenHash = await argon2.hash(refreshToken);
+      await this.prisma.user.update({
+        where: { id: userId },
+        data: { refreshToken: refreshTokenHash },
+      });
+    } catch (error) {
+      throw new InternalServerErrorException('Something went wrong');
+    }
+  }
+}

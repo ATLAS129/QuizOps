@@ -17,7 +17,7 @@ model User {
 
   aiGenerationsUsed Int      @default(0)
 
-  refresh_token String?
+  refreshToken      String?
   
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
@@ -42,8 +42,8 @@ model Deck {
 
 model Card {
   id             String    @id @default(uuid())
-  question       String    @db.Text
 
+  question       String
   answer         String
   options        String[]
   explanation    String
