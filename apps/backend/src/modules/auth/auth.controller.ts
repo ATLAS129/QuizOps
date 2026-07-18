@@ -1,8 +1,9 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Body, Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service.js';
 import { type SignupUserDto } from './dto/signup-user.dto.js';
 import { type LoginUserDto } from './dto/login-user.dto.js';
 import { type Response } from 'express';
+import { JwtRefreshGuard } from './guards/jwt-refresh.guard.js';
 
 @Controller('auth')
 export class AuthController {
@@ -32,6 +33,21 @@ export class AuthController {
     this.setCookies(res, accessToken, refreshToken);
 
     return user;
+  }
+
+  @UseGuards(JwtRefreshGuard)
+  @Post('refresh')
+  async refreshToken(
+    @Req() req: any,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const { accessToken, refreshToken } = await this.authService.refreshTokens(
+      req.user,
+    );
+
+    this.setCookies(res, accessToken, refreshToken);
+
+    return { message: 'Tokens refreshed successfully' };
   }
 
   private setCookies(
