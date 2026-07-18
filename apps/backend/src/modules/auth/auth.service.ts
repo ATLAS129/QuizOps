@@ -14,7 +14,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { UserService } from '../users/user.service.js';
 
-type RefreshUser = {
+type SignTokensUser = {
   id: string;
   email: string;
   refreshToken: string;
@@ -49,7 +49,7 @@ export class AuthService {
 
       const passwordHash = await argon2.hash(password);
 
-      const response = await this.prisma.user.create({
+      const user = await this.prisma.user.create({
         data: {
           email,
           name,
@@ -57,11 +57,17 @@ export class AuthService {
         },
       });
 
-      const result = await this.signTokens(response);
+      const { accessToken, refreshToken } = await this.signTokens(
+        user as SignTokensUser,
+      );
 
-      await this.updateRefreshToken(result.user.id, result.refreshToken);
+      await this.updateRefreshToken(user.id, refreshToken);
 
-      return result;
+      return {
+        user: await this.userService.sanitizeUser(user),
+        accessToken,
+        refreshToken,
+      };
     } catch (error) {
       throw new InternalServerErrorException('Something went wrong');
     }
@@ -83,29 +89,12 @@ export class AuthService {
         throw new UnauthorizedException('Check credentials.');
       }
 
-      const result = await this.signTokens(user);
+      const { accessToken, refreshToken } = await this.signTokens(
+        user as SignTokensUser,
+      );
 
-      await this.updateRefreshToken(result.user.id, result.refreshToken);
+      await this.updateRefreshToken(user.id, refreshToken);
 
-      return result;
-    } catch (error) {
-      throw new InternalServerErrorException('Something went wrong');
-    }
-  }
-
-  private async signTokens(user: any) {
-    const payload = { sub: user.id, email: user.email };
-    try {
-      const [accessToken, refreshToken] = await Promise.all([
-        this.jwt.signAsync(payload, {
-          secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
-          expiresIn: '15m',
-        }),
-        this.jwt.signAsync(payload, {
-          secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
-          expiresIn: '7d',
-        }),
-      ]);
       return {
         user: await this.userService.sanitizeUser(user),
         accessToken,
@@ -114,6 +103,19 @@ export class AuthService {
     } catch (error) {
       throw new InternalServerErrorException('Something went wrong');
     }
+  }
+
+  async refreshTokens(user: SignTokensUser) {
+    const { accessToken, refreshToken } = await this.signTokens(
+      user as SignTokensUser,
+    );
+
+    await this.updateRefreshToken(user.id, refreshToken);
+
+    return {
+      accessToken,
+      refreshToken,
+    };
   }
 
   async updateRefreshToken(userId: string, refreshToken: string) {
@@ -128,32 +130,25 @@ export class AuthService {
     }
   }
 
-  async refreshTokens(user: RefreshUser) {
-    // if (!user?.id || !user?.email) {
-    //   throw new UnauthorizedException('Invalid refresh token payload');
-    // }
-
-    const payload = {
-      sub: user.id,
-      email: user.email,
-    };
-
-    const [accessToken, refreshToken] = await Promise.all([
-      this.jwt.signAsync(payload, {
-        secret: this.configService.getOrThrow<string>('JWT_ACCESS_SECRET'),
-        expiresIn: '15m',
-      }),
-      this.jwt.signAsync(payload, {
-        secret: this.configService.getOrThrow<string>('JWT_REFRESH_SECRET'),
-        expiresIn: '7d',
-      }),
-    ]);
-
-    await this.updateRefreshToken(user.id, refreshToken);
-
-    return {
-      accessToken,
-      refreshToken,
-    };
+  private async signTokens(user: SignTokensUser) {
+    const payload = { sub: user.id, email: user.email };
+    try {
+      const [accessToken, refreshToken] = await Promise.all([
+        this.jwt.signAsync(payload, {
+          secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
+          expiresIn: '15m',
+        }),
+        this.jwt.signAsync(payload, {
+          secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+          expiresIn: '7d',
+        }),
+      ]);
+      return {
+        accessToken,
+        refreshToken,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException('Something went wrong');
+    }
   }
 }
