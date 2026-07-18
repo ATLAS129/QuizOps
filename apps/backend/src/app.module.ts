@@ -5,6 +5,7 @@ import { AiModule } from './modules/ai/ai.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { JwtModule } from '@nestjs/jwt';
 import { DeckModule } from './modules/decks/deck.module.js';
+import { CardModule } from './modules/cards/card.module.js';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { DeckModule } from './modules/decks/deck.module.js';
     AiModule,
     AuthModule,
     DeckModule,
+    CardModule,
   ],
 })
 export class AppModule {}
