@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AiModule } from './modules/ai/ai.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { JwtModule } from '@nestjs/jwt';
+import { DeckModule } from './modules/decks/deck.module.js';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { JwtModule } from '@nestjs/jwt';
     PrismaModule,
     AiModule,
     AuthModule,
+    DeckModule,
   ],
 })
 export class AppModule {}
