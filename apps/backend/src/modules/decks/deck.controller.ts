@@ -5,11 +5,15 @@ import {
   Param,
   Post,
   Req,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { DeckService } from './deck.service.js';
 import { type CreateDeckDto } from './dto/create-deck.dto.js';
 import { JwtAccessGuard } from '../auth/guards/jwt-access.guard.js';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { memoryStorage } from 'multer';
 
 @UseGuards(JwtAccessGuard)
 @Controller('decks')
@@ -26,8 +30,25 @@ export class DeckController {
     return this.deckService.findAllDecks(req.user.id);
   }
 
-  @Post()
-  async createDeck(@Req() req: any, @Body() dto: CreateDeckDto) {
-    return this.deckService.createDeck(req.user.id, dto);
+  @Post('text')
+  async createDeckWithText(@Req() req: any, @Body() dto: CreateDeckDto) {
+    return this.deckService.createDeckWithText(req.user.id, dto);
+  }
+
+  @Post('pdf')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: memoryStorage(),
+      limits: {
+        fileSize: 50 * 1024 * 1024,
+      },
+    }),
+  )
+  async createDeckWithPdf(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() dto: CreateDeckDto,
+    @Req() req: any,
+  ) {
+    return this.deckService.createDeckWithPdf(req.user.id, file, dto);
   }
 }

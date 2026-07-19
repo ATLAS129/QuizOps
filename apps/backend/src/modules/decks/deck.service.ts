@@ -42,29 +42,54 @@ export class DeckService {
     }
   }
 
-  async createDeck(userId: string, dto: CreateDeckDto) {
+  async createDeckWithText(userId: string, dto: CreateDeckDto) {
     try {
       const AiResponse = await this.aiService.generateDeckFromText(dto.prompt);
 
-      const deck = await this.prisma.deck.create({
-        data: {
-          title: dto.title,
-          user: {
-            connect: {
-              id: userId,
-            },
-          },
-          cards: {
-            createMany: {
-              data: AiResponse,
-            },
-          },
-        },
-      });
+      const deck = await this.createDeck(userId, dto.title, AiResponse);
 
       return deck;
     } catch (error) {
       throw new InternalServerErrorException('Something went wrong.');
     }
+  }
+
+  async createDeckWithPdf(
+    userId: string,
+    pdf: Express.Multer.File,
+    dto: { title: string; prompt?: string },
+  ) {
+    try {
+      const AiResponse = await this.aiService.generateDeckFromPdf(
+        pdf,
+        dto.prompt,
+      );
+
+      const deck = await this.createDeck(userId, dto.title, AiResponse);
+
+      return deck;
+    } catch (error) {
+      throw new InternalServerErrorException('Something went wrong.');
+    }
+  }
+
+  async createDeck(userId, title, data) {
+    const deck = await this.prisma.deck.create({
+      data: {
+        title: title,
+        user: {
+          connect: {
+            id: userId,
+          },
+        },
+        cards: {
+          createMany: {
+            data,
+          },
+        },
+      },
+    });
+
+    return deck;
   }
 }
