@@ -4,6 +4,7 @@ import { type SignupUserDto } from './dto/signup-user.dto.js';
 import { type LoginUserDto } from './dto/login-user.dto.js';
 import { type Response } from 'express';
 import { JwtRefreshGuard } from './guards/jwt-refresh.guard.js';
+import { JwtAccessGuard } from './guards/jwt-access.guard.js';
 
 @Controller('auth')
 export class AuthController {
@@ -33,6 +34,17 @@ export class AuthController {
     this.setCookies(res, accessToken, refreshToken);
 
     return user;
+  }
+
+  @UseGuards(JwtAccessGuard)
+  @Post('logout')
+  async logout(@Req() req: any, @Res({ passthrough: true }) res: Response) {
+    await this.authService.logout(req.user.id);
+
+    res.clearCookie('access_token');
+    res.clearCookie('refresh_token');
+
+    return { message: 'Loggged out successfully' };
   }
 
   @UseGuards(JwtRefreshGuard)
