@@ -10,7 +10,11 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { DeckService } from './deck.service.js';
-import { type CreateDeckDto } from './dto/create-deck.dto.js';
+import {
+  type CreateDeckWithUrlDto,
+  type CreateDeckWithPdfDto,
+  type CreateDeckWithTextDto,
+} from './dto/create-deck.dto.js';
 import { JwtAccessGuard } from '../auth/guards/jwt-access.guard.js';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
@@ -31,8 +35,16 @@ export class DeckController {
   }
 
   @Post('text')
-  async createDeckWithText(@Req() req: any, @Body() dto: CreateDeckDto) {
+  async createDeckWithText(
+    @Req() req: any,
+    @Body() dto: CreateDeckWithTextDto,
+  ) {
     return this.deckService.createDeckWithText(req.user.id, dto);
+  }
+
+  @Post('url')
+  async createDeckWithUrl(@Req() req: any, @Body() dto: CreateDeckWithUrlDto) {
+    return this.deckService.createDeckWithUrl(req.user.id, dto);
   }
 
   @Post('pdf')
@@ -46,7 +58,7 @@ export class DeckController {
   )
   async createDeckWithPdf(
     @UploadedFile() file: Express.Multer.File,
-    @Body() dto: CreateDeckDto,
+    @Body() dto: CreateDeckWithPdfDto,
     @Req() req: any,
   ) {
     return this.deckService.createDeckWithPdf(req.user.id, file, dto);

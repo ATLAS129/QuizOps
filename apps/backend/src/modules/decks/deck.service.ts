@@ -3,7 +3,11 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateDeckDto } from './dto/create-deck.dto.js';
+import {
+  type CreateDeckWithPdfDto,
+  type CreateDeckWithUrlDto,
+  type CreateDeckWithTextDto,
+} from './dto/create-deck.dto.js';
 import { AiService } from '../ai/ai.service.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 
@@ -42,7 +46,7 @@ export class DeckService {
     }
   }
 
-  async createDeckWithText(userId: string, dto: CreateDeckDto) {
+  async createDeckWithText(userId: string, dto: CreateDeckWithTextDto) {
     try {
       const AiResponse = await this.aiService.generateCardsFromText(dto.prompt);
 
@@ -54,10 +58,26 @@ export class DeckService {
     }
   }
 
+  async createDeckWithUrl(userId: string, dto: CreateDeckWithUrlDto) {
+    try {
+      const AiResponse = await this.aiService.generateCardsFromUrl(
+        dto.url,
+        dto.prompt,
+      );
+
+      const deck = await this.createDeck(userId, dto.title, AiResponse);
+
+      return deck;
+    } catch (error) {
+      console.error(error);
+      throw new InternalServerErrorException('Something went wrong.');
+    }
+  }
+
   async createDeckWithPdf(
     userId: string,
     pdf: Express.Multer.File,
-    dto: { title: string; prompt?: string },
+    dto: CreateDeckWithPdfDto,
   ) {
     try {
       const AiResponse = await this.aiService.generateCardsFromPdf(

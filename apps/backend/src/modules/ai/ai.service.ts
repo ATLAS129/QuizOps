@@ -71,10 +71,21 @@ export class AiService {
 
       return cards;
     } catch (error) {
-      console.error(error);
       throw new InternalServerErrorException('Something went wrong.');
     }
   }
+
+  async generateCardsFromUrl(url: string, prompt?: string) {
+    const contents = `URL: ${url}\n\n ${prompt ?? ''}`;
+
+    try {
+      const cards = await this.generateCards(contents);
+      return cards;
+    } catch (error) {
+      throw new InternalServerErrorException('Something went wrong.');
+    }
+  }
+
   async generateCards(contents: any) {
     const response = await this.ai.models.generateContent({
       model: this.model,
