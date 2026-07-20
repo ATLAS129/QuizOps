@@ -33,9 +33,7 @@ export class AuthService {
     const { email, name, password, repeatPassword } = dto;
 
     try {
-      const isUserExist = await this.prisma.user.findUnique({
-        where: { email },
-      });
+      const isUserExist = await this.userService.findByEmail(email);
 
       if (isUserExist) {
         throw new ConflictException('User already exists.');
@@ -69,7 +67,8 @@ export class AuthService {
         refreshToken,
       };
     } catch (error) {
-      throw new InternalServerErrorException('Something went wrong');
+      console.error(error);
+      throw new InternalServerErrorException('Something went wrong1');
     }
   }
 
@@ -77,7 +76,7 @@ export class AuthService {
     const { email, password } = dto;
 
     try {
-      const user = await this.prisma.user.findUnique({ where: { email } });
+      const user = await this.userService.findByEmail(email);
 
       if (!user) {
         throw new NotFoundException('User is not found.');
