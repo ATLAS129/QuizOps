@@ -44,7 +44,7 @@ export class DeckService {
 
   async createDeckWithText(userId: string, dto: CreateDeckDto) {
     try {
-      const AiResponse = await this.aiService.generateDeckFromText(dto.prompt);
+      const AiResponse = await this.aiService.generateCardsFromText(dto.prompt);
 
       const deck = await this.createDeck(userId, dto.title, AiResponse);
 
@@ -60,7 +60,7 @@ export class DeckService {
     dto: { title: string; prompt?: string },
   ) {
     try {
-      const AiResponse = await this.aiService.generateDeckFromPdf(
+      const AiResponse = await this.aiService.generateCardsFromPdf(
         pdf,
         dto.prompt,
       );

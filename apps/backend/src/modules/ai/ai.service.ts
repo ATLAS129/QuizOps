@@ -42,7 +42,7 @@ export class AiService {
     );
   }
 
-  async generateDeckFromPdf(pdf: Express.Multer.File, prompt?: string) {
+  async generateCardsFromPdf(pdf: Express.Multer.File, prompt?: string) {
     const base64Pdf = pdf.buffer.toString('base64');
 
     const contents: any = [
@@ -57,34 +57,37 @@ export class AiService {
     if (prompt) contents.push(prompt);
 
     try {
-      const response = await this.ai.models.generateContent({
-        model: this.model,
-        contents,
-        config: AiConfig,
-      });
+      const cards = await this.generateCards(contents);
 
-      const result = await response.text;
-      const text = JSON.parse(result as string);
-      return text;
+      return cards;
     } catch (error) {
       throw new InternalServerErrorException('Something went wrong');
     }
   }
 
-  async generateDeckFromText(userText: string) {
+  async generateCardsFromText(userText: string) {
     try {
-      const response = await this.ai.models.generateContent({
-        model: this.model,
-        contents: userText,
-        config: AiConfig,
-      });
+      const cards = await this.generateCards(userText);
 
-      const result = await response.text;
-      const text = JSON.parse(result as string);
-      return text;
+      return cards;
     } catch (error) {
       console.error(error);
       throw new InternalServerErrorException('Something went wrong.');
     }
+  }
+  async generateCards(contents: any) {
+    const response = await this.ai.models.generateContent({
+      model: this.model,
+      contents,
+      config: AiConfig,
+    });
+
+    if (!response) {
+      throw new InternalServerErrorException('Something went wrong.');
+    }
+
+    const result = await response.text;
+    const text = JSON.parse(result as string);
+    return text;
   }
 }
