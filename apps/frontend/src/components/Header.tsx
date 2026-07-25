@@ -4,7 +4,7 @@ const Header = () => {
   return (
     <header className="h-14 w-full bg-bg-surface flex items-center justify-between px-6">
       <div>
-        <h1>Logo QuizOps</h1>
+        <Link to={"/"}>Logo QuizOps</Link>
       </div>
 
       <div className="flex items-center justify-center gap-6 text-sm">
