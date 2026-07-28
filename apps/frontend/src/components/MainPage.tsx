@@ -13,7 +13,7 @@ const decks: deckInterface[] = [
   { title: "Third quiz", isCompleted: true, cards: 7 },
 ];
 
-const MainPage = () => {
+const MainPageComponent = () => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleInput = () => {
@@ -101,7 +101,7 @@ const MainPage = () => {
                     >
                       {deck.isCompleted ? "Completed" : "Not completed"}
                     </div>
-                    <button className="bg-accent-primary hover:bg-accent-hover cursor-pointer px-3 py-1 rounded-md">
+                    <button className="bg-accent-primary hover:bg-accent-hover cursor-pointer px-3 py-1 rounded-md select-none">
                       Take a quiz
                     </button>
                   </div>
@@ -117,4 +117,4 @@ const MainPage = () => {
   );
 };
 
-export default MainPage;
+export default MainPageComponent;
