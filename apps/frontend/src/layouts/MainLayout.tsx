@@ -1,7 +1,18 @@
-import { Outlet } from "react-router";
+import { Navigate, Outlet } from "react-router";
 import Header from "../components/Header";
 
-const MainLayout = () => {
+const MainLayout = ({
+  isAuthenticated,
+  isLoading,
+}: {
+  isAuthenticated: boolean;
+  isLoading: boolean;
+}) => {
+  if (isLoading) return <p>Loading</p>;
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
   return (
     <>
       <Header />

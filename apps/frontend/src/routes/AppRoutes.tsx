@@ -3,32 +3,29 @@ import MainLayout from "../layouts/MainLayout";
 import MainPage from "../pages/MainPage";
 import AuthLayout from "../layouts/AuthLayout";
 import LoginPage from "../pages/LoginPage";
-import ProtectedRoute from "../components/ProtectedRoute";
-import PublicRoute from "../components/PublicRoute";
+import { useCurrentUser } from "../hooks/useAuth";
 
 const AppRoutes = () => {
+  const { data: user, isLoading, isError } = useCurrentUser();
+
+  const isAuthenticated = user && !isError;
+
   return (
     <Routes>
-      <Route element={<MainLayout />}>
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <MainPage />
-            </ProtectedRoute>
-          }
-        />
+      <Route
+        element={
+          <MainLayout isAuthenticated={isAuthenticated} isLoading={isLoading} />
+        }
+      >
+        <Route path="/" element={<MainPage />} />
       </Route>
 
-      <Route element={<AuthLayout />}>
-        <Route
-          path="/login"
-          element={
-            <PublicRoute>
-              <LoginPage />
-            </PublicRoute>
-          }
-        />
+      <Route
+        element={
+          <AuthLayout isAuthenticated={isAuthenticated} isLoading={isLoading} />
+        }
+      >
+        <Route path="/login" element={<LoginPage />} />
       </Route>
     </Routes>
   );
