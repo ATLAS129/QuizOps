@@ -1,25 +1,7 @@
 import { apiFetch } from "../lib/fetchClient";
 
-export async function fetchCurrentUser() {
-  const check = () => apiFetch("/users/me", { credentials: "include" });
-
-  let res = await check();
-
-  if (res.status === 401) {
-    const refreshRes = await apiFetch("/auth/refresh", {
-      method: "POST",
-      credentials: "include",
-    });
-
-    if (refreshRes.ok) {
-      res = await check();
-    } else {
-      return null;
-    }
-  }
-
-  return res;
-}
+export const fetchCurrentUser = async () =>
+  apiFetch("/users/me", { credentials: "include" });
 
 export const login = async (data: { email: string; password: string }) =>
   apiFetch("/auth/login", {
