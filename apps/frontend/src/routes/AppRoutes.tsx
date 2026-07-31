@@ -4,6 +4,7 @@ import MainPage from "../pages/MainPage";
 import AuthLayout from "../layouts/AuthLayout";
 import LoginPage from "../pages/LoginPage";
 import { useCurrentUser } from "../hooks/useAuth";
+import SignupPage from "../pages/SignupPage";
 
 const AppRoutes = () => {
   const { data: user, isLoading, isError } = useCurrentUser();
@@ -26,6 +27,7 @@ const AppRoutes = () => {
         }
       >
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
       </Route>
     </Routes>
   );

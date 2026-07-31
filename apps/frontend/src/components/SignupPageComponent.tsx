@@ -1,24 +1,31 @@
 import { Link } from "react-router";
 
-const LoginPageComponent = ({
+const SignupPageComponent = ({
   handleSubmit,
   formData,
   setFormData,
 }: {
   handleSubmit: React.SubmitEventHandler<HTMLFormElement>;
-  formData: { email: string; password: string };
+  formData: {
+    email: string;
+    name: string;
+    password: string;
+    repeatPassword: string;
+  };
   setFormData: React.Dispatch<
     React.SetStateAction<{
       email: string;
+      name: string;
       password: string;
+      repeatPassword: string;
     }>
   >;
 }) => {
   return (
     <div className="w-1/2 bg-bg-surface p-4 rounded-lg">
-      <h1 className="text-3xl text-left">Welcome back!</h1>
+      <h1 className="text-3xl text-left">Welcome to my app!</h1>
       <h2 className="text-sm text-left text-text-muted">
-        It's nice to see you again!
+        I hope my app will make your study easier😊
       </h2>
       <form onSubmit={handleSubmit}>
         <div className="flex flex-col items-start gap-2 pt-3">
@@ -40,6 +47,24 @@ const LoginPageComponent = ({
           />
         </div>
         <div className="flex flex-col items-start gap-2 pt-3">
+          <label htmlFor="name" className="text-text-muted">
+            Name
+          </label>
+          <input
+            type="text"
+            id="name"
+            value={formData.name}
+            onChange={(e) =>
+              setFormData((curr) => ({
+                ...curr,
+                name: e.target.value,
+              }))
+            }
+            className="w-full border-border-color border rounded-lg px-2 py-2"
+            placeholder="John Doe"
+          />
+        </div>
+        <div className="flex flex-col items-start gap-2 pt-3">
           <label htmlFor="password" className="text-text-muted">
             Password
           </label>
@@ -57,16 +82,34 @@ const LoginPageComponent = ({
             placeholder="••••••••"
           />
         </div>
+        <div className="flex flex-col items-start gap-2 pt-3">
+          <label htmlFor="repeat-password" className="text-text-muted">
+            Confirm password
+          </label>
+          <input
+            type="password"
+            id="repeat-password"
+            value={formData.repeatPassword}
+            onChange={(e) =>
+              setFormData((curr) => ({
+                ...curr,
+                repeatPassword: e.target.value,
+              }))
+            }
+            className="w-full border-border-color border rounded-lg px-2 py-2"
+            placeholder="••••••••"
+          />
+        </div>
         <button className="w-full flex justify-center items-center mx-auto py-2 px-32 bg-accent-primary hover:bg-accent-hover cursor-pointer rounded-lg mt-5">
-          Login
+          Signup
         </button>
         <p className="pt-4 text-sm">
-          Don't have an account yet?{" "}
+          Already have an account?{" "}
           <Link
-            to="/signup"
+            to="/login"
             className="text-accent-primary hover:text-accent-hover"
           >
-            Create a new one
+            Login
           </Link>
         </p>
       </form>
@@ -74,4 +117,4 @@ const LoginPageComponent = ({
   );
 };
 
-export default LoginPageComponent;
+export default SignupPageComponent;
