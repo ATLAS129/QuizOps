@@ -10,16 +10,12 @@ export class CardService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getCardsFromDeck(deckId: string) {
-    try {
-      const cards = await this.prisma.card.findMany({ where: { deckId } });
+    const cards = await this.prisma.card.findMany({ where: { deckId } });
 
-      if (!cards) {
-        throw new NotFoundException('Cards are not found.');
-      }
-
-      return cards;
-    } catch (error) {
-      throw new InternalServerErrorException('Something went wrong.');
+    if (!cards) {
+      throw new NotFoundException('Cards are not found.');
     }
+
+    return cards;
   }
 }

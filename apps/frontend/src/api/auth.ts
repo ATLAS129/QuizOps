@@ -1,13 +1,34 @@
-import { apiFetch } from "../lib/fetchClient";
+import { apiFetch, BASE_URL } from "../lib/fetchClient";
 
-export const fetchCurrentUser = async () =>
-  apiFetch("/users/me", { credentials: "include" });
+export const fetchCurrentUser = async () => {
+  try {
+    const res = await apiFetch("/users/me");
 
-export const login = async (data: { email: string; password: string }) =>
-  apiFetch("/auth/login", {
-    method: "POST",
-    body: JSON.stringify(data),
-  });
+    return res;
+  } catch (err: any) {
+    throw new Error(err.message);
+  }
+};
+
+export const login = async (data: { email: string; password: string }) => {
+  try {
+    const res = await fetch(`${BASE_URL}/auth/login`, {
+      method: "POST",
+      body: JSON.stringify(data),
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (!res.ok) {
+      const resError = await res.json();
+      throw new Error(resError.message);
+    }
+
+    return res.json();
+  } catch (err: any) {
+    throw new Error(err.message);
+  }
+};
 
 export const signup = async (data: {
   email: string;
@@ -18,9 +39,21 @@ export const signup = async (data: {
   if (data.password !== data.repeatPassword) {
     throw new Error("Passwords do not match");
   }
+  try {
+    const res = await fetch(`${BASE_URL}/auth/signup`, {
+      method: "POST",
+      body: JSON.stringify(data),
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+    });
 
-  return apiFetch("/auth/signup", {
-    method: "POST",
-    body: JSON.stringify(data),
-  });
+    if (!res.ok) {
+      const resError = await res.json();
+      throw new Error(resError.message);
+    }
+
+    return res;
+  } catch (err: any) {
+    throw new Error(err.message);
+  }
 };

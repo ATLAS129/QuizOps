@@ -19,31 +19,23 @@ export class DeckService {
   ) {}
 
   async findOneDeck(deckId: string) {
-    try {
-      const deck = await this.prisma.deck.findUnique({ where: { id: deckId } });
+    const deck = await this.prisma.deck.findUnique({ where: { id: deckId } });
 
-      if (!deck) {
-        throw new NotFoundException('Deck is not found.');
-      }
-
-      return deck;
-    } catch (error) {
-      throw new InternalServerErrorException('Something went wrong.');
+    if (!deck) {
+      throw new NotFoundException('Deck is not found.');
     }
+
+    return deck;
   }
 
   async findAllDecks(userId: string) {
-    try {
-      const decks = await this.prisma.deck.findMany({ where: { userId } });
+    const decks = await this.prisma.deck.findMany({ where: { userId } });
 
-      if (!decks) {
-        throw new NotFoundException('Decks are not found.');
-      }
-
-      return decks;
-    } catch (error) {
-      throw new InternalServerErrorException('Something went wrong.');
+    if (!decks) {
+      throw new NotFoundException('Decks are not found.');
     }
+
+    return decks;
   }
 
   async createDeckWithText(userId: string, dto: CreateDeckWithTextDto) {
@@ -69,7 +61,6 @@ export class DeckService {
 
       return deck;
     } catch (error) {
-      console.error(error);
       throw new InternalServerErrorException('Something went wrong.');
     }
   }

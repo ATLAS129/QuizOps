@@ -32,76 +32,66 @@ export class AuthService {
   async signup(dto: SignupUserDto) {
     const { email, name, password, repeatPassword } = dto;
 
-    try {
-      const isUserExist = await this.userService.findByEmail(email);
+    const isUserExist = await this.userService.findByEmail(email);
 
-      if (isUserExist) {
-        throw new ConflictException('User already exists.');
-      }
-
-      const isPasswordsMatch = password === repeatPassword;
-
-      if (!isPasswordsMatch) {
-        throw new UnprocessableEntityException("Passwords don't match");
-      }
-
-      const passwordHash = await argon2.hash(password);
-
-      const user = await this.prisma.user.create({
-        data: {
-          email,
-          name,
-          passwordHash,
-        },
-      });
-
-      const { accessToken, refreshToken } = await this.signTokens(
-        user as SignTokensUser,
-      );
-
-      await this.updateRefreshToken(user.id, refreshToken);
-
-      return {
-        user: await this.userService.sanitizeUser(user),
-        accessToken,
-        refreshToken,
-      };
-    } catch (error) {
-      console.error(error);
-      throw new InternalServerErrorException('Something went wrong1');
+    if (isUserExist) {
+      throw new ConflictException('User already exists.');
     }
+
+    const isPasswordsMatch = password === repeatPassword;
+
+    if (!isPasswordsMatch) {
+      throw new UnprocessableEntityException("Passwords don't match");
+    }
+
+    const passwordHash = await argon2.hash(password);
+
+    const user = await this.prisma.user.create({
+      data: {
+        email,
+        name,
+        passwordHash,
+      },
+    });
+
+    const { accessToken, refreshToken } = await this.signTokens(
+      user as SignTokensUser,
+    );
+
+    await this.updateRefreshToken(user.id, refreshToken);
+
+    return {
+      user: await this.userService.sanitizeUser(user),
+      accessToken,
+      refreshToken,
+    };
   }
 
   async login(dto: LoginUserDto) {
     const { email, password } = dto;
+    const user = await this.userService.findByEmail(email);
 
-    try {
-      const user = await this.userService.findByEmail(email);
-
-      if (!user) {
-        throw new NotFoundException('User is not found.');
-      }
-
-      const isPasswordsMatch = await argon2.verify(user.passwordHash, password);
-
-      if (!isPasswordsMatch) {
-        throw new UnauthorizedException('Check credentials.');
-      }
-
-      const { accessToken, refreshToken } = await this.signTokens(
-        user as SignTokensUser,
-      );
-
-      await this.updateRefreshToken(user.id, refreshToken);
-
-      return {
-        user: await this.userService.sanitizeUser(user),
-        accessToken,
-        refreshToken,
-      };
-    } catch (error) {
-      throw new InternalServerErrorException('Something went wrong');
+    if (!user) {
+      throw new UnauthorizedException('Check credentials.');
     }
+
+    const isPasswordsMatch = await argon2.verify(user.passwordHash, password);
+
+    if (!isPasswordsMatch) {
+      throw new UnauthorizedException('Check credentials.');
+    }
+
+    const { accessToken, refreshToken } = await this.signTokens(
+      user as SignTokensUser,
+    );
+
+    await this.updateRefreshToken(user.id, refreshToken);
+
+    return {
+      user: await this.userService.sanitizeUser(user),
+      accessToken,
+      refreshToken,
+    };
   }
 
   async logout(userId: string) {
