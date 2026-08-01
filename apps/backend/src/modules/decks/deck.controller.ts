@@ -3,7 +3,9 @@ import {
   Controller,
   Get,
   Param,
+  ParseIntPipe,
   Post,
+  Query,
   Req,
   UploadedFile,
   UseGuards,
@@ -30,8 +32,11 @@ export class DeckController {
   }
 
   @Get()
-  async getAllDecks(@Req() req: any) {
-    return this.deckService.findAllDecks(req.user.id);
+  async getAllDecks(
+    @Req() req: any,
+    @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
+  ) {
+    return this.deckService.findAllDecks(req.user.id, limit);
   }
 
   @Post('text')
