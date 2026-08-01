@@ -1,4 +1,5 @@
 import { Navigate, Outlet } from "react-router";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const AuthLayout = ({
   isAuthenticated,
@@ -7,14 +8,14 @@ const AuthLayout = ({
   isAuthenticated: boolean;
   isLoading: boolean;
 }) => {
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <LoadingSpinner />;
   if (isAuthenticated) return <Navigate to="/" replace />;
 
   return (
     <>
-      <div className="flex items-center justify-center min-h-screen">
+      <main className="flex items-center justify-center min-h-screen">
         <Outlet />
-      </div>
+      </main>
     </>
   );
 };

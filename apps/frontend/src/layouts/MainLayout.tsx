@@ -1,5 +1,6 @@
 import { Navigate, Outlet } from "react-router";
 import Header from "../components/Header";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const MainLayout = ({
   isAuthenticated,
@@ -8,7 +9,7 @@ const MainLayout = ({
   isAuthenticated: boolean;
   isLoading: boolean;
 }) => {
-  if (isLoading) return <p>Loading</p>;
+  if (isLoading) return <LoadingSpinner />;
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
@@ -17,7 +18,7 @@ const MainLayout = ({
     <>
       <Header />
 
-      <main className="container mx-auto min-h-screen">
+      <main className="w-full mx-auto min-h-screen">
         <Outlet />
       </main>
     </>

@@ -24,7 +24,7 @@ const MainPageComponent = () => {
   };
 
   return (
-    <main className="p-3 flex flex-col gap-5">
+    <div className="py-3 px-2 flex flex-col gap-5">
       <div className="w-full max-h-1/2 bg-bg-surface flex flex-col items-center p-3">
         <h1 className="pb-3">
           💡Generate quizzes from PDFs, 💻websites, or your own instructions.🚀
@@ -46,7 +46,7 @@ const MainPageComponent = () => {
             Select file
           </span>
         </p>
-        <p className="pb-4 pt-2 text-center text-text-muted px-3">
+        <p className="w-full pb-4 pt-2 text-center text-text-muted px-3">
           You can combine multiple sources
         </p>
 
@@ -81,13 +81,13 @@ const MainPageComponent = () => {
             Generate
           </button>
         </div>
-        <div className="text-text-muted text-xs pt-1">
+        <div className="w-full text-text-muted text-xs pt-1">
           Choose atleast one source
         </div>
       </div>
 
       <div className="w-full max-h-1/2 bg-bg-surface flex flex-col items-center p-3">
-        <h1 className="pb-3">✨My decks✨</h1>
+        <h1 className="pb-3 w-full">✨My decks✨</h1>
         {decks ? (
           <div className="w-full flex flex-col gap-5 justify-center items-center">
             {decks.map((deck) => (
@@ -113,7 +113,7 @@ const MainPageComponent = () => {
           <div>No decks found</div>
         )}
       </div>
-    </main>
+    </div>
   );
 };
 
