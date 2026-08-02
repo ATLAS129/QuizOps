@@ -1,5 +1,6 @@
 import { useGetAllMyDecks } from "../hooks/useDecks";
 import type { deckInterface } from "./MainPage";
+import { FaPlay } from "react-icons/fa";
 
 const DecksSection = () => {
   const { data: decks, isLoading } = useGetAllMyDecks();
@@ -16,21 +17,22 @@ const DecksSection = () => {
           {decks.map((deck: deckInterface) => (
             <div
               key={deck.id}
-              className="w-full bg-bg-background py-5 rounded-lg flex flex-col lg:flex-row px-5 gap-5 items-center justify-between"
+              className="w-full bg-bg-background py-5 rounded-lg flex flex-col md:flex-row px-5 gap-5 items-center justify-between"
             >
-              <h1 className="font-bold">{deck.title}</h1>
-              <div className="flex flex-col lg:flex-row items-center justify-center gap-5">
-                <p>{deck.cards} cards</p>
-                <div className="flex gap-5">
-                  <div
-                    className={`flex justify-center items-center rounded-md w-30 ${deck.isCompleted ? "bg-green-500" : "bg-red-500"}`}
-                  >
-                    {deck.isCompleted ? "Completed" : "Not completed"}
-                  </div>
-                  <button className="bg-accent-primary hover:bg-accent-hover cursor-pointer px-3 py-1 rounded-md select-none">
-                    Take a quiz
-                  </button>
+              <h1 className="font-bold text-sm w-1/2">{deck.title}</h1>
+              <div className="flex items-center justify-center gap-5">
+                <p className="text-text-muted text-sm">
+                  {deck._count.cards} cards
+                </p>
+                <div
+                  className={`flex justify-center items-center rounded-md p-1 w-30 ${deck.isCompleted ? "bg-green-500" : "bg-red-500"}`}
+                >
+                  {deck.isCompleted ? "Completed" : "Not completed"}
                 </div>
+                <button className="bg-accent-primary hover:bg-accent-hover cursor-pointer px-3 py-1 rounded-md select-none flex justify-center items-center gap-2">
+                  <FaPlay />
+                  Take a quiz
+                </button>
               </div>
             </div>
           ))}

@@ -6,7 +6,7 @@ export interface deckInterface {
   id: string;
   title: string;
   isCompleted: boolean;
-  cards: number;
+  _count: { cards: number };
 }
 
 const MainPageComponent = () => {
