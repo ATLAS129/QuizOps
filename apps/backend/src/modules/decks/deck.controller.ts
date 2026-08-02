@@ -12,11 +12,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { DeckService } from './deck.service.js';
-import {
-  type CreateDeckWithUrlDto,
-  type CreateDeckWithPdfDto,
-  type CreateDeckWithTextDto,
-} from './dto/create-deck.dto.js';
+import { type CreateDeckDto } from './dto/create-deck.dto.js';
 import { JwtAccessGuard } from '../auth/guards/jwt-access.guard.js';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
@@ -39,20 +35,7 @@ export class DeckController {
     return this.deckService.findAllDecks(req.user.id, limit);
   }
 
-  @Post('text')
-  async createDeckWithText(
-    @Req() req: any,
-    @Body() dto: CreateDeckWithTextDto,
-  ) {
-    return this.deckService.createDeckWithText(req.user.id, dto);
-  }
-
-  @Post('url')
-  async createDeckWithUrl(@Req() req: any, @Body() dto: CreateDeckWithUrlDto) {
-    return this.deckService.createDeckWithUrl(req.user.id, dto);
-  }
-
-  @Post('pdf')
+  @Post()
   @UseInterceptors(
     FileInterceptor('file', {
       storage: memoryStorage(),
@@ -61,11 +44,17 @@ export class DeckController {
       },
     }),
   )
-  async createDeckWithPdf(
-    @UploadedFile() file: Express.Multer.File,
-    @Body() dto: CreateDeckWithPdfDto,
+  async createDeck(
     @Req() req: any,
+    @Body() dto: CreateDeckDto,
+    @UploadedFile() pdf?: Express.Multer.File,
   ) {
-    return this.deckService.createDeckWithPdf(req.user.id, file, dto);
+    return this.deckService.createDeck(
+      req.user.id,
+      dto.title,
+      pdf,
+      dto?.prompt,
+      dto?.url,
+    );
   }
 }

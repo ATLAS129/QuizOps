@@ -8,22 +8,31 @@ const AiConfig = {
   temperature: 0.2,
   responseMimeType: 'application/json',
   responseSchema: {
-    type: 'ARRAY',
-    items: {
-      type: 'OBJECT',
-      properties: {
-        question: { type: 'STRING' },
-        answer: { type: 'STRING' },
-        options: {
-          type: 'ARRAY',
-          items: { type: 'STRING' },
+    type: 'OBJECT',
+    properties: {
+      title: { type: 'STRING' },
+      cards: {
+        type: 'ARRAY',
+        items: {
+          type: 'OBJECT',
+          properties: {
+            question: { type: 'STRING' },
+            answer: { type: 'STRING' },
+            options: {
+              type: 'ARRAY',
+              items: { type: 'STRING' },
+            },
+            explanation: { type: 'STRING' },
+          },
+          required: ['question', 'answer', 'options', 'explanation'],
+          additionalProperties: false,
         },
-        explanation: { type: 'STRING' },
+        minItems: 5,
+        maxItems: 10,
       },
-      required: ['question', 'answer', 'options', 'explanation'],
     },
-    minItems: 5,
-    maxItems: 10,
+    required: ['title', 'cards'],
+    additionalProperties: false,
   },
 };
 
@@ -42,51 +51,28 @@ export class AiService {
     );
   }
 
-  async generateCardsFromPdf(pdf: Express.Multer.File, prompt?: string) {
-    const base64Pdf = pdf.buffer.toString('base64');
+  async generateCards(
+    pdf?: Express.Multer.File,
+    prompt?: string,
+    url?: string,
+  ) {
+    const contents: any = [];
 
-    const contents: any = [
-      {
+    if (pdf) {
+      const base64Pdf = pdf.buffer.toString('base64');
+      contents.push({
         inlineData: {
           data: base64Pdf,
           mimeType: 'application/pdf',
         },
-      },
-    ];
-
-    if (prompt) contents.push(prompt);
-
-    try {
-      const cards = await this.generateCards(contents);
-
-      return cards;
-    } catch (error) {
-      throw new InternalServerErrorException('Something went wrong');
+      });
     }
-  }
-
-  async generateCardsFromText(userText: string) {
-    try {
-      const cards = await this.generateCards(userText);
-
-      return cards;
-    } catch (error) {
-      throw new InternalServerErrorException('Something went wrong.');
+    if (url) {
+      contents.push(`URL: ${url}\n\n ${prompt || ''}`);
+    } else if (prompt) {
+      contents.push(prompt);
     }
-  }
 
-  async generateCardsFromUrl(url: string, prompt?: string) {
-    const contents = `URL: ${url}\n\n ${prompt ?? ''}`;
-
-    try {
-      const cards = await this.generateCards(contents);
-      return cards;
-    } catch (error) {
-      throw new InternalServerErrorException('Something went wrong.');
-    }
-  }
-
-  async generateCards(contents: any) {
     const response = await this.ai.models.generateContent({
       model: this.model,
       contents,
@@ -94,7 +80,7 @@ export class AiService {
     });
 
     if (!response) {
-      throw new InternalServerErrorException('Something went wrong.');
+      throw new InternalServerErrorException('Something went wrong with AI.');
     }
 
     const result = await response.text;
