@@ -1,13 +1,23 @@
 import { useEffect, useState } from "react";
-import { useGetAllMyDecks } from "../hooks/useDecks";
+import {
+  useDeleteOneDeck,
+  useGetAllMyDecks,
+  useUpdateDeck,
+} from "../hooks/useDecks";
 import type { deckInterface } from "./MainPage";
 import { FaPlay } from "react-icons/fa";
 import { BsThreeDots } from "react-icons/bs";
 import { FiEdit2, FiTrash2 } from "react-icons/fi";
+import UpdateDeckModal from "./UpdateDeckModal";
 
 const DecksSection = () => {
   const { data: decks, isLoading } = useGetAllMyDecks();
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const [editingDeck, setEditingDeck] = useState<deckInterface | null>(null);
+  const [modalError, setModalError] = useState<string | null>(null);
+
+  const { mutate: deleteDeck } = useDeleteOneDeck();
+  const { mutate: updateDeck, isPending } = useUpdateDeck();
 
   useEffect(() => {
     if (!openMenuId) return;
@@ -111,7 +121,10 @@ const DecksSection = () => {
                         <button
                           type="button"
                           className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-text-muted transition hover:bg-bg-surface hover:text-white"
-                          onClick={() => setOpenMenuId(null)}
+                          onClick={() => {
+                            setEditingDeck(deck);
+                            setOpenMenuId(null);
+                          }}
                         >
                           <FiEdit2 className="size-3.5" />
                           Edit deck
@@ -119,7 +132,10 @@ const DecksSection = () => {
                         <button
                           type="button"
                           className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-text-muted transition hover:bg-bg-surface hover:text-white"
-                          onClick={() => setOpenMenuId(null)}
+                          onClick={() => {
+                            deleteDeck(deck.id);
+                            setOpenMenuId(null);
+                          }}
                         >
                           <FiTrash2 className="size-3.5" />
                           Delete quiz
@@ -135,6 +151,39 @@ const DecksSection = () => {
       ) : (
         <div>No decks found</div>
       )}
+      <UpdateDeckModal
+        isOpen={Boolean(editingDeck)}
+        initialTitle={editingDeck?.title ?? ""}
+        onClose={() => {
+          setEditingDeck(null);
+          setModalError(null);
+        }}
+        onSave={(title) => {
+          if (!editingDeck) return;
+          if (!title.trim()) {
+            setModalError("Title cannot be empty.");
+            return;
+          }
+
+          updateDeck(
+            {
+              deckId: editingDeck.id,
+              data: { title },
+            },
+            {
+              onSuccess: () => {
+                setEditingDeck(null);
+                setModalError(null);
+              },
+              onError: (error: any) => {
+                setModalError(error?.message || "Unable to update deck.");
+              },
+            },
+          );
+        }}
+        loading={isPending}
+        error={modalError ?? undefined}
+      />
     </div>
   );
 };

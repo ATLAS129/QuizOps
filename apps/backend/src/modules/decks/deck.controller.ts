@@ -1,9 +1,11 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Query,
   Req,
@@ -17,6 +19,7 @@ import { JwtAccessGuard } from '../auth/guards/jwt-access.guard.js';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
 import { CardService } from '../cards/card.service.js';
+import { type UpdateDeckDto } from './dto/update-deck.dto.js';
 
 @UseGuards(JwtAccessGuard)
 @Controller('decks')
@@ -65,5 +68,15 @@ export class DeckController {
       dto?.prompt,
       dto?.url,
     );
+  }
+
+  @Patch(':id')
+  async updateDesk(@Param('id') deckId: string, @Body() dto: UpdateDeckDto) {
+    return this.deckService.updateDesk(deckId, dto);
+  }
+
+  @Delete(':id')
+  async deleteDesk(@Param('id') deckId: string) {
+    return this.deckService.deleteDeck(deckId);
   }
 }

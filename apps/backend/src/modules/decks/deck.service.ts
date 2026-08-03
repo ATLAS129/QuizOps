@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { AiService } from '../ai/ai.service.js';
 import { PrismaService } from '../prisma/prisma.service.js';
+import { UpdateDeckDto } from './dto/update-deck.dto.js';
 
 @Injectable()
 export class DeckService {
@@ -63,6 +64,28 @@ export class DeckService {
       });
 
       return AIResponse;
+    } catch (err: any) {
+      throw new InternalServerErrorException(err.message);
+    }
+  }
+
+  async updateDesk(deckId: string, dto: UpdateDeckDto) {
+    try {
+      const res = await this.prisma.deck.update({
+        where: { id: deckId },
+        data: dto,
+      });
+      return res;
+    } catch (err: any) {
+      throw new InternalServerErrorException(err.message);
+    }
+  }
+
+  async deleteDeck(deckId: string) {
+    try {
+      const res = await this.prisma.deck.delete({ where: { id: deckId } });
+
+      return res;
     } catch (err: any) {
       throw new InternalServerErrorException(err.message);
     }
