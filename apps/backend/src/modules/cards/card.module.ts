@@ -5,5 +5,6 @@ import { CardController } from './card.controller.js';
 @Module({
   providers: [CardService],
   controllers: [CardController],
+  exports: [CardService],
 })
 export class CardModule {}

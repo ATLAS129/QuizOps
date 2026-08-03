@@ -16,11 +16,15 @@ import { type CreateDeckDto } from './dto/create-deck.dto.js';
 import { JwtAccessGuard } from '../auth/guards/jwt-access.guard.js';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
+import { CardService } from '../cards/card.service.js';
 
 @UseGuards(JwtAccessGuard)
 @Controller('decks')
 export class DeckController {
-  constructor(private readonly deckService: DeckService) {}
+  constructor(
+    private readonly deckService: DeckService,
+    private readonly cardService: CardService,
+  ) {}
 
   @Get(':id')
   async getOneDeck(@Param('id') deckId: string) {
@@ -33,6 +37,11 @@ export class DeckController {
     @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
   ) {
     return this.deckService.findAllDecks(req.user.id, limit);
+  }
+
+  @Get(':id/cards')
+  async getAllCardsFromDeck(@Param('id') deckId: string) {
+    return this.cardService.getCardsFromDeck(deckId);
   }
 
   @Post()

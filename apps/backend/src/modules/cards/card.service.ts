@@ -18,4 +18,12 @@ export class CardService {
 
     return cards;
   }
+
+  async updateCard(cardId: string, dto: any) {
+    return this.prisma.card.update({ where: { id: cardId }, data: dto });
+  }
+
+  async deleteCard(cardId: string) {
+    return this.prisma.card.delete({ where: { id: cardId } });
+  }
 }

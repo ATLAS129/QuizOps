@@ -1,4 +1,12 @@
-import { Controller, Get, Param, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  UseGuards,
+} from '@nestjs/common';
 import { CardService } from './card.service.js';
 import { JwtAccessGuard } from '../auth/guards/jwt-access.guard.js';
 
@@ -7,8 +15,13 @@ import { JwtAccessGuard } from '../auth/guards/jwt-access.guard.js';
 export class CardController {
   constructor(private readonly cardService: CardService) {}
 
-  @Get(':id')
-  async getCardsFromDeck(@Param('id') deckId: string) {
-    return this.cardService.getCardsFromDeck(deckId);
+  @Patch(':id')
+  async updateCard(@Param('id') cardId: string, @Body() dto: any) {
+    return this.cardService.updateCard(cardId, dto);
+  }
+
+  @Delete(':id')
+  async deleteCard(@Param('id') cardId: string) {
+    return this.cardService.deleteCard(cardId);
   }
 }
