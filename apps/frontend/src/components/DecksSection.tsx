@@ -1,9 +1,40 @@
+import { useEffect, useState } from "react";
 import { useGetAllMyDecks } from "../hooks/useDecks";
 import type { deckInterface } from "./MainPage";
 import { FaPlay } from "react-icons/fa";
+import { BsThreeDots } from "react-icons/bs";
+import { FiEdit2, FiTrash2 } from "react-icons/fi";
 
 const DecksSection = () => {
   const { data: decks, isLoading } = useGetAllMyDecks();
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!openMenuId) return;
+
+    const handleOutsideClick = (event: MouseEvent) => {
+      const target = event.target as Node;
+      const activeMenu = document.querySelector('[data-menu-open="true"]');
+
+      if (activeMenu && !activeMenu.contains(target)) {
+        setOpenMenuId(null);
+      }
+    };
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpenMenuId(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutsideClick);
+    document.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [openMenuId]);
 
   if (isLoading) {
     return <p>Loading</p>;
@@ -17,22 +48,86 @@ const DecksSection = () => {
           {decks.map((deck: deckInterface) => (
             <div
               key={deck.id}
-              className="w-full bg-bg-background py-5 rounded-lg flex flex-col md:flex-row px-5 gap-5 items-center justify-between"
+              className="w-full rounded-xl border border-white/10 bg-bg-background px-5 py-4 shadow-sm transition hover:border-accent-primary/40 hover:shadow-md"
             >
-              <h1 className="font-bold text-sm w-1/2">{deck.title}</h1>
-              <div className="flex items-center justify-center gap-5">
-                <p className="text-text-muted text-sm">
-                  {deck._count.cards} cards
-                </p>
-                <div
-                  className={`flex justify-center items-center rounded-md p-1 w-30 ${deck.isCompleted ? "bg-green-500" : "bg-red-500"}`}
-                >
-                  {deck.isCompleted ? "Completed" : "Not completed"}
+              <div className="grid w-full gap-4 sm:grid-cols-[auto_1fr_auto] sm:items-center">
+                <div className="flex items-center gap-2 justify-start">
+                  <span className="rounded-full bg-bg-surface px-3 py-1 text-xs text-text-muted">
+                    {deck._count.cards}{" "}
+                    {deck._count.cards === 1 ? "card" : "cards"}
+                  </span>
+                  <span
+                    className={`rounded-full px-3 py-1 text-xs font-medium ${
+                      deck.isCompleted
+                        ? "bg-emerald-500/15 text-emerald-400"
+                        : "bg-rose-500/15 text-rose-400"
+                    }`}
+                  >
+                    {deck.isCompleted ? "Completed" : "Not completed"}
+                  </span>
                 </div>
-                <button className="bg-accent-primary hover:bg-accent-hover cursor-pointer px-3 py-1 rounded-md select-none flex justify-center items-center gap-2">
-                  <FaPlay />
-                  Take a quiz
-                </button>
+
+                <div className="flex min-w-0 justify-center">
+                  <h2 className="truncate text-sm font-semibold text-white">
+                    {deck.title}
+                  </h2>
+                </div>
+
+                <div className="flex items-center gap-3 justify-end">
+                  <button className="inline-flex items-center gap-2 rounded-lg bg-accent-primary px-3 py-2 text-sm font-medium text-white transition hover:bg-accent-hover">
+                    <FaPlay className="text-xs" />
+                    Take quiz
+                  </button>
+
+                  <div
+                    className="relative"
+                    data-menu-open={openMenuId === deck.id}
+                    onClick={(event) => event.stopPropagation()}
+                  >
+                    <button
+                      type="button"
+                      aria-label="Open deck actions"
+                      aria-expanded={openMenuId === deck.id}
+                      className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-bg-surface/80 text-text-muted transition hover:border-accent-primary/40 hover:bg-bg-surface hover:text-white"
+                      onClick={() =>
+                        setOpenMenuId((prev) =>
+                          prev === deck.id ? null : deck.id,
+                        )
+                      }
+                    >
+                      <BsThreeDots className="size-4" />
+                    </button>
+
+                    {openMenuId === deck.id && (
+                      <div className="absolute right-0 top-full z-20 mt-2 w-44 rounded-xl border border-white/10 bg-bg-background p-1 shadow-xl">
+                        <button
+                          type="button"
+                          className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-text-muted transition hover:bg-bg-surface hover:text-white"
+                          onClick={() => setOpenMenuId(null)}
+                        >
+                          <FaPlay className="size-3.5" />
+                          Take quiz
+                        </button>
+                        <button
+                          type="button"
+                          className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-text-muted transition hover:bg-bg-surface hover:text-white"
+                          onClick={() => setOpenMenuId(null)}
+                        >
+                          <FiEdit2 className="size-3.5" />
+                          Edit deck
+                        </button>
+                        <button
+                          type="button"
+                          className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-text-muted transition hover:bg-bg-surface hover:text-white"
+                          onClick={() => setOpenMenuId(null)}
+                        >
+                          <FiTrash2 className="size-3.5" />
+                          Delete quiz
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           ))}
