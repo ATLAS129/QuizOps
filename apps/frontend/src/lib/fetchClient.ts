@@ -1,11 +1,18 @@
 export const BASE_URL = "http://localhost:3000";
 
 export async function apiFetch(path: string, options: any = {}) {
+  const headers = new Headers(options.headers || {});
+
+  if (!(options.body instanceof FormData)) {
+    headers.set("Content-Type", "application/json");
+  }
+
   const doFetch = () =>
     fetch(`${BASE_URL}${path}`, {
       ...options,
       credentials: "include",
-      headers: { "Content-Type": "application/json", ...options.headers },
+      headers,
+      body: options.body,
     });
 
   const res = await doFetch();
