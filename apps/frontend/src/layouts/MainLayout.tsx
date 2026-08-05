@@ -3,9 +3,13 @@ import Header from "../components/Header";
 import LoadingSpinner from "../components/LoadingSpinner";
 
 const MainLayout = ({
+  username,
+  userId,
   isAuthenticated,
   isLoading,
 }: {
+  username: string;
+  userId: string;
   isAuthenticated: boolean;
   isLoading: boolean;
 }) => {
@@ -16,7 +20,7 @@ const MainLayout = ({
 
   return (
     <>
-      <Header />
+      <Header userId={userId} username={username} />
 
       <main className="w-full mx-auto min-h-screen">
         <Outlet />

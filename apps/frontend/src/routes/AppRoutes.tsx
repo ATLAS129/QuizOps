@@ -5,6 +5,7 @@ import AuthLayout from "../layouts/AuthLayout";
 import LoginPage from "../pages/LoginPage";
 import { useCurrentUser } from "../hooks/useAuth";
 import SignupPage from "../pages/SignupPage";
+import ProfilePage from "../pages/ProfilePage";
 
 const AppRoutes = () => {
   const { data: user, isLoading, isError } = useCurrentUser();
@@ -15,10 +16,16 @@ const AppRoutes = () => {
     <Routes>
       <Route
         element={
-          <MainLayout isAuthenticated={isAuthenticated} isLoading={isLoading} />
+          <MainLayout
+            isAuthenticated={isAuthenticated}
+            isLoading={isLoading}
+            userId={user?.id}
+            username={user?.name}
+          />
         }
       >
         <Route path="/" element={<MainPage />} />
+        <Route path="/profile/:userId" element={<ProfilePage />} />
       </Route>
 
       <Route
