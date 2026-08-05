@@ -1,11 +1,9 @@
-// import { useCurrentUser } from "../hooks/useAuth";
 import { useGetAllMyDecks } from "../hooks/useDecks";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { Link } from "react-router";
 import { FaPlay } from "react-icons/fa";
 
 const MyDecksPage = () => {
-  //   const { data: user, isLoading: isUserLoading } = useCurrentUser();
   const { data: decks, isLoading: isDecksLoading } = useGetAllMyDecks();
 
   if (isDecksLoading) {
