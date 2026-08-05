@@ -6,6 +6,7 @@ import LoginPage from "../pages/LoginPage";
 import { useCurrentUser } from "../hooks/useAuth";
 import SignupPage from "../pages/SignupPage";
 import ProfilePage from "../pages/ProfilePage";
+import MyDecksPage from "../pages/MyDecksPage";
 
 const AppRoutes = () => {
   const { data: user, isLoading, isError } = useCurrentUser();
@@ -26,6 +27,7 @@ const AppRoutes = () => {
       >
         <Route path="/" element={<MainPage />} />
         <Route path="/profile/:userId" element={<ProfilePage />} />
+        <Route path="/profile/:userId/decks" element={<MyDecksPage />} />
       </Route>
 
       <Route

@@ -31,7 +31,7 @@ const Header = ({ username, userId }: { username: string; userId: string }) => {
           </button>
 
           {isMenuOpen && (
-            <div className="z-100 absolute right-0 mt-2 w-44 rounded-2xl border border-white/10 bg-bg-background/95 p-2 shadow-2xl shadow-black/20 backdrop-blur">
+            <div className="z-100 absolute right-0 mt-2 w-44 rounded-2xl border border-white/10 bg-bg-background p-2">
               <Link
                 to={`/profile/${userId}`}
                 onClick={() => setIsMenuOpen(false)}
@@ -41,7 +41,7 @@ const Header = ({ username, userId }: { username: string; userId: string }) => {
                 Profile
               </Link>
               <Link
-                to="/"
+                to={`/profile/${userId}/decks`}
                 onClick={() => setIsMenuOpen(false)}
                 className="flex items-center gap-2 rounded-xl p-2 text-sm text-text-muted transition hover:bg-bg-surface-hover hover:text-white"
               >

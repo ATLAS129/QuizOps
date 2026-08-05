@@ -103,7 +103,7 @@ const MainPageComponent = () => {
   if (isCreating) return <LoadingSpinner />;
 
   return (
-    <div className="py-3 px-2 flex flex-col gap-5">
+    <div className="flex flex-col gap-5">
       <div className="w-full max-h-1/2 bg-bg-surface flex flex-col items-center p-3">
         <h1 className="pb-3">
           💡Generate quizzes from PDFs, 💻websites, or your own instructions.🚀
