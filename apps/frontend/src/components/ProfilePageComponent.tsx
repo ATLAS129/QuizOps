@@ -13,7 +13,6 @@ const ProfilePageComponent = ({
   user: any;
   recentDecks: any;
 }) => {
-  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [modalError, setModalError] = useState<string | null>(null);
 
