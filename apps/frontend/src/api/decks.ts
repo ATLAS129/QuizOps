@@ -1,8 +1,8 @@
 import { apiFetch } from "../lib/fetchClient";
 
-export const getAllMyDecks = async () => {
+export const getAllMyDecks = async (limit?: number) => {
   try {
-    const res = await apiFetch("/decks");
+    const res = await apiFetch(`/decks${limit ? `?limit=${limit}` : ""}`);
 
     return res;
   } catch (err: any) {

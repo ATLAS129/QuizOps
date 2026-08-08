@@ -6,11 +6,13 @@ import {
   updateDeck,
 } from "../api/decks";
 
-export function useGetAllMyDecks() {
+export function useGetAllMyDecks(limit?: number) {
   return useQuery({
-    queryKey: ["decks"],
-    queryFn: getAllMyDecks,
+    queryKey: ["decks", limit],
+    queryFn: () => getAllMyDecks(limit),
     retry: false,
+    staleTime: 1000 * 60 * 5,
+    refetchOnWindowFocus: false,
   });
 }
 

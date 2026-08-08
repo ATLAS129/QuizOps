@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
-import {
-  useDeleteOneDeck,
-  useGetAllMyDecks,
-  useUpdateDeck,
-} from "../hooks/useDecks";
+import { useDeleteOneDeck, useUpdateDeck } from "../hooks/useDecks";
+import { getAllMyDecks } from "../api/decks";
 import type { deckInterface } from "./MainPage";
 import { FaPlay } from "react-icons/fa";
 import { BsThreeDots } from "react-icons/bs";
@@ -11,13 +8,29 @@ import { FiEdit2, FiTrash2 } from "react-icons/fi";
 import UpdateDeckModal from "./UpdateDeckModal";
 
 const DecksSection = () => {
-  const { data: decks, isLoading } = useGetAllMyDecks();
+  const [currentLimit, setCurrentLimit] = useState(5);
+  const [decks, setDecks] = useState<deckInterface[] | null>(null);
+  const [isFetching, setIsFetching] = useState(false);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [editingDeck, setEditingDeck] = useState<deckInterface | null>(null);
   const [modalError, setModalError] = useState<string | null>(null);
 
   const { mutate: deleteDeck } = useDeleteOneDeck();
   const { mutate: updateDeck, isPending } = useUpdateDeck();
+
+  const fetchDecks = async (limit: number) => {
+    setIsFetching(true);
+    try {
+      const res = (await getAllMyDecks(limit)) as deckInterface[];
+      setDecks(res);
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDecks(currentLimit);
+  }, []);
 
   useEffect(() => {
     if (!openMenuId) return;
@@ -46,7 +59,7 @@ const DecksSection = () => {
     };
   }, [openMenuId]);
 
-  if (isLoading) {
+  if (!decks) {
     return <p>Loading</p>;
   }
 
@@ -84,7 +97,10 @@ const DecksSection = () => {
                 </div>
 
                 <div className="flex items-center gap-3 justify-end">
-                  <button className="inline-flex items-center gap-2 rounded-lg bg-accent-primary px-3 py-2 text-sm font-medium text-white transition hover:bg-accent-hover">
+                  <button
+                    type="button"
+                    className="inline-flex items-center gap-2 rounded-lg bg-accent-primary px-3 py-2 text-sm font-medium text-white transition hover:bg-accent-hover"
+                  >
                     <FaPlay className="text-xs" />
                     Take quiz
                   </button>
@@ -133,7 +149,9 @@ const DecksSection = () => {
                           type="button"
                           className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-text-muted transition hover:bg-bg-surface hover:text-white"
                           onClick={() => {
-                            deleteDeck(deck.id);
+                            deleteDeck(deck.id, {
+                              onSuccess: () => fetchDecks(currentLimit),
+                            });
                             setOpenMenuId(null);
                           }}
                         >
@@ -150,6 +168,27 @@ const DecksSection = () => {
         </div>
       ) : (
         <div>No decks found</div>
+      )}
+
+      {decks && decks.length >= currentLimit && (
+        <button
+          type="button"
+          onClick={async () => {
+            const nextLimit = currentLimit + 5;
+            setIsFetching(true);
+            try {
+              const res = (await getAllMyDecks(nextLimit)) as deckInterface[];
+              setDecks(res);
+              setCurrentLimit(nextLimit);
+            } finally {
+              setIsFetching(false);
+            }
+          }}
+          disabled={isFetching}
+          className="mt-4 rounded-full bg-accent-primary px-5 py-2 text-sm font-medium text-white transition hover:bg-accent-hover disabled:cursor-wait disabled:opacity-50"
+        >
+          {isFetching ? "Loading more..." : "Load more"}
+        </button>
       )}
       <UpdateDeckModal
         isOpen={Boolean(editingDeck)}
@@ -174,6 +213,7 @@ const DecksSection = () => {
               onSuccess: () => {
                 setEditingDeck(null);
                 setModalError(null);
+                void fetchDecks(currentLimit);
               },
               onError: (error: any) => {
                 setModalError(error?.message || "Unable to update deck.");
