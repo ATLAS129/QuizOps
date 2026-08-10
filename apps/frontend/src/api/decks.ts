@@ -10,6 +10,16 @@ export const getAllMyDecks = async (limit?: number) => {
   }
 };
 
+export const getCardsFromDeck = async (deskId: string) => {
+  try {
+    const res = await apiFetch(`/decks/${deskId}/cards`);
+
+    return res;
+  } catch (err: any) {
+    throw new Error(err.message);
+  }
+};
+
 export const createDeck = async (data: {
   url?: string;
   prompt?: string;

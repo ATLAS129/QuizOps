@@ -11,12 +11,13 @@ export class CardService {
 
   async getCardsFromDeck(deckId: string) {
     const cards = await this.prisma.card.findMany({ where: { deckId } });
+    const count = await this.prisma.card.count({ where: { deckId } });
 
     if (!cards) {
       throw new NotFoundException('Cards are not found.');
     }
 
-    return cards;
+    return { cards: cards, count: count };
   }
 
   async updateCard(cardId: string, dto: any) {

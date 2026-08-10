@@ -6,6 +6,7 @@ import { FaPlay } from "react-icons/fa";
 import { BsThreeDots } from "react-icons/bs";
 import { FiEdit2, FiTrash2 } from "react-icons/fi";
 import UpdateDeckModal from "./UpdateDeckModal";
+import { Link } from "react-router";
 
 const DecksSection = () => {
   const [currentLimit, setCurrentLimit] = useState(5);
@@ -97,13 +98,13 @@ const DecksSection = () => {
                 </div>
 
                 <div className="flex items-center gap-3 justify-end">
-                  <button
-                    type="button"
+                  <Link
+                    to={`/deck/${deck.id}`}
                     className="inline-flex items-center gap-2 rounded-lg bg-accent-primary px-3 py-2 text-sm font-medium text-white transition hover:bg-accent-hover"
                   >
                     <FaPlay className="text-xs" />
                     Take quiz
-                  </button>
+                  </Link>
 
                   <div
                     className="relative"
@@ -126,14 +127,14 @@ const DecksSection = () => {
 
                     {openMenuId === deck.id && (
                       <div className="absolute right-0 top-full z-20 mt-2 w-44 rounded-xl border border-white/10 bg-bg-background p-1 shadow-xl">
-                        <button
-                          type="button"
+                        <Link
+                          to={`/deck/${deck.id}`}
                           className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-text-muted transition hover:bg-bg-surface hover:text-white"
                           onClick={() => setOpenMenuId(null)}
                         >
                           <FaPlay className="size-3.5" />
                           Take quiz
-                        </button>
+                        </Link>
                         <button
                           type="button"
                           className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-text-muted transition hover:bg-bg-surface hover:text-white"

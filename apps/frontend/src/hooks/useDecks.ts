@@ -3,6 +3,7 @@ import {
   createDeck,
   deleteDeck,
   getAllMyDecks,
+  getCardsFromDeck,
   updateDeck,
 } from "../api/decks";
 
@@ -13,6 +14,13 @@ export function useGetAllMyDecks(limit?: number) {
     retry: false,
     staleTime: 1000 * 60 * 5,
     refetchOnWindowFocus: false,
+  });
+}
+
+export function useGetCardsFromDeck(deckId: string) {
+  return useQuery({
+    queryKey: ["cards", deckId],
+    queryFn: () => getCardsFromDeck(deckId),
   });
 }
 
