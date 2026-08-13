@@ -7,7 +7,7 @@ import { useCurrentUser } from "../hooks/useAuth";
 import SignupPage from "../pages/SignupPage";
 import ProfilePage from "../pages/ProfilePage";
 import MyDecksPage from "../pages/MyDecksPage";
-import DeckPage from "../pages/DeskPage";
+import DeckPage from "../pages/DeсkPage";
 
 const AppRoutes = () => {
   const { data: user, isLoading, isError } = useCurrentUser();

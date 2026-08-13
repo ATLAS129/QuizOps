@@ -57,3 +57,5 @@ export const signup = async (data: {
     throw new Error(err.message);
   }
 };
+
+export const logout = async () => apiFetch("/auth/logout", { method: "POST" });

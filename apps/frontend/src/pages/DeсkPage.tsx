@@ -27,7 +27,7 @@ const shuffleArray = <T,>(items: T[]) => {
   return copy;
 };
 
-const DeskPage = () => {
+const DeсkPage = () => {
   const { deckId } = useParams() as { deckId: string };
   const {
     data: cardsFetch,
@@ -220,4 +220,4 @@ const DeskPage = () => {
   );
 };
 
-export default DeskPage;
+export default DeсkPage;

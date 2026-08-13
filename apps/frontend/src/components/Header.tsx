@@ -1,9 +1,14 @@
 import { useState } from "react";
 import { FaLightbulb, FaUser } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
-import { Link } from "react-router";
+import { IoLogOut } from "react-icons/io5";
+import { Link, useNavigate } from "react-router";
+import { useLogout } from "../hooks/useAuth";
 
 const Header = ({ username, userId }: { username: string; userId: string }) => {
+  const navigate = useNavigate();
+  const { mutate: logout } = useLogout();
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
@@ -48,13 +53,25 @@ const Header = ({ username, userId }: { username: string; userId: string }) => {
                 <FaLightbulb />
                 My decks
               </Link>
-              <button
-                type="button"
+              <Link
+                to="/settings"
                 onClick={() => setIsMenuOpen(false)}
                 className="flex w-full items-center  gap-2 rounded-xl p-2 text-left text-sm text-text-muted transition hover:bg-bg-surface-hover hover:text-white"
               >
                 <IoMdSettings />
                 Settings
+              </Link>
+              <button
+                onClick={async () => {
+                  setIsMenuOpen(false);
+                  logout(undefined, {
+                    onSuccess: () => navigate("/login", { replace: true }),
+                  });
+                }}
+                className="flex w-full items-center  gap-2 rounded-xl p-2 text-left text-sm text-text-muted transition hover:bg-bg-surface-hover hover:text-white"
+              >
+                <IoLogOut />
+                Logout
               </button>
             </div>
           )}
