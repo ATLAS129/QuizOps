@@ -129,23 +129,23 @@ const DeсkPage = () => {
   }
 
   return (
-    <div className="relative space-y-3">
+    <div className="relative h-screen flex flex-col">
       <button
         type="button"
         onClick={handleGoBack}
-        className="absolute top-2 left-2 px-3 py-2 rounded-full bg-bg-background text-sm font-medium hover:bg-accent-hover"
+        className="absolute top-2 left-2 px-3 py-2 rounded-full bg-accent-hover text-sm font-medium cursor-pointer hover:brightness-95"
       >
         Back
       </button>
 
-      <div className="absolute top-2 right-2 px-3 py-2 rounded-full bg-bg-background text-sm font-medium">
+      <div className="absolute top-2 right-2 px-3 py-2 rounded-full bg-accent-hover text-sm font-medium">
         {formatTime(seconds)}
       </div>
 
-      <section className="p-2 w-full bg-bg-surface h-50 flex justify-center items-center flex-col rounded-lg">
+      <section className="p-2 w-full bg-accent-primary flex-none flex justify-center items-center flex-col rounded-lg">
         <div className="flex justify-center items-center gap-3">
-          <p className="px-3 py-2 rounded-full bg-bg-background">Question</p>
-          <p className="p-2 rounded-full bg-bg-background">
+          <p className="px-3 py-2 rounded-full bg-accent-hover">Question</p>
+          <p className="p-2 rounded-full bg-accent-hover">
             {Math.min(currentQuestionIndex + 1, cards.length)}/{cards.length}
           </p>
         </div>
@@ -166,22 +166,17 @@ const DeсkPage = () => {
       </section>
 
       {!isQuizFinished && (
-        <section className="w-full h-120 flex flex-col justify-center items-center gap-2">
-          <h1 className="px-3 py-1 rounded-full bg-bg-surface">Options</h1>
-          {currentAnswers.length > 0 ? (
-            currentAnswers.map((answer) => (
-              <button
-                key={answer}
-                type="button"
-                onClick={() => handleAnswer(answer)}
-                className="w-full h-1/4 bg-bg-surface rounded-lg hover:bg-accent-hover"
-              >
-                {answer}
-              </button>
-            ))
-          ) : (
-            <div>No answers available for this question.</div>
-          )}
+        <section className="w-full flex-1 flex flex-col justify-center items-center gap-2 overflow-auto py-3 px-2">
+          {currentAnswers.map((answer) => (
+            <button
+              key={answer}
+              type="button"
+              onClick={() => handleAnswer(answer)}
+              className="w-full flex-1 bg-bg-surface rounded-lg hover:bg-accent-hover"
+            >
+              {answer}
+            </button>
+          ))}
         </section>
       )}
 
