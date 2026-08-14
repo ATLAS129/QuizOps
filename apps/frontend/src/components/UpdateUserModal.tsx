@@ -59,13 +59,13 @@ const UpdateUserModal = ({
           <button
             type="button"
             aria-label="Close modal"
-            className="absolute right-0 top-0 rounded-full border border-white/10 bg-bg-surface/90 p-2 text-text-muted transition hover:bg-bg-surface hover:text-white"
+            className="absolute right-0 top-0 rounded-full border border-white/10 bg-bg-surface/90 p-2 text-text-muted transition hover:bg-bg-surface"
             onClick={onClose}
           >
             <FiX className="size-5" />
           </button>
           <div className="text-center">
-            <h2 className="text-lg font-semibold text-white">Edit user</h2>
+            <h2 className="text-lg font-semibold">Edit user</h2>
             <p className="text-sm text-text-muted">Update your profile.</p>
           </div>
         </div>
@@ -77,7 +77,7 @@ const UpdateUserModal = ({
               type="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              className="mt-2 w-full rounded-2xl border border-white/10 bg-bg-surface px-4 py-3 text-white outline-none transition focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20"
+              className="mt-2 w-full rounded-2xl border border-white/10 bg-bg-surface px-4 py-3 outline-none transition focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20"
               placeholder="Enter new email"
             />
           </label>
@@ -88,7 +88,7 @@ const UpdateUserModal = ({
               type="text"
               value={name}
               onChange={(event) => setName(event.target.value)}
-              className="mt-2 w-full rounded-2xl border border-white/10 bg-bg-surface px-4 py-3 text-white outline-none transition focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20"
+              className="mt-2 w-full rounded-2xl border border-white/10 bg-bg-surface px-4 py-3 outline-none transition focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20"
               placeholder="Enter new username"
             />
           </label>

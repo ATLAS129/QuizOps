@@ -17,7 +17,7 @@ const MyDecksPage = () => {
           <p className="text-sm uppercase tracking-[0.2em] text-text-muted">
             Your decks
           </p>
-          <h1 className="text-4xl font-semibold text-white">💡All decks</h1>
+          <h1 className="text-4xl font-semibold">💡All decks</h1>
         </div>
       </div>
 
@@ -43,7 +43,7 @@ const MyDecksPage = () => {
                 </span>
                 <Link
                   to={`/deck/${deck.id}`}
-                  className="inline-flex items-center gap-2 rounded-lg bg-accent-primary px-3 py-2 text-sm font-medium transition hover:bg-accent-hover"
+                  className="inline-flex items-center gap-2 rounded-lg text-white bg-accent-primary px-3 py-2 text-sm font-medium transition hover:bg-accent-hover"
                 >
                   <FaPlay className="text-xs" />
                   Take quiz

@@ -100,7 +100,7 @@ const SignupPageComponent = ({
             placeholder="••••••••"
           />
         </div>
-        <button className="w-full flex justify-center items-center mx-auto py-2 px-32 bg-accent-primary hover:bg-accent-hover cursor-pointer rounded-lg mt-5">
+        <button className="w-full flex justify-center items-center mx-auto py-2 px-32 text-white bg-accent-primary hover:bg-accent-hover cursor-pointer rounded-lg mt-5">
           Signup
         </button>
         <p className="pt-4 text-sm">

@@ -146,7 +146,7 @@ const MainPageComponent = () => {
                   setErrorMessage(null);
                   if (fileInputRef.current) fileInputRef.current.value = "";
                 }}
-                className="absolute right-4 top-4 rounded-full border border-white/10 bg-bg-surface/90 px-3 py-1 text-xs text-text-muted transition hover:bg-bg-surface hover:text-white"
+                className="absolute right-4 top-4 rounded-full border border-white/10 bg-bg-surface/90 px-3 py-1 text-xs text-text-muted transition hover:bg-bg-surface"
               >
                 Remove PDF
               </button>
@@ -156,7 +156,7 @@ const MainPageComponent = () => {
               className={`size-24 transition duration-300 group-hover:text-accent-primary ${pdfFile ? "text-accent-primary" : ""}`}
             />
             <div className="max-w-2xl select-none space-y-2">
-              <p className="text-lg font-semibold text-white">
+              <p className="text-lg font-semibold">
                 {pdfFile
                   ? "PDF ready to generate"
                   : "Drag and drop a PDF file here"}

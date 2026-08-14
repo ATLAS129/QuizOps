@@ -133,19 +133,19 @@ const DeсkPage = () => {
       <button
         type="button"
         onClick={handleGoBack}
-        className="absolute top-2 left-2 px-3 py-2 rounded-full bg-accent-hover text-sm font-medium cursor-pointer hover:brightness-95"
+        className="absolute top-2 left-2 px-3 py-2 rounded-full bg-accent-hover/50 text-sm font-medium cursor-pointer hover:brightness-95"
       >
         Back
       </button>
 
-      <div className="absolute top-2 right-2 px-3 py-2 rounded-full bg-accent-hover text-sm font-medium">
+      <div className="absolute top-2 right-2 px-3 py-2 rounded-full bg-accent-hover/50 text-sm font-medium select-none">
         {formatTime(seconds)}
       </div>
 
-      <section className="p-2 w-full bg-accent-primary flex-none flex justify-center items-center flex-col rounded-lg">
+      <section className="p-2 w-full bg-accent-primary/50 flex-none flex justify-center items-center flex-col rounded-lg">
         <div className="flex justify-center items-center gap-3">
-          <p className="px-3 py-2 rounded-full bg-accent-hover">Question</p>
-          <p className="p-2 rounded-full bg-accent-hover">
+          <p className="px-3 py-2 rounded-full bg-accent-hover/50">Question</p>
+          <p className="p-2 rounded-full bg-accent-hover/50">
             {Math.min(currentQuestionIndex + 1, cards.length)}/{cards.length}
           </p>
         </div>
@@ -172,7 +172,7 @@ const DeсkPage = () => {
               key={answer}
               type="button"
               onClick={() => handleAnswer(answer)}
-              className="w-full flex-1 bg-bg-surface rounded-lg hover:bg-accent-hover"
+              className="w-full flex-1 bg-bg-surface rounded-lg hover:bg-accent-hover/50"
             >
               {answer}
             </button>

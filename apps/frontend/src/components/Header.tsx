@@ -4,12 +4,16 @@ import { IoMdSettings } from "react-icons/io";
 import { IoLogOut } from "react-icons/io5";
 import { Link, useNavigate } from "react-router";
 import { useLogout } from "../hooks/useAuth";
+import { useTheme } from "../hooks/useTheme";
+import SettingsModal from "./SettingsModal";
 
 const Header = ({ username, userId }: { username: string; userId: string }) => {
   const navigate = useNavigate();
   const { mutate: logout } = useLogout();
+  const { theme, setTheme } = useTheme();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   return (
     <header className="h-14 w-full bg-bg-surface flex items-center justify-between px-6">
@@ -18,7 +22,7 @@ const Header = ({ username, userId }: { username: string; userId: string }) => {
       </div>
 
       <div className="flex items-center justify-center gap-6 text-sm">
-        <div className="py-2 px-3 bg-accent-primary rounded-lg">
+        <div className="py-2 px-3 bg-accent-primary rounded-lg text-white">
           <Link to={`/profile/${userId}/decks`}>All my decks</Link>
         </div>
 
@@ -40,7 +44,7 @@ const Header = ({ username, userId }: { username: string; userId: string }) => {
               <Link
                 to={`/profile/${userId}`}
                 onClick={() => setIsMenuOpen(false)}
-                className="flex items-center gap-2 rounded-xl p-2 text-sm text-text-muted transition hover:bg-bg-surface-hover hover:text-white"
+                className="flex items-center gap-2 rounded-xl p-2 text-sm text-text-muted transition hover:bg-bg-surface-hover"
               >
                 <FaUser />
                 Profile
@@ -48,19 +52,21 @@ const Header = ({ username, userId }: { username: string; userId: string }) => {
               <Link
                 to={`/profile/${userId}/decks`}
                 onClick={() => setIsMenuOpen(false)}
-                className="flex items-center gap-2 rounded-xl p-2 text-sm text-text-muted transition hover:bg-bg-surface-hover hover:text-white"
+                className="flex items-center gap-2 rounded-xl p-2 text-sm text-text-muted transition hover:bg-bg-surface-hover"
               >
                 <FaLightbulb />
                 My decks
               </Link>
-              <Link
-                to="/settings"
-                onClick={() => setIsMenuOpen(false)}
-                className="flex w-full items-center  gap-2 rounded-xl p-2 text-left text-sm text-text-muted transition hover:bg-bg-surface-hover hover:text-white"
+              <button
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  setIsSettingsOpen(true);
+                }}
+                className="flex w-full items-center  gap-2 rounded-xl p-2 text-left text-sm text-text-muted transition hover:bg-bg-surface-hover"
               >
                 <IoMdSettings />
                 Settings
-              </Link>
+              </button>
               <button
                 onClick={async () => {
                   setIsMenuOpen(false);
@@ -68,7 +74,7 @@ const Header = ({ username, userId }: { username: string; userId: string }) => {
                     onSuccess: () => navigate("/login", { replace: true }),
                   });
                 }}
-                className="flex w-full items-center  gap-2 rounded-xl p-2 text-left text-sm text-text-muted transition hover:bg-bg-surface-hover hover:text-white"
+                className="flex w-full items-center  gap-2 rounded-xl p-2 text-left text-sm text-text-muted transition hover:bg-bg-surface-hover"
               >
                 <IoLogOut />
                 Logout
@@ -77,6 +83,13 @@ const Header = ({ username, userId }: { username: string; userId: string }) => {
           )}
         </div>
       </div>
+
+      <SettingsModal
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        theme={theme}
+        onThemeChange={setTheme}
+      />
     </header>
   );
 };

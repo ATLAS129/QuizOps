@@ -92,7 +92,7 @@ const DecksSection = () => {
                 </div>
 
                 <div className="flex min-w-0 justify-center">
-                  <h2 className="truncate text-sm font-semibold text-white">
+                  <h2 className="truncate text-sm font-semibold">
                     {deck.title}
                   </h2>
                 </div>
@@ -115,7 +115,7 @@ const DecksSection = () => {
                       type="button"
                       aria-label="Open deck actions"
                       aria-expanded={openMenuId === deck.id}
-                      className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-bg-surface/80 text-text-muted transition hover:border-accent-primary/40 hover:bg-bg-surface hover:text-white"
+                      className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-bg-surface/80 text-text-muted transition hover:border-accent-primary/40 hover:bg-bg-surface"
                       onClick={() =>
                         setOpenMenuId((prev) =>
                           prev === deck.id ? null : deck.id,
