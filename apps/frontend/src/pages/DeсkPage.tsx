@@ -69,9 +69,8 @@ const DeсkPage = () => {
 
     const nextIndex = currentQuestionIndex + 1;
     const isCorrect = selectedAnswer === currentCard.answer;
-
-    setAnswerHistory((prev) => [
-      ...prev,
+    const nextAnswerHistory = [
+      ...answerHistory,
       {
         cardId: currentCard.id,
         question: currentCard.question,
@@ -79,7 +78,9 @@ const DeсkPage = () => {
         correctAnswer: currentCard.answer,
         isCorrect,
       },
-    ]);
+    ];
+
+    setAnswerHistory(nextAnswerHistory);
 
     if (nextIndex >= cards.length) {
       setIsQuizFinished(true);
@@ -87,7 +88,7 @@ const DeсkPage = () => {
         deckId,
         data: {
           isCompleted: true,
-          correctAnswersCompleted: answerHistory.filter(
+          correctAnswersCompleted: nextAnswerHistory.filter(
             (answer) => answer.isCorrect,
           ).length,
           completionDuration: seconds,
