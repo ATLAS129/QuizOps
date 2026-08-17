@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router";
+import { useParams } from "react-router";
 import { useCurrentUser } from "../hooks/useAuth";
 import { useGetAllMyDecks } from "../hooks/useDecks";
 import LoadingSpinner from "../components/LoadingSpinner";

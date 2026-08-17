@@ -87,15 +87,28 @@ const ProfilePageComponent = ({
                 className="rounded-3xl flex flex-col justify-center items-center gap-2 border border-white/10 bg-bg-background/80 p-5 backdrop-blur-sm transition duration-200 hover:-translate-y-1 hover:border-accent-primary/40 hover:shadow-lg hover:shadow-accent-primary/10"
               >
                 <div className="flex items-center justify-between w-full ">
-                  <span
-                    className={`rounded-full px-3 py-1 text-xs font-medium ${
-                      deck.isCompleted
-                        ? "bg-emerald-500/15 text-emerald-400"
-                        : "bg-rose-500/15 text-rose-400"
-                    }`}
-                  >
-                    {deck.isCompleted ? "Completed" : "Not completed"}
-                  </span>
+                  <div>
+                    <span
+                      className={`rounded-full px-3 py-1 text-xs font-medium ${
+                        deck.isCompleted
+                          ? "bg-emerald-500/15 text-emerald-400"
+                          : "bg-rose-500/15 text-rose-400"
+                      }`}
+                    >
+                      {deck.isCompleted ? "Completed" : "Not completed"}
+                    </span>
+                    {deck.isCompleted && (
+                      <span
+                        className={`rounded-full px-3 py-1 text-xs font-medium ${
+                          deck.isCompleted
+                            ? "bg-emerald-500/15 text-emerald-400"
+                            : "bg-rose-500/15 text-rose-400"
+                        }`}
+                      >
+                        {deck.correctAnswersCompleted + "/" + deck._count.cards}
+                      </span>
+                    )}
+                  </div>
                   <span className="text-xs text-text-muted">
                     {deck._count.cards} cards
                   </span>

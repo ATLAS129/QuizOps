@@ -48,15 +48,28 @@ const MyDecksPage = () => {
                   <FaPlay className="text-xs" />
                   Take quiz
                 </Link>
-                <span
-                  className={`absolute right-0 rounded-full px-3 py-2 text-xs font-medium ${
-                    deck.isCompleted
-                      ? "bg-emerald-500/15 text-emerald-400"
-                      : "bg-rose-500/15 text-rose-400"
-                  }`}
-                >
-                  {deck.isCompleted ? "Completed" : "Not completed"}
-                </span>
+                <div className="absolute right-0">
+                  {deck.isCompleted && (
+                    <span
+                      className={`rounded-full px-3 py-2 text-xs font-medium ${
+                        deck.isCompleted
+                          ? "bg-emerald-500/15 text-emerald-400"
+                          : "bg-rose-500/15 text-rose-400"
+                      }`}
+                    >
+                      {deck.correctAnswersCompleted + "/" + deck._count.cards}
+                    </span>
+                  )}
+                  <span
+                    className={`rounded-full px-3 py-2 text-xs font-medium ${
+                      deck.isCompleted
+                        ? "bg-emerald-500/15 text-emerald-400"
+                        : "bg-rose-500/15 text-rose-400"
+                    }`}
+                  >
+                    {deck.isCompleted ? "Completed" : "Not completed"}
+                  </span>
+                </div>
               </div>
             </div>
           ))}

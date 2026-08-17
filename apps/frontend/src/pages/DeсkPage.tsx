@@ -82,7 +82,15 @@ const DeсkPage = () => {
 
     if (nextIndex >= cards.length) {
       setIsQuizFinished(true);
-      completeDeck({ deckId, data: { isCompleted: true } });
+      completeDeck({
+        deckId,
+        data: {
+          isCompleted: true,
+          correctAnswersCompleted: answerHistory.filter(
+            (answer) => answer.isCorrect,
+          ).length,
+        },
+      });
       return;
     }
 
