@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useGetCardsFromDeck, useUpdateDeck } from "../hooks/useDecks";
 import { useNavigate, useParams } from "react-router";
+import { formatTime } from "../lib/formatTime";
 
 type Card = {
   id: string;
@@ -89,6 +90,7 @@ const DeсkPage = () => {
           correctAnswersCompleted: answerHistory.filter(
             (answer) => answer.isCorrect,
           ).length,
+          completionDuration: seconds,
         },
       });
       return;
@@ -109,14 +111,6 @@ const DeсkPage = () => {
 
     return () => window.clearInterval(interval);
   }, [startTime, isQuizFinished]);
-
-  const formatTime = (value: number) => {
-    const mins = Math.floor(value / 60)
-      .toString()
-      .padStart(2, "0");
-    const secs = (value % 60).toString().padStart(2, "0");
-    return `${mins}:${secs}`;
-  };
 
   const navigate = useNavigate();
 

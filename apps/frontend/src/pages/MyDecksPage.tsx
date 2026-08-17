@@ -2,6 +2,7 @@ import { useGetAllMyDecks } from "../hooks/useDecks";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { Link } from "react-router";
 import { FaPlay } from "react-icons/fa";
+import { formatTime } from "../lib/formatTime";
 
 const MyDecksPage = () => {
   const { data: decks, isLoading: isDecksLoading } = useGetAllMyDecks();
@@ -48,17 +49,29 @@ const MyDecksPage = () => {
                   <FaPlay className="text-xs" />
                   Take quiz
                 </Link>
-                <div className="absolute right-0">
+                <div className="absolute right-0 flex justify-center items-center gap-3">
                   {deck.isCompleted && (
-                    <span
-                      className={`rounded-full px-3 py-2 text-xs font-medium ${
-                        deck.isCompleted
-                          ? "bg-emerald-500/15 text-emerald-400"
-                          : "bg-rose-500/15 text-rose-400"
-                      }`}
-                    >
-                      {deck.correctAnswersCompleted + "/" + deck._count.cards}
-                    </span>
+                    <>
+                      <div>
+                        <span className="px-3 py-2 rounded-full bg-bg-surface text-xs text-text-muted">
+                          Time spent
+                        </span>
+                        <span
+                          className={`rounded-full px-3 py-2 text-xs font-medium`}
+                        >
+                          {formatTime(deck.completionDuration)}
+                        </span>
+                      </div>
+                      <span
+                        className={`rounded-full px-3 py-2 text-xs font-medium ${
+                          deck.isCompleted
+                            ? "bg-emerald-500/15 text-emerald-400"
+                            : "bg-rose-500/15 text-rose-400"
+                        }`}
+                      >
+                        {deck.correctAnswersCompleted + "/" + deck._count.cards}
+                      </span>
+                    </>
                   )}
                   <span
                     className={`rounded-full px-3 py-2 text-xs font-medium ${
