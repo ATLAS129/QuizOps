@@ -50,29 +50,39 @@ const MyDecksPage = () => {
                   Take quiz
                 </Link>
                 <div className="absolute right-0 flex justify-center items-center gap-3">
-                  {deck.isCompleted && (
-                    <>
-                      <div>
-                        <span className="px-3 py-2 rounded-full bg-bg-surface text-xs text-text-muted">
-                          Time spent
-                        </span>
-                        <span
-                          className={`rounded-full px-3 py-2 text-xs font-medium`}
-                        >
-                          {formatTime(deck.completionDuration)}
-                        </span>
-                      </div>
-                      <span
-                        className={`rounded-full px-3 py-2 text-xs font-medium ${
-                          deck.isCompleted
-                            ? "bg-emerald-500/15 text-emerald-400"
-                            : "bg-rose-500/15 text-rose-400"
-                        }`}
-                      >
-                        {deck.correctAnswersCompleted + "/" + deck._count.cards}
-                      </span>
-                    </>
-                  )}
+                  {deck.isCompleted &&
+                    deck.completionHistory &&
+                    (() => {
+                      const completion = Array.isArray(deck.completionHistory)
+                        ? deck.completionHistory[0]
+                        : deck.completionHistory;
+
+                      return completion ? (
+                        <>
+                          <div>
+                            <span className="px-3 py-2 rounded-full bg-bg-surface text-xs text-text-muted">
+                              Time spent
+                            </span>
+                            <span
+                              className={`rounded-full px-3 py-2 text-xs font-medium`}
+                            >
+                              {formatTime(completion.completionDuration)}
+                            </span>
+                          </div>
+                          <span
+                            className={`rounded-full px-3 py-2 text-xs font-medium ${
+                              deck.isCompleted
+                                ? "bg-emerald-500/15 text-emerald-400"
+                                : "bg-rose-500/15 text-rose-400"
+                            }`}
+                          >
+                            {completion.correctAnswersCompleted +
+                              "/" +
+                              deck._count.cards}
+                          </span>
+                        </>
+                      ) : null;
+                    })()}
                   <span
                     className={`rounded-full px-3 py-2 text-xs font-medium ${
                       deck.isCompleted

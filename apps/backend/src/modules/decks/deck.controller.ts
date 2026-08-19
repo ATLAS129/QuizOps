@@ -30,8 +30,8 @@ export class DeckController {
   ) {}
 
   @Get(':id')
-  async getOneDeck(@Param('id') deckId: string) {
-    return this.deckService.findOneDeck(deckId);
+  async getOneDeck(@Req() req: any, @Param('id') deckId: string) {
+    return this.deckService.findOneDeck(deckId, req.user.id);
   }
 
   @Get()
@@ -40,6 +40,19 @@ export class DeckController {
     @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
   ) {
     return this.deckService.findAllDecks(req.user.id, limit);
+  }
+
+  @Get(':id/history')
+  async getFullDeckCompletionHistory(
+    @Req() req: any,
+    @Param('id') deckId: string,
+    @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
+  ) {
+    return this.deckService.getFullDeckCompletionHistory(
+      deckId,
+      req.user.id,
+      limit,
+    );
   }
 
   @Get(':id/cards')

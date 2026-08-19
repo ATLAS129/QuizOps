@@ -92,6 +92,7 @@ const DeсkPage = () => {
             (answer) => answer.isCorrect,
           ).length,
           completionDuration: seconds,
+          completedAt: new Date(),
         },
       });
       return;

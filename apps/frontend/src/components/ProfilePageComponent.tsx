@@ -105,7 +105,9 @@ const ProfilePageComponent = ({
                             : "bg-rose-500/15 text-rose-400"
                         }`}
                       >
-                        {deck.correctAnswersCompleted + "/" + deck._count.cards}
+                        {deck.completionHistory[0].correctAnswersCompleted +
+                          "/" +
+                          deck._count.cards}
                       </span>
                     )}
                   </div>

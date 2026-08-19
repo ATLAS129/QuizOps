@@ -8,19 +8,20 @@ datasource db {
 }
 
 model User {
-  id                String   @id @default(uuid())
-  email             String   @unique
-  name              String
-  passwordHash      String
+  id                             String   @id @default(uuid())
+  email                          String   @unique
+  name                           String
+  passwordHash                   String
   
-  decks             Deck[]
+  decks                          Deck[]
+  decksCompletionHistory         DeckCompletion[]
 
-  aiGenerationsUsed Int      @default(0)
+  aiGenerationsUsed              Int      @default(0)
 
-  refreshToken      String?
+  refreshToken                   String?
   
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  createdAt                      DateTime @default(now())
+  updatedAt                      DateTime @updatedAt
 }
 
 model Deck {
@@ -31,8 +32,7 @@ model Deck {
   user                      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   isCompleted               Boolean  @default(false)
-  correctAnswersCompleted   Int?
-  completionDuration        Int?
+  completionHistory         DeckCompletion[]
 
   cards                     Card[]
   
@@ -40,6 +40,24 @@ model Deck {
   updatedAt                 DateTime @updatedAt
 
   @@index([userId])
+}
+
+model DeckCompletion {
+  id                        String   @id @default(uuid())
+
+  deckId                    String
+  deck                      Deck     @relation(fields: [deckId], references: [id], onDelete: Cascade)
+  
+  userId                    String
+  user                      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  completedAt               DateTime @default(now())
+  completionDuration        Int
+  correctAnswersCompleted   Int
+  totalQuestions            Int
+
+  @@index([userId, deckId, completedAt])
+  @@index([deckId, completedAt])
 }
 
 model Card {

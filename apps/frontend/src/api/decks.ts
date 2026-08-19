@@ -57,7 +57,6 @@ export const updateDeck = async (deckId: string, data: any) => {
     });
     return res;
   } catch (err: any) {
-    console.log(err.message);
     throw new Error(err.message);
   }
 };
