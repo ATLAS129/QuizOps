@@ -92,9 +92,12 @@ const DecksSection = () => {
                 </div>
 
                 <div className="flex min-w-0 justify-center">
-                  <h2 className="truncate text-sm font-semibold">
+                  <Link
+                    to={`/deck/${deck.id}`}
+                    className="truncate text-sm font-semibold hover:underline"
+                  >
                     {deck.title}
-                  </h2>
+                  </Link>
                 </div>
 
                 <div className="flex items-center gap-3 justify-end">
@@ -128,7 +131,7 @@ const DecksSection = () => {
                     {openMenuId === deck.id && (
                       <div className="absolute right-0 top-full z-20 mt-2 w-44 rounded-xl border border-white/10 bg-bg-background p-1 shadow-xl">
                         <Link
-                          to={`/deck/${deck.id}`}
+                          to={`/deck/${deck.id}/take`}
                           className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-text-muted transition hover:bg-bg-surface hover:text-white"
                           onClick={() => setOpenMenuId(null)}
                         >

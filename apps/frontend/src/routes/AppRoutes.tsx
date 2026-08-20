@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router";
+import { Routes, Route, Navigate } from "react-router";
 import MainLayout from "../layouts/MainLayout";
 import MainPage from "../pages/MainPage";
 import AuthLayout from "../layouts/AuthLayout";
@@ -7,7 +7,8 @@ import { useCurrentUser } from "../hooks/useAuth";
 import SignupPage from "../pages/SignupPage";
 import ProfilePage from "../pages/ProfilePage";
 import MyDecksPage from "../pages/MyDecksPage";
-import DeckPage from "../pages/DeсkPage";
+import QuizPage from "../pages/QuizPage";
+import DeckPage from "../pages/DeckPage";
 
 const AppRoutes = () => {
   const { data: user, isLoading, isError } = useCurrentUser();
@@ -27,11 +28,12 @@ const AppRoutes = () => {
         }
       >
         <Route path="/" element={<MainPage />} />
-        <Route path="/profile/:userId" element={<ProfilePage />} />
         <Route path="/profile/:userId/decks" element={<MyDecksPage />} />
+        <Route path="/profile/:userId" element={<ProfilePage />} />
+        <Route path="/deck/:deckId" element={<DeckPage />} />
       </Route>
 
-      <Route path="/deck/:deckId" element={<DeckPage />} />
+      <Route path="/deck/:deckId/take" element={<QuizPage />} />
 
       <Route
         element={

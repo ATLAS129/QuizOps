@@ -4,6 +4,8 @@ import {
   deleteDeck,
   getAllMyDecks,
   getCardsFromDeck,
+  getDeckHistory,
+  getOneDeck,
   updateDeck,
 } from "../api/decks";
 
@@ -12,8 +14,24 @@ export function useGetAllMyDecks(limit?: number) {
     queryKey: ["decks", limit],
     queryFn: () => getAllMyDecks(limit),
     retry: false,
-    staleTime: 1000 * 60 * 5,
-    refetchOnWindowFocus: false,
+  });
+}
+
+export function useGetOneDeck(deckId: string) {
+  return useQuery({
+    queryKey: ["deck", deckId],
+    queryFn: () => getOneDeck(deckId),
+    enabled: Boolean(deckId),
+    retry: false,
+  });
+}
+
+export function useGetDeckHistory(deckId: string) {
+  return useQuery({
+    queryKey: ["deck-history", deckId],
+    queryFn: () => getDeckHistory(deckId),
+    enabled: Boolean(deckId),
+    retry: false,
   });
 }
 

@@ -117,14 +117,19 @@ const ProfilePageComponent = ({
                 </div>
 
                 <div className="w-full h-full flex flex-col justify-center items-center">
-                  <h3 className="text-base font-semibold">{deck.title}</h3>
+                  <Link
+                    to={`/deck/${deck.id}`}
+                    className="text-base font-semibold hover:underline"
+                  >
+                    {deck.title}
+                  </Link>
                   <p className="text-sm text-text-muted">
                     Created {new Date(deck.createdAt).toLocaleDateString()}
                   </p>
                 </div>
 
                 <Link
-                  to={`/deck/${deck.id}`}
+                  to={`/deck/${deck.id}/take`}
                   className="w-full mt-auto inline-flex items-center justify-center gap-2 rounded-lg text-white bg-accent-primary px-3 py-2 text-sm font-medium transition hover:bg-accent-hover"
                 >
                   <FaPlay className="text-xs" />

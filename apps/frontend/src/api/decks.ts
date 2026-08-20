@@ -10,6 +10,28 @@ export const getAllMyDecks = async (limit?: number) => {
   }
 };
 
+export const getOneDeck = async (deckId: string) => {
+  try {
+    const res = await apiFetch(`/decks/${deckId}`);
+
+    return res;
+  } catch (err: any) {
+    throw new Error(err.message);
+  }
+};
+
+export const getDeckHistory = async (deckId: string, limit?: number) => {
+  try {
+    const res = await apiFetch(
+      `/decks/${deckId}/history${limit ? `?limit=${limit}` : ""}`,
+    );
+
+    return res;
+  } catch (err: any) {
+    throw new Error(err.message);
+  }
+};
+
 export const getCardsFromDeck = async (deskId: string) => {
   try {
     const res = await apiFetch(`/decks/${deskId}/cards`);

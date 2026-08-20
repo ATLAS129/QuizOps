@@ -18,6 +18,9 @@ export class DeckService {
     const deck = await this.prisma.deck.findUnique({
       where: { id: deckId },
       include: {
+        _count: {
+          select: { cards: true },
+        },
         completionHistory: {
           where: {
             deckId,

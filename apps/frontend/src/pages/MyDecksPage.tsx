@@ -31,7 +31,12 @@ const MyDecksPage = () => {
             >
               <div className="mb-4 flex items-center justify-center gap-3">
                 <div>
-                  <h2 className="text-xl font-semibold ">{deck.title}</h2>
+                  <Link
+                    to={`/deck/${deck.id}`}
+                    className="text-xl font-semibold hover:underline"
+                  >
+                    {deck.title}
+                  </Link>
                   <p className="mt-1 text-sm text-text-muted">
                     Created {new Date(deck.createdAt).toLocaleDateString()}
                   </p>
@@ -43,7 +48,7 @@ const MyDecksPage = () => {
                   {deck._count?.cards ?? 0} cards
                 </span>
                 <Link
-                  to={`/deck/${deck.id}`}
+                  to={`/deck/${deck.id}/take`}
                   className="inline-flex items-center gap-2 rounded-lg text-white bg-accent-primary px-3 py-2 text-sm font-medium transition hover:bg-accent-hover"
                 >
                   <FaPlay className="text-xs" />

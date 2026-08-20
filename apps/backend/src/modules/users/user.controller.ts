@@ -23,7 +23,8 @@ export class UserController {
 
   @Get(':id')
   async findUserById(@Param('id') id: string) {
-    return this.userService.findById(id);
+    const user = await this.userService.findById(id);
+    return this.userService.sanitizeUser(user);
   }
 
   @Patch('me/update')
