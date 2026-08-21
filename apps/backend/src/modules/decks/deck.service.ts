@@ -140,7 +140,18 @@ export class DeckService {
           });
         }
 
+        console.log('HIIIIIIIIII', dto);
+
         if (dto.isCompleted === true) {
+          deck = await tx.deck.update({
+            where: { id: deckId },
+            data: { isCompleted: dto.isCompleted },
+            include: {
+              _count: {
+                select: { cards: true },
+              },
+            },
+          });
           await tx.deckCompletion.create({
             data: {
               deckId: deck.id,
