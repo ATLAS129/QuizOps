@@ -102,7 +102,7 @@ const DecksSection = () => {
 
                 <div className="flex items-center gap-3 justify-end">
                   <Link
-                    to={`/deck/${deck.id}`}
+                    to={`/deck/${deck.id}/take`}
                     className="inline-flex items-center gap-2 rounded-lg bg-accent-primary px-3 py-2 text-sm font-medium text-white transition hover:bg-accent-hover"
                   >
                     <FaPlay className="text-xs" />
