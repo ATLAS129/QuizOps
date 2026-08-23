@@ -58,7 +58,6 @@ const UpdateDeckModal = ({
       setTitle={setTitle}
       handleSubmit={handleSubmit}
       onClose={onClose}
-      onSave={onSave}
       loading={loading}
       error={error}
     />

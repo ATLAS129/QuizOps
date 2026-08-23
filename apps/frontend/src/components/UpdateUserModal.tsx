@@ -63,7 +63,6 @@ const UpdateUserModal = ({
       setEmail={setEmail}
       handleSubmit={handleSubmit}
       onClose={onClose}
-      onSave={onSave}
       loading={loading}
       error={error}
     />

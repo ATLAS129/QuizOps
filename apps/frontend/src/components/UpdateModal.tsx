@@ -1,6 +1,4 @@
 import { FiX } from "react-icons/fi";
-import type { UpdateDeckModalProps } from "./UpdateDeckModal";
-import type { UpdateUserModalProps } from "./UpdateUserModal";
 import type { FormEvent } from "react";
 
 interface UpdateModalProps {
@@ -14,7 +12,6 @@ interface UpdateModalProps {
   setEmail?: (email: string) => void;
   handleSubmit: (event: FormEvent<HTMLFormElement>) => void;
   onClose: () => void;
-  onSave: ((title: string) => void) | ((name: string, email: string) => void);
   loading?: boolean;
   error?: string;
 }

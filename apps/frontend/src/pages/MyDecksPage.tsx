@@ -1,11 +1,25 @@
-import { useGetAllMyDecks } from "../hooks/useDecks";
+import {
+  useDeleteOneDeck,
+  useGetAllMyDecks,
+  useUpdateDeck,
+} from "../hooks/useDecks";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { Link } from "react-router";
-import { FaPlay } from "react-icons/fa";
+import { FaPlay, FaRegEdit } from "react-icons/fa";
 import { formatTime } from "../lib/formatTime";
+import { FiTrash2 } from "react-icons/fi";
+import UpdateDeckModal from "../components/UpdateDeckModal";
+import { useState } from "react";
+import type { deckInterface } from "../components/MainPage";
 
 const MyDecksPage = () => {
   const { data: decks, isLoading: isDecksLoading } = useGetAllMyDecks();
+
+  const [editingDeck, setEditingDeck] = useState<deckInterface | null>(null);
+  const [modalError, setModalError] = useState<string | null>(null);
+
+  const { mutate: deleteDeck } = useDeleteOneDeck();
+  const { mutate: updateDeck, isPending } = useUpdateDeck();
 
   if (isDecksLoading) {
     return <LoadingSpinner />;
@@ -14,11 +28,13 @@ const MyDecksPage = () => {
   return (
     <div className="flex flex-col gap-4">
       <div className="rounded-3xl border border-white/10 bg-bg-surface p-8 shadow-xl shadow-black/10">
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col justify-center items-center gap-2">
           <p className="text-sm uppercase tracking-[0.2em] text-text-muted">
             Your decks
           </p>
-          <h1 className="text-4xl font-semibold">💡All decks</h1>
+          <h1 className="text-4xl font-semibold px-3 py-2 rounded-xl bg-accent-primary">
+            All active decks
+          </h1>
         </div>
       </div>
 
@@ -31,30 +47,23 @@ const MyDecksPage = () => {
             >
               <div className="mb-4 flex items-center justify-center gap-3">
                 <div>
+                  <p className="text-xs text-text-muted">
+                    Created {new Date(deck.createdAt).toLocaleDateString()}
+                  </p>
                   <Link
                     to={`/deck/${deck.id}`}
                     className="text-xl font-semibold hover:underline"
                   >
                     {deck.title}
                   </Link>
-                  <p className="mt-1 text-sm text-text-muted">
-                    Created {new Date(deck.createdAt).toLocaleDateString()}
-                  </p>
                 </div>
               </div>
 
-              <div className="mt-6 relative flex items-center justify-center text-xs">
-                <span className="absolute left-0 rounded-full bg-bg-surface px-3 py-2 text-left">
-                  {deck._count?.cards ?? 0} cards
-                </span>
-                <Link
-                  to={`/deck/${deck.id}/take`}
-                  className="inline-flex items-center gap-2 rounded-lg text-white bg-accent-primary px-3 py-2 text-sm font-medium transition hover:bg-accent-hover"
-                >
-                  <FaPlay className="text-xs" />
-                  Take quiz
-                </Link>
-                <div className="absolute right-0 flex justify-center items-center gap-3">
+              <div className="relative flex items-center justify-between text-xs">
+                <div className="flex justify-center items-center gap-3">
+                  <span className="rounded-full bg-bg-surface px-3 py-2 text-left">
+                    {deck._count?.cards ?? 0} cards
+                  </span>
                   {deck.isCompleted &&
                     deck.completionHistory &&
                     (() => {
@@ -64,6 +73,7 @@ const MyDecksPage = () => {
 
                       return completion ? (
                         <>
+                          <p>Last completion:</p>
                           <div>
                             <span className="px-3 py-2 rounded-full bg-bg-surface text-xs text-text-muted">
                               Time spent
@@ -98,6 +108,25 @@ const MyDecksPage = () => {
                     {deck.isCompleted ? "Completed" : "Not completed"}
                   </span>
                 </div>
+                <div className="flex justify-center items-center gap-2">
+                  <Link
+                    to={`/deck/${deck.id}/take`}
+                    className="flex justify-center items-center gap-2 rounded-lg text-white bg-accent-primary px-3 py-2 text-sm font-medium transition hover:bg-accent-hover"
+                  >
+                    <FaPlay className="text-xs" />
+                    Take quiz
+                  </Link>
+                  <button
+                    onClick={() => setEditingDeck(deck)}
+                    className="cursor-pointer flex justify-center items-center gap-2 rounded-lg text-white bg-accent-primary px-3 py-2 text-sm font-medium transition hover:bg-accent-hover"
+                  >
+                    <FaRegEdit className="text-xs" />
+                    Edit deck
+                  </button>
+                  <button className="cursor-pointer p-3 border border-red-500/70 rounded-lg">
+                    <FiTrash2 className="text-xs" />
+                  </button>
+                </div>
               </div>
             </div>
           ))}
@@ -107,6 +136,40 @@ const MyDecksPage = () => {
           There are no decks yet. Create one from the main page.
         </div>
       )}
+      <UpdateDeckModal
+        isOpen={Boolean(editingDeck)}
+        initialTitle={editingDeck?.title ?? ""}
+        onClose={() => {
+          setEditingDeck(null);
+          setModalError(null);
+        }}
+        onSave={(title) => {
+          if (!editingDeck) return;
+          if (!title.trim()) {
+            setModalError("Title cannot be empty.");
+            return;
+          }
+
+          updateDeck(
+            {
+              deckId: editingDeck.id,
+              data: { title },
+            },
+            {
+              onSuccess: () => {
+                setEditingDeck(null);
+                setModalError(null);
+                // void fetchDecks(currentLimit);
+              },
+              onError: (error: any) => {
+                setModalError(error?.message || "Unable to update deck.");
+              },
+            },
+          );
+        }}
+        loading={isPending}
+        error={modalError ?? undefined}
+      />
     </div>
   );
 };
