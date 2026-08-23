@@ -7,6 +7,7 @@ import { BsThreeDots } from "react-icons/bs";
 import { FiEdit2, FiTrash2 } from "react-icons/fi";
 import UpdateDeckModal from "./UpdateDeckModal";
 import { Link } from "react-router";
+import DeleteDeckModal from "./DeleteDeckModal";
 
 const DecksSection = () => {
   const [currentLimit, setCurrentLimit] = useState(5);
@@ -16,7 +17,9 @@ const DecksSection = () => {
   const [editingDeck, setEditingDeck] = useState<deckInterface | null>(null);
   const [modalError, setModalError] = useState<string | null>(null);
 
-  const { mutate: deleteDeck } = useDeleteOneDeck();
+  const [deletingDeck, setDeletingDeck] = useState<deckInterface | null>(null);
+
+  const { mutate: deleteDeck, isPending: isDeleting } = useDeleteOneDeck();
   const { mutate: updateDeck, isPending } = useUpdateDeck();
 
   const fetchDecks = async (limit: number) => {
@@ -153,10 +156,7 @@ const DecksSection = () => {
                           type="button"
                           className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm transition hover:bg-bg-surface hover:text-white"
                           onClick={() => {
-                            deleteDeck(deck.id, {
-                              onSuccess: () => fetchDecks(currentLimit),
-                            });
-                            setOpenMenuId(null);
+                            setDeletingDeck(deck);
                           }}
                         >
                           <FiTrash2 className="size-3.5" />
@@ -227,6 +227,26 @@ const DecksSection = () => {
         }}
         loading={isPending}
         error={modalError ?? undefined}
+      />
+      <DeleteDeckModal
+        isOpen={Boolean(deletingDeck)}
+        deckTitle={deletingDeck ? deletingDeck.title : ""}
+        deckId={deletingDeck ? deletingDeck.id : ""}
+        onCancel={() => setDeletingDeck(null)}
+        isDeleting={isDeleting}
+        onConfirm={(deckId) => {
+          if (!deletingDeck) return;
+
+          deleteDeck(deckId, {
+            onSuccess: () => {
+              setDeletingDeck(null);
+              setModalError(null);
+            },
+            onError: (error: any) => {
+              setModalError(error?.message || "Unable to delete deck.");
+            },
+          });
+        }}
       />
     </div>
   );
