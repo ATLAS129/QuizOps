@@ -1,4 +1,4 @@
-import { useEffect, type FormEvent } from "react";
+import { useEffect } from "react";
 import { CiWarning } from "react-icons/ci";
 
 interface DeleteModalProps {
@@ -36,11 +36,6 @@ export default function DeleteDeckModal({
 
   if (!isOpen) return null;
 
-  //   const handleConfirm = (event: FormEvent<HTMLFormElement>) => {
-  //     event.preventDefault();
-  //     onConfirm(deckId);
-  //   };
-
   return (
     <div
       className="fixed inset-0 z-9999 flex items-center justify-center bg-black/70 p-4 backdrop-blur-md"
@@ -51,25 +46,20 @@ export default function DeleteDeckModal({
       }}
     >
       <div className="relative w-full max-w-105 overflow-hidden rounded-2xl border border-white/8 bg-[#111113] shadow-[0_25px_80px_rgba(0,0,0,0.55)] animate-in fade-in zoom-in-95 duration-200">
-        {/* Red glow */}
         <div className="relative p-6 flex items-center justify-center flex-col">
-          {/* Icon */}
           <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl border border-red-500/20 bg-red-500/10">
             <CiWarning className="text-2xl text-red-400" />
           </div>
 
-          {/* Title */}
           <h2 className="text-lg font-semibold tracking-tight text-white">
             Delete {deckTitle}?
           </h2>
 
-          {/* Description */}
           <p className="mt-2 text-sm leading-6 text-zinc-400">
             Are you sure you want to delete this deck? All of its data will be
             permanently removed.
           </p>
 
-          {/* Buttons */}
           <div className="w-full mt-7 flex justify-center items-center gap-3">
             <button
               type="button"

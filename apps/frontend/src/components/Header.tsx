@@ -22,9 +22,11 @@ const Header = ({ username, userId }: { username: string; userId: string }) => {
       </div>
 
       <div className="flex items-center justify-center gap-6 text-sm">
-        <div className="py-2 px-3 bg-accent-primary rounded-lg text-white">
-          <Link to={`/profile/${userId}/decks`}>All my decks</Link>
-        </div>
+        <Link to={`/profile/${userId}/decks`}>
+          <div className="py-2 px-3 bg-accent-primary rounded-lg text-white">
+            All my decks
+          </div>
+        </Link>
 
         <div className="relative">
           <button
