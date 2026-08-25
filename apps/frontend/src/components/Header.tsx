@@ -18,7 +18,15 @@ const Header = ({ username, userId }: { username: string; userId: string }) => {
   return (
     <header className="h-14 w-full bg-bg-surface flex items-center justify-between px-6">
       <div>
-        <Link to={"/"}>Logo QuizOps</Link>
+        <Link to={"/"}>
+          <img
+            rel="preload"
+            src={`../../public/QuizOps_logo_${theme == "system" ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "dark") : theme == "dark" ? "light" : "dark"}.png`}
+            alt="logo"
+            height={170}
+            width={256}
+          />
+        </Link>
       </div>
 
       <div className="flex items-center justify-center gap-6 text-sm">
