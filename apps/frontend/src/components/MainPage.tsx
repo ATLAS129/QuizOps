@@ -22,6 +22,17 @@ const MainPageComponent = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { mutate: createDeck, isPending: isCreating } = useCreateDeck();
 
+  const [numberOfQuestions, setNumberOfQuestions] = useState<
+    "5" | "10" | "20" | "30"
+  >("5");
+  const [difficulty, setDifficulty] = useState<
+    "Easy" | "Medium" | "Hard" | "Mixed"
+  >("Mixed");
+  const [questionType, setQuestionType] = useState<
+    "Mixed" | "Multiple choice" | "True / False"
+  >("Mixed");
+  const [extraOptions, setExtraOptions] = useState<string[]>([]);
+
   const handleFileSelect = (file: File | null) => {
     if (!file) {
       setPdfFile(null);
@@ -106,7 +117,7 @@ const MainPageComponent = () => {
     <div className="flex flex-col gap-5">
       <div className="mx-auto w-full">
         {/* HEADER */}
-        <header className="py-5 flex flex-col justify-center items-center">
+        <header className="pb-5 flex flex-col justify-center items-center">
           <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-accent-primary/10 px-3 py-1.5 text-sm font-medium text-accent-primary">
             <span className="text-base">✦</span>
             Quiz Generator
@@ -243,7 +254,7 @@ const MainPageComponent = () => {
             <div className="p-2 gap-3 flex">
               {/* URL */}
               <details className="overflow-hidden rounded-2xl border border-white/7 bg-bg-background transition hover:border-white/11">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-5 md:px-6 [&::-webkit-details-marker]:hidden">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-5 md:px-6">
                   <div className="flex items-center gap-4">
                     <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-bg-surface text-xl">
                       🌐
@@ -317,7 +328,7 @@ const MainPageComponent = () => {
 
             {/* Added source summary */}
             {(pdfFile || url || prompt) && (
-              <div className="mt-4 flex flex-wrap items-center gap-2 rounded-2xl border border-accent-primary/10 bg-accent-primary/[0.04] px-4 py-3">
+              <div className="mt-4 flex flex-wrap items-center gap-2 rounded-2xl border border-accent-primary/10 bg-accent-primary/4 px-4 py-3">
                 <span className="text-sm font-medium text-text-primary">
                   Added:
                 </span>
@@ -343,22 +354,19 @@ const MainPageComponent = () => {
             )}
           </section>
 
-          {/* Divider */}
-          <div className="my-9 h-px bg-white/[0.06]" />
-
           {/* STEP 2 */}
           <section>
-            <div className="mb-5 flex items-start gap-4">
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-bg-background text-sm font-bold text-text-muted">
+            <div className="flex justify-center items-center gap-5 py-5">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent-primary text-sm font-bold text-white shadow-lg shadow-accent-primary/20">
                 2
               </div>
 
               <div>
-                <h2 className="text-xl font-semibold text-text-primary">
+                <h2 className="place-self-start text-xl font-semibold text-text-primary">
                   Customize your quiz
                 </h2>
 
-                <p className="mt-1 text-sm leading-6 text-text-muted md:text-base">
+                <p className="place-self-start mt-1 text-sm leading-6 text-text-muted md:text-base">
                   These settings are optional — AI will choose sensible
                   defaults.
                 </p>
@@ -367,18 +375,18 @@ const MainPageComponent = () => {
 
             <details className="group overflow-hidden rounded-2xl border border-white/[0.07] bg-bg-background">
               <summary className="flex cursor-pointer list-none items-center justify-between px-5 py-5 md:px-6 [&::-webkit-details-marker]:hidden">
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
                   <div className="flex size-12 items-center justify-center rounded-2xl bg-bg-surface text-xl">
                     ⚙
                   </div>
 
                   <div>
-                    <p className="text-base font-semibold text-text-primary md:text-lg">
+                    <p className="place-self-start text-base font-semibold text-text-primary md:text-lg">
                       Generation preferences
                     </p>
 
-                    <p className="mt-1 text-sm text-text-muted">
-                      Questions, difficulty, language and more
+                    <p className="text-sm text-text-muted">
+                      Questions, types, difficulty, and more
                     </p>
                   </div>
                 </div>
@@ -394,12 +402,12 @@ const MainPageComponent = () => {
                 </div>
               </summary>
 
-              <div className="border-t border-white/[0.06] p-5 md:p-6">
+              <div className="border-t border-white/6 p-5 md:p-6">
                 {/* Quantity */}
-                <div className="mb-4 rounded-2xl border border-white/[0.06] bg-bg-surface p-5">
+                <div className="mb-4 rounded-2xl border border-white/6 bg-bg-surface p-5">
                   <div className="mb-5 flex items-center justify-between">
                     <div>
-                      <p className="text-base font-semibold text-text-primary md:text-lg">
+                      <p className="place-self-start text-base font-semibold text-text-primary md:text-lg">
                         Number of questions
                       </p>
 
@@ -409,7 +417,7 @@ const MainPageComponent = () => {
                     </div>
 
                     <div className="rounded-xl bg-accent-primary/10 px-4 py-2 text-lg font-bold text-accent-primary">
-                      10
+                      {numberOfQuestions}
                     </div>
                   </div>
 
@@ -419,10 +427,15 @@ const MainPageComponent = () => {
                         key={value}
                         type="button"
                         className={`rounded-lg py-3 text-sm font-semibold transition md:text-base ${
-                          value === "10"
+                          value === numberOfQuestions
                             ? "bg-accent-primary text-white shadow-lg shadow-accent-primary/20"
                             : "text-text-muted hover:bg-bg-surface hover:text-text-primary"
                         }`}
+                        onClick={() =>
+                          setNumberOfQuestions(
+                            value as "5" | "10" | "20" | "30",
+                          )
+                        }
                       >
                         {value}
                       </button>
@@ -431,77 +444,72 @@ const MainPageComponent = () => {
                 </div>
 
                 {/* Other settings */}
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div className="rounded-2xl border border-white/[0.06] bg-bg-surface p-5">
-                    <label htmlFor="difficulty">
-                      <p className="text-base font-semibold text-text-primary md:text-lg">
-                        Difficulty
-                      </p>
+                <div className="flex justify-center items-center gap-4">
+                  <div className="w-full flex flex-col gap-4">
+                    <div className="rounded-2xl border border-white/6 bg-bg-surface p-5">
+                      <label htmlFor="difficulty">
+                        <p className="text-base font-semibold text-text-primary md:text-lg">
+                          Difficulty
+                        </p>
 
-                      <span className="mt-1 block text-sm text-text-muted">
-                        How challenging should the questions be?
-                      </span>
-                    </label>
+                        <span className="mt-1 block text-sm text-text-muted">
+                          How challenging should the questions be?
+                        </span>
+                      </label>
 
-                    <select
-                      id="difficulty"
-                      defaultValue="medium"
-                      className="mt-4 w-full rounded-xl border border-bg-surface-hover bg-bg-background px-4 py-3.5 text-base text-text-primary outline-none transition focus:border-accent-primary focus:ring-4 focus:ring-accent-primary/10"
-                    >
-                      <option value="easy">Easy</option>
-                      <option value="medium">Medium</option>
-                      <option value="hard">Hard</option>
-                      <option value="mixed">Mixed</option>
-                    </select>
+                      <select
+                        id="difficulty"
+                        defaultValue="medium"
+                        className="mt-4 w-full rounded-xl border border-bg-surface-hover bg-bg-background px-4 py-3.5 text-base text-text-primary outline-none transition focus:border-accent-primary focus:ring-4 focus:ring-accent-primary/10"
+                        onChange={(e) =>
+                          setDifficulty(
+                            e.target.value as
+                              | "Easy"
+                              | "Medium"
+                              | "Hard"
+                              | "Mixed",
+                          )
+                        }
+                      >
+                        <option value="easy">Easy</option>
+                        <option value="medium">Medium</option>
+                        <option value="hard">Hard</option>
+                        <option value="mixed">Mixed</option>
+                      </select>
+                    </div>
+
+                    <div className="rounded-2xl border border-white/6 bg-bg-surface p-5">
+                      <label htmlFor="questionType">
+                        <p className="text-base font-semibold text-text-primary md:text-lg">
+                          Question type
+                        </p>
+
+                        <span className="mt-1 block text-sm text-text-muted">
+                          Choose how users will answer.
+                        </span>
+                      </label>
+
+                      <select
+                        id="questionType"
+                        defaultValue="mixed"
+                        className="mt-4 w-full rounded-xl border border-bg-surface-hover bg-bg-background px-4 py-3.5 text-base text-text-primary outline-none transition focus:border-accent-primary focus:ring-4 focus:ring-accent-primary/10"
+                        onChange={(e) =>
+                          setQuestionType(
+                            e.target.value as
+                              | "Mixed"
+                              | "Multiple choice"
+                              | "True / False",
+                          )
+                        }
+                      >
+                        <option value="mixed">Mixed</option>
+                        <option value="multiple-choice">Multiple choice</option>
+                        <option value="true-false">True / False</option>
+                      </select>
+                    </div>
                   </div>
 
-                  <div className="rounded-2xl border border-white/[0.06] bg-bg-surface p-5">
-                    <label htmlFor="questionType">
-                      <p className="text-base font-semibold text-text-primary md:text-lg">
-                        Question type
-                      </p>
-
-                      <span className="mt-1 block text-sm text-text-muted">
-                        Choose how users will answer.
-                      </span>
-                    </label>
-
-                    <select
-                      id="questionType"
-                      defaultValue="mixed"
-                      className="mt-4 w-full rounded-xl border border-bg-surface-hover bg-bg-background px-4 py-3.5 text-base text-text-primary outline-none transition focus:border-accent-primary focus:ring-4 focus:ring-accent-primary/10"
-                    >
-                      <option value="mixed">Mixed</option>
-                      <option value="multiple-choice">Multiple choice</option>
-                      <option value="true-false">True / False</option>
-                      <option value="short-answer">Short answer</option>
-                    </select>
-                  </div>
-
-                  <div className="rounded-2xl border border-white/[0.06] bg-bg-surface p-5">
-                    <label htmlFor="language">
-                      <p className="text-base font-semibold text-text-primary md:text-lg">
-                        Language
-                      </p>
-
-                      <span className="mt-1 block text-sm text-text-muted">
-                        Language used for the generated quiz.
-                      </span>
-                    </label>
-
-                    <select
-                      id="language"
-                      defaultValue="auto"
-                      className="mt-4 w-full rounded-xl border border-bg-surface-hover bg-bg-background px-4 py-3.5 text-base text-text-primary outline-none transition focus:border-accent-primary focus:ring-4 focus:ring-accent-primary/10"
-                    >
-                      <option value="auto">Auto detect</option>
-                      <option value="english">English</option>
-                      <option value="ukrainian">Ukrainian</option>
-                      <option value="polish">Polish</option>
-                    </select>
-                  </div>
-
-                  <div className="rounded-2xl border border-white/[0.06] bg-bg-surface p-5">
+                  <div className="w-full rounded-2xl border border-white/6 bg-bg-surface p-5">
                     <p className="text-base font-semibold text-text-primary md:text-lg">
                       Extra options
                     </p>
@@ -515,7 +523,7 @@ const MainPageComponent = () => {
                         "Include explanations",
                         "Avoid duplicate questions",
                         "Focus on key concepts",
-                      ].map((option, index) => (
+                      ].map((option) => (
                         <label
                           key={option}
                           className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-3 transition hover:bg-bg-background"
@@ -527,7 +535,14 @@ const MainPageComponent = () => {
                           <div className="relative">
                             <input
                               type="checkbox"
-                              defaultChecked={index < 2}
+                              checked={extraOptions.includes(option)}
+                              onChange={(e) => {
+                                setExtraOptions((prev) =>
+                                  e.target.checked
+                                    ? [...prev, option]
+                                    : prev.filter((opt) => opt !== option),
+                                );
+                              }}
                               className="peer sr-only"
                             />
 
