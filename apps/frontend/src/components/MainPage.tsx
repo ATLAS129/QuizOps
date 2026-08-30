@@ -96,6 +96,9 @@ const MainPageComponent = () => {
         url: url.trim() || undefined,
         prompt: prompt.trim() || undefined,
         file: pdfFile,
+        questionType: questionType || undefined,
+        difficulty: difficulty || undefined,
+        numberOfQuestions: numberOfQuestions || undefined,
       },
       {
         onSuccess: () => {
@@ -461,6 +464,7 @@ const MainPageComponent = () => {
                         id="difficulty"
                         defaultValue="medium"
                         className="mt-4 w-full rounded-xl border border-bg-surface-hover bg-bg-background px-4 py-3.5 text-base text-text-primary outline-none transition focus:border-accent-primary focus:ring-4 focus:ring-accent-primary/10"
+                        value={difficulty}
                         onChange={(e) =>
                           setDifficulty(
                             e.target.value as
@@ -493,6 +497,7 @@ const MainPageComponent = () => {
                         id="questionType"
                         defaultValue="mixed"
                         className="mt-4 w-full rounded-xl border border-bg-surface-hover bg-bg-background px-4 py-3.5 text-base text-text-primary outline-none transition focus:border-accent-primary focus:ring-4 focus:ring-accent-primary/10"
+                        value={questionType}
                         onChange={(e) =>
                           setQuestionType(
                             e.target.value as
@@ -560,7 +565,7 @@ const MainPageComponent = () => {
           </section>
 
           {/* Bottom CTA */}
-          <div className="mt-9 rounded-3xl border border-accent-primary/15 bg-accent-primary/[0.05] p-5 md:p-6">
+          <div className="mt-9 rounded-3xl border border-accent-primary/15 bg-accent-primary/5 p-5 md:p-6">
             <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
               <div>
                 <h3 className="text-lg font-semibold text-text-primary md:text-xl">

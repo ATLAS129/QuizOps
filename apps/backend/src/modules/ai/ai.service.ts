@@ -55,6 +55,7 @@ export class AiService {
     pdf?: Express.Multer.File,
     prompt?: string,
     url?: string,
+    options?,
   ) {
     const contents: any = [];
 

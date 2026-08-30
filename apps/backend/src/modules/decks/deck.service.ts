@@ -86,9 +86,22 @@ export class DeckService {
     return history;
   }
 
-  async createDeck(userId, title, pdf?, prompt?, url?) {
+  async createDeck(
+    userId,
+    title,
+    pdf?,
+    prompt?,
+    url?,
+    difficulty?,
+    numberOfQuestions?,
+    questionType?,
+  ) {
     try {
-      const AIResponse = await this.aiService.generateCards(pdf, prompt, url);
+      const AIResponse = await this.aiService.generateCards(pdf, prompt, url, {
+        difficulty,
+        numberOfQuestions,
+        questionType,
+      });
 
       const deck = await this.prisma.deck.create({
         data: {

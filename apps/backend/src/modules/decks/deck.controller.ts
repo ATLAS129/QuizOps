@@ -80,6 +80,9 @@ export class DeckController {
       pdf,
       dto?.prompt,
       dto?.url,
+      dto?.difficulty,
+      dto?.numberOfQuestions,
+      dto?.questionType,
     );
   }
 

@@ -46,6 +46,9 @@ export const createDeck = async (data: {
   url?: string;
   prompt?: string;
   file?: File | null;
+  questionType?: string;
+  difficulty?: string;
+  numberOfQuestions?: string;
 }) => {
   try {
     const formData = new FormData();
@@ -58,6 +61,15 @@ export const createDeck = async (data: {
     }
     if (data.file) {
       formData.append("file", data.file);
+    }
+    if (data.difficulty) {
+      formData.append("difficulty", data.difficulty);
+    }
+    if (data.questionType) {
+      formData.append("questionType", data.questionType);
+    }
+    if (data.numberOfQuestions) {
+      formData.append("numberOfQUestions", data.numberOfQuestions);
     }
 
     const res = await apiFetch("/decks", {
