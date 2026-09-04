@@ -1,10 +1,12 @@
-export const systemPrompt = (
-  numberOfQuestions: '5' | '10' | '20' | '30',
-  questionType: 'Mixed' | 'Multiple choice' | 'True / False',
-  difficulty: 'Easy' | 'Medium' | 'Hard' | 'Mixed',
-  extraOptions: string[] = [],
-) => {
-  const has = (option: string) => extraOptions.includes(option);
+export const systemPrompt = (options: {
+  numberOfQuestions?: '5' | '10' | '15' | '20';
+  questionType?: 'Mixed' | 'Multiple choice' | 'True / False';
+  difficulty?: 'Easy' | 'Medium' | 'Hard' | 'Mixed';
+  extraOptions?: string[];
+}) => {
+  const { difficulty, numberOfQuestions, questionType, extraOptions } = options;
+
+  const has = (option: string) => extraOptions && extraOptions.includes(option);
 
   const questionTypeRules = {
     'Multiple choice': `
@@ -50,7 +52,7 @@ For True / False questions:
 
 Try to keep the distribution reasonably balanced unless the source material strongly favors one type.
 `,
-  }[questionType];
+  }[questionType ? questionType : 'Multiple choice'];
 
   const difficultyRules = {
     Easy: `
@@ -108,7 +110,7 @@ Prefer roughly:
 
 Adjust naturally when the amount or complexity of source material makes an exact split inappropriate.
 `,
-  }[difficulty];
+  }[difficulty ? difficulty : 'Mixed'];
 
   const extraRules = [
     has('Include explanations')
@@ -127,7 +129,7 @@ The explanation must:
       : `
 EXPLANATIONS: DISABLED
 
-Do not include an "explanation" field.
+    Include an "explanation" field with an empty string.
 `,
 
     has('Avoid duplicate questions')
@@ -294,6 +296,8 @@ Generate EXACTLY ${numberOfQuestions} questions.
 
 Never generate fewer.
 Never generate more.
+The "cards" array must contain exactly ${numberOfQuestions} card objects.
+The JSON examples below are illustrative; they do not change the required count.
 
 
 ${questionTypeRules}
@@ -408,6 +412,10 @@ Do not include undefined fields.
 Do not include trailing commas.
 
 The final response must be parseable by JSON.parse().
+
+For every card, always include "question", "answer", "options", and
+"explanation". For True / False cards, set "options" to ["True", "False"].
+When explanations are disabled, set "explanation" to an empty string.
 
 
 REQUIRED JSON SCHEMA

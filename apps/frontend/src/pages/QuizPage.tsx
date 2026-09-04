@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useGetCardsFromDeck, useUpdateDeck } from "../hooks/useDecks";
 import { useNavigate, useParams } from "react-router";
 import { formatTime } from "../lib/formatTime";
@@ -28,6 +28,11 @@ const shuffleArray = <T,>(items: T[]) => {
   return copy;
 };
 
+const isTrueFalseCard = (card: Card) =>
+  card.options?.length === 2 &&
+  card.options.includes("True") &&
+  card.options.includes("False");
+
 const QuizPage = () => {
   const { deckId } = useParams() as { deckId: string };
   const {
@@ -41,6 +46,7 @@ const QuizPage = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answerHistory, setAnswerHistory] = useState<AnswerState[]>([]);
   const [isQuizFinished, setIsQuizFinished] = useState(false);
+  const answeringRef = useRef(false);
 
   const { mutate: completeDeck } = useUpdateDeck();
 
@@ -50,6 +56,7 @@ const QuizPage = () => {
       setCurrentQuestionIndex(0);
       setIsQuizFinished(false);
       setAnswerHistory([]);
+      answeringRef.current = false;
       setStartTime(Date.now());
       setSeconds(0);
     }
@@ -60,12 +67,15 @@ const QuizPage = () => {
   const currentAnswers = useMemo(() => {
     if (!currentCard) return [];
 
-    const answers = [currentCard.answer, ...(currentCard.options ?? [])];
-    return shuffleArray(answers);
+    const answers = isTrueFalseCard(currentCard)
+      ? ["True", "False"]
+      : [currentCard.answer, ...(currentCard.options ?? [])];
+    return shuffleArray([...new Set(answers)]);
   }, [currentCard]);
 
   const handleAnswer = (selectedAnswer: string) => {
-    if (!currentCard) return;
+    if (!currentCard || isQuizFinished || answeringRef.current) return;
+    answeringRef.current = true;
 
     const nextIndex = currentQuestionIndex + 1;
     const isCorrect = selectedAnswer === currentCard.answer;
@@ -84,6 +94,9 @@ const QuizPage = () => {
 
     if (nextIndex >= cards.length) {
       setIsQuizFinished(true);
+      const completionDuration = startTime
+        ? Math.max(0, Math.floor((Date.now() - startTime) / 1000))
+        : seconds;
       completeDeck({
         deckId,
         data: {
@@ -91,13 +104,14 @@ const QuizPage = () => {
           correctAnswersCompleted: nextAnswerHistory.filter(
             (answer) => answer.isCorrect,
           ).length,
-          completionDuration: seconds,
+          completionDuration,
           completedAt: new Date(),
         },
       });
       return;
     }
 
+    answeringRef.current = false;
     setCurrentQuestionIndex(nextIndex);
   };
 
@@ -148,7 +162,11 @@ const QuizPage = () => {
 
       <section className="p-2 w-full bg-accent-primary/50 flex-none flex justify-center items-center flex-col rounded-lg">
         <div className="flex justify-center items-center gap-3">
-          <p className="px-3 py-2 rounded-full bg-accent-hover/50">Question</p>
+          <p className="px-3 py-2 rounded-full bg-accent-hover/50">
+            {currentCard && isTrueFalseCard(currentCard)
+              ? "True / False"
+              : "Question"}
+          </p>
           <p className="p-2 rounded-full bg-accent-hover/50">
             {Math.min(currentQuestionIndex + 1, cards.length)}/{cards.length}
           </p>
@@ -176,7 +194,7 @@ const QuizPage = () => {
               key={answer}
               type="button"
               onClick={() => handleAnswer(answer)}
-              className="w-full flex-1 bg-bg-surface rounded-lg hover:bg-accent-hover/50"
+              className="w-full flex-1 bg-bg-surface rounded-lg hover:bg-accent-hover/50 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {answer}
             </button>
@@ -208,6 +226,11 @@ const QuizPage = () => {
                   <p>
                     Correct answer:{" "}
                     <span className="text-green-600">{item.correctAnswer}</span>
+                  </p>
+                )}
+                {cards.find((card) => card.id === item.cardId)?.explanation && (
+                  <p className="mt-2 text-sm text-text-muted">
+                    {cards.find((card) => card.id === item.cardId)?.explanation}
                   </p>
                 )}
               </li>

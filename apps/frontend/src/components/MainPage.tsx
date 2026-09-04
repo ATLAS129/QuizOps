@@ -23,7 +23,7 @@ const MainPageComponent = () => {
   const { mutate: createDeck, isPending: isCreating } = useCreateDeck();
 
   const [numberOfQuestions, setNumberOfQuestions] = useState<
-    "5" | "10" | "20" | "30"
+    "5" | "10" | "15" | "20"
   >("5");
   const [difficulty, setDifficulty] = useState<
     "Easy" | "Medium" | "Hard" | "Mixed"
@@ -41,6 +41,11 @@ const MainPageComponent = () => {
 
     if (file.type !== "application/pdf") {
       setErrorMessage("Please select a PDF file.");
+      return;
+    }
+
+    if (file.size > 50 * 1024 * 1024) {
+      setErrorMessage("PDF files must be 50 MB or smaller.");
       return;
     }
 
@@ -99,12 +104,14 @@ const MainPageComponent = () => {
         questionType: questionType || undefined,
         difficulty: difficulty || undefined,
         numberOfQuestions: numberOfQuestions || undefined,
+        extraOptions,
       },
       {
         onSuccess: () => {
           setUrl("");
           setPrompt("");
           setPdfFile(null);
+          setExtraOptions([]);
           setErrorMessage(null);
         },
         onError: (error: any) => {
@@ -425,7 +432,7 @@ const MainPageComponent = () => {
                   </div>
 
                   <div className="grid grid-cols-4 gap-2 rounded-xl bg-bg-background p-1.5">
-                    {["5", "10", "20", "30"].map((value) => (
+                    {["5", "10", "15", "20"].map((value) => (
                       <button
                         key={value}
                         type="button"
@@ -436,7 +443,7 @@ const MainPageComponent = () => {
                         }`}
                         onClick={() =>
                           setNumberOfQuestions(
-                            value as "5" | "10" | "20" | "30",
+                            value as "5" | "10" | "15" | "20",
                           )
                         }
                       >
@@ -462,7 +469,6 @@ const MainPageComponent = () => {
 
                       <select
                         id="difficulty"
-                        defaultValue="medium"
                         className="mt-4 w-full rounded-xl border border-bg-surface-hover bg-bg-background px-4 py-3.5 text-base text-text-primary outline-none transition focus:border-accent-primary focus:ring-4 focus:ring-accent-primary/10"
                         value={difficulty}
                         onChange={(e) =>
@@ -475,10 +481,10 @@ const MainPageComponent = () => {
                           )
                         }
                       >
-                        <option value="easy">Easy</option>
-                        <option value="medium">Medium</option>
-                        <option value="hard">Hard</option>
-                        <option value="mixed">Mixed</option>
+                        <option value="Easy">Easy</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Hard">Hard</option>
+                        <option value="Mixed">Mixed</option>
                       </select>
                     </div>
 
@@ -507,9 +513,9 @@ const MainPageComponent = () => {
                           )
                         }
                       >
-                        <option value="mixed">Mixed</option>
-                        <option value="multiple-choice">Multiple choice</option>
-                        <option value="true-false">True / False</option>
+                        <option value="Mixed">Mixed</option>
+                        <option value="Multiple choice">Multiple choice</option>
+                        <option value="True / False">True / False</option>
                       </select>
                     </div>
                   </div>
