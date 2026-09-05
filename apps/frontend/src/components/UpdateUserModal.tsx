@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
-import { FiX } from "react-icons/fi";
 import UpdateModal from "./UpdateModal";
 
 export interface UpdateUserModalProps {

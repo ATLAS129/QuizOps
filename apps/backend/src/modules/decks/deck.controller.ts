@@ -74,12 +74,21 @@ export class DeckController {
     @Body() dto: CreateDeckDto,
     @UploadedFile() pdf?: Express.Multer.File,
   ) {
+    const extraOptions =
+      typeof dto.extraOptions === 'string'
+        ? JSON.parse(dto.extraOptions)
+        : dto.extraOptions;
+
     return this.deckService.createDeck(
       req.user.id,
       dto.title,
       pdf,
       dto?.prompt,
       dto?.url,
+      dto?.difficulty,
+      dto?.numberOfQuestions,
+      dto?.questionType,
+      extraOptions,
     );
   }
 

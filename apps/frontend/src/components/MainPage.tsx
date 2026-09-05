@@ -101,6 +101,10 @@ const MainPageComponent = () => {
         url: url.trim() || undefined,
         prompt: prompt.trim() || undefined,
         file: pdfFile,
+        questionType: questionType || undefined,
+        difficulty: difficulty || undefined,
+        numberOfQuestions: numberOfQuestions || undefined,
+        extraOptions,
       },
       {
         onSuccess: () => {
@@ -136,6 +140,65 @@ const MainPageComponent = () => {
 
           <p className="mt-3 max-w-2xl text-base leading-7 text-text-muted md:text-lg">
             Add PDF, URL or just prompt to generate quiz.
+          </p>
+        </header>
+
+        {/* Main card */}
+        <div className="overflow-hidden rounded-4xl border border-white/[0.07] bg-bg-surface shadow-2xl p-5 shadow-black/20">
+          {/* STEP 1 */}
+          <section className="flex flex-col items-center">
+            <div className="mb-6 flex items-center justify-center gap-4">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent-primary text-sm font-bold text-white shadow-lg shadow-accent-primary/20">
+                1
+              </div>
+
+              <div>
+                <h2 className="place-self-start text-xl font-semibold text-text-primary">
+                  Add your material
+                </h2>
+
+                <p className="place-self-start mt-1 text-sm leading-6 text-text-muted md:text-base">
+                  Start with a PDF. You can add more sources below.
+                </p>
+              </div>
+            </div>
+
+            {/* PDF upload */}
+            <div
+              className={`w-full group relative overflow-hidden rounded-3xl border transition-all duration-300 ${
+                isDragActive
+                  ? "border-accent-primary bg-accent-primary/10 shadow-xl shadow-accent-primary/10"
+                  : pdfFile
+                    ? "border-accent-primary/40 bg-accent-primary/5"
+                    : "border-white/8 bg-bg-background hover:border-accent-primary/30 hover:bg-bg-background/80"
+              }`}
+              onDragEnter={handleDragEnter}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="application/pdf"
+                className="hidden"
+                onChange={handleFileInputChange}
+              />
+      <div className="mx-auto w-full">
+        {/* HEADER */}
+        <header className="pb-5 flex flex-col justify-center items-center">
+          <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-accent-primary/10 px-3 py-1.5 text-sm font-medium text-accent-primary">
+            <span className="text-base">✦</span>
+            Quiz Generator
+          </div>
+
+          <h1 className="text-3xl font-bold tracking-tight text-text-primary md:text-4xl">
+            Create a quiz from anything
+          </h1>
+
+          <p className="mt-3 max-w-2xl text-base leading-7 text-text-muted md:text-lg">
+            Add your study material and we'll turn it into a quiz for you.
           </p>
         </header>
 
