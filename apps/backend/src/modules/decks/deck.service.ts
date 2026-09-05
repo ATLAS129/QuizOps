@@ -1,5 +1,6 @@
 import {
   Injectable,
+  HttpException,
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
@@ -86,16 +87,31 @@ export class DeckService {
     return history;
   }
 
-  async createDeck(userId, title, pdf?, prompt?, url?) {
+  async createDeck(
+    userId,
+    title,
+    pdf,
+    prompt,
+    url,
+    difficulty = 'Mixed',
+    numberOfQuestions = '5',
+    questionType = 'Multiple choice',
+    extraOptions: string[] | undefined = undefined,
+  ) {
     try {
-      const AIResponse = await this.aiService.generateCards(pdf, prompt, url);
-
-      const deck = await this.prisma.deck.create({
+      const AIResponse = (await this.aiService.generateCards(pdf, prompt, url, {
+        difficulty: difficulty as 'Mixed' | 'Easy' | 'Medium' | 'Hard',
+        numberOfQuestions: numberOfQuestions as '5' | '10' | '15' | '20',
+        questionType: questionType as
+          'Mixed' | 'Multiple choice' | 'True / False',
+        extraOptions,
+      })) as { title: string; cards: any[] };
+      await this.prisma.deck.create({
         data: {
-          title: title ? title : AIResponse.title,
+          title: (title ? title : AIResponse.title) as string,
           user: {
             connect: {
-              id: userId,
+              id: userId as string,
             },
           },
           cards: {
@@ -105,10 +121,15 @@ export class DeckService {
           },
         },
       });
-
       return AIResponse;
-    } catch (err: any) {
-      throw new InternalServerErrorException(err.message);
+    } catch (err: unknown) {
+      if (err instanceof HttpException) {
+        throw err;
+      }
+
+      const error = err as Error;
+      console.log(error);
+      throw new InternalServerErrorException(error.message);
     }
   }
 
@@ -155,7 +176,7 @@ export class DeckService {
               deckId: deck.id,
               userId: deck.userId,
               totalQuestions: deck._count.cards,
-              completedAt: dto.completedAt as Date,
+              completedAt: new Date(dto.completedAt as unknown as string),
               completionDuration: dto.completionDuration as number,
               correctAnswersCompleted: dto.correctAnswersCompleted as number,
             },

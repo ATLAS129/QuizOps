@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from "react-router";
+import { Routes, Route } from "react-router";
 import MainLayout from "../layouts/MainLayout";
 import MainPage from "../pages/MainPage";
 import AuthLayout from "../layouts/AuthLayout";

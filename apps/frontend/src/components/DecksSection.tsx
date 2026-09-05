@@ -121,7 +121,7 @@ const DecksSection = () => {
                       type="button"
                       aria-label="Open deck actions"
                       aria-expanded={openMenuId === deck.id}
-                      className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-bg-surface/80 text-white transition hover:border-accent-primary/40 hover:bg-bg-surface"
+                      className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-bg-surface/80 transition hover:border-accent-primary/40 hover:bg-bg-surface"
                       onClick={() =>
                         setOpenMenuId((prev) =>
                           prev === deck.id ? null : deck.id,
@@ -132,7 +132,7 @@ const DecksSection = () => {
                     </button>
 
                     {openMenuId === deck.id && (
-                      <div className="absolute right-0 top-full z-20 mt-2 w-44 rounded-xl border border-white/10 text-white bg-bg-background p-1 shadow-xl">
+                      <div className="absolute right-0 top-full z-20 mt-2 w-44 rounded-xl border border-white/10 bg-bg-background p-1 shadow-xl">
                         <Link
                           to={`/deck/${deck.id}/take`}
                           className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm transition hover:bg-bg-surface hover:text-white"

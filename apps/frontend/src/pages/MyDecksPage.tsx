@@ -35,7 +35,7 @@ const MyDecksPage = () => {
           <p className="text-sm uppercase tracking-[0.2em] text-text-muted">
             Your decks
           </p>
-          <h1 className="text-4xl font-semibold px-3 py-2 rounded-xl bg-accent-primary">
+          <h1 className="text-4xl font-semibold px-3 py-2 rounded-xl text-white bg-accent-primary">
             All active decks
           </h1>
         </div>
