@@ -21,7 +21,7 @@ const Header = ({ username, userId }: { username: string; userId: string }) => {
         <Link to={"/"}>
           <img
             rel="preload"
-            src={`../../public/QuizOps_logo_${theme == "system" ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "dark") : theme == "dark" ? "light" : "dark"}.png`}
+            src={`/QuizOps_logo_${theme == "system" ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "dark") : theme == "dark" ? "light" : "dark"}.png`}
             alt="logo"
             height={170}
             width={256}
