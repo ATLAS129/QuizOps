@@ -4,12 +4,17 @@ import {
   FaCalendar,
   FaCheck,
   FaClock,
+  FaPlus,
   FaPlay,
   FaTrophy,
 } from "react-icons/fa";
 import { formatTime } from "../lib/formatTime";
 import LoadingSpinner from "../components/LoadingSpinner";
-import { useGetDeckHistory, useGetOneDeck } from "../hooks/useDecks";
+import {
+  useGenerateMoreCards,
+  useGetDeckHistory,
+  useGetOneDeck,
+} from "../hooks/useDecks";
 
 type Completion = {
   id?: string;
@@ -26,6 +31,8 @@ type Deck = {
   isCompleted: boolean;
   _count?: { cards: number };
   completionHistory?: Completion[];
+  sourcePrompt?: string | null;
+  sourceUrl?: string | null;
 };
 
 const getPercentage = (score: number, total: number) =>
@@ -47,6 +54,7 @@ const DeckPage = () => {
   } = useGetOneDeck(deckId ?? "");
   const { data: fetchedHistory = [], isError: isHistoryError } =
     useGetDeckHistory(deckId ?? "");
+  const generateMoreCardsMutation = useGenerateMoreCards();
 
   if (isDeckLoading) return <LoadingSpinner />;
 
@@ -86,6 +94,9 @@ const DeckPage = () => {
         latestCompletion.totalQuestions ?? cardCount,
       )
     : 0;
+  const canGenerateMore = Boolean(
+    typedDeck.sourcePrompt || typedDeck.sourceUrl,
+  );
 
   return (
     <div className="flex flex-col gap-5 pb-8 text-left">
@@ -126,8 +137,34 @@ const DeckPage = () => {
             {typedDeck.isCompleted ? "Retake quiz" : "Start quiz"}
             <FaArrowRight className="ml-1 text-xs" />
           </Link>
+          <button
+            type="button"
+            disabled={!canGenerateMore || generateMoreCardsMutation.isPending}
+            title={
+              canGenerateMore
+                ? "Generate five more questions"
+                : "Only available for decks created with a prompt or URL"
+            }
+            onClick={() => {
+              if (canGenerateMore) {
+                generateMoreCardsMutation.mutate(typedDeck.id);
+              }
+            }}
+            className="cursor-pointer inline-flex min-h-12 w-full shrink-0 items-center justify-center gap-2 rounded-xl border border-accent-primary/40 px-3 py-3 text-sm font-semibold text-accent-primary transition hover:-translate-y-0.5 hover:bg-accent-primary/10 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+          >
+            <FaPlus className="text-xs" />
+            {generateMoreCardsMutation.isPending
+              ? "Generating..."
+              : "Generate more questions (+5)"}
+          </button>
         </div>
       </section>
+
+      {generateMoreCardsMutation.isError && (
+        <div className="rounded-2xl border border-rose-500/20 bg-rose-500/5 px-4 py-3 text-sm text-rose-500">
+          {generateMoreCardsMutation.error.message}
+        </div>
+      )}
 
       {isHistoryError && (
         <div className="rounded-2xl border border-amber-500/20 bg-amber-500/5 px-4 py-3 text-sm text-amber-600">

@@ -27,6 +27,8 @@ model User {
 model Deck {
   id                        String   @id @default(uuid())
   title                     String
+  sourcePrompt              String?
+  sourceUrl                 String?
   
   userId                    String
   user                      User     @relation(fields: [userId], references: [id], onDelete: Cascade)

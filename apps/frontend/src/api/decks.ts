@@ -42,6 +42,15 @@ export const getCardsFromDeck = async (deskId: string) => {
   }
 };
 
+export const generateMoreCards = async (deckId: string) => {
+  try {
+    const res = await apiFetch(`/decks/${deckId}/more`, { method: "POST" });
+    return res;
+  } catch (err: any) {
+    throw new Error(err.message);
+  }
+};
+
 export const createDeck = async (data: {
   url?: string;
   prompt?: string;

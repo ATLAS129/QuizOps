@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createDeck,
   deleteDeck,
+  generateMoreCards,
   getAllMyDecks,
   getCardsFromDeck,
   getDeckHistory,
@@ -47,6 +48,18 @@ export function useCreateDeck() {
   return useMutation({
     mutationFn: createDeck,
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["decks"] });
+    },
+  });
+}
+
+export function useGenerateMoreCards() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: generateMoreCards,
+    onSuccess: (_, deckId) => {
+      queryClient.invalidateQueries({ queryKey: ["deck", deckId] });
+      queryClient.invalidateQueries({ queryKey: ["cards", deckId] });
       queryClient.invalidateQueries({ queryKey: ["decks"] });
     },
   });

@@ -109,6 +109,8 @@ export class DeckService {
       await this.prisma.deck.create({
         data: {
           title: (title ? title : AIResponse.title) as string,
+          sourcePrompt: prompt || null,
+          sourceUrl: url || null,
           user: {
             connect: {
               id: userId as string,
@@ -122,6 +124,53 @@ export class DeckService {
         },
       });
       return AIResponse;
+    } catch (err: unknown) {
+      if (err instanceof HttpException) {
+        throw err;
+      }
+
+      const error = err as Error;
+      console.log(error);
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
+  async generateMoreCards(deckId: string, userId: string) {
+    try {
+      const deck = await this.prisma.deck.findFirst({
+        where: { id: deckId, userId },
+        include: { cards: true },
+      });
+
+      if (!deck) {
+        throw new NotFoundException('Deck is not found.');
+      }
+
+      if (!deck.sourcePrompt && !deck.sourceUrl) {
+        throw new HttpException(
+          'More questions can only be generated for decks created with a prompt or URL.',
+          400,
+        );
+      }
+
+      const AIResponse = await this.aiService.generateCards(
+        undefined,
+        deck.sourcePrompt ?? '',
+        deck.sourceUrl ?? '',
+        {
+          difficulty: 'Mixed',
+          numberOfQuestions: '5',
+          questionType: 'Mixed',
+          extraOptions: ['Avoid duplicate questions'],
+        },
+        deck.cards,
+      );
+
+      await this.prisma.card.createMany({
+        data: AIResponse.cards.map((card) => ({ ...card, deckId })),
+      });
+
+      return AIResponse.cards;
     } catch (err: unknown) {
       if (err instanceof HttpException) {
         throw err;

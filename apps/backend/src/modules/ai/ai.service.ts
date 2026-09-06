@@ -65,7 +65,7 @@ export class AiService {
   }
 
   async generateCards(
-    pdf: Express.Multer.File,
+    pdf: Express.Multer.File | undefined,
     prompt: string,
     url: string,
     options: {
@@ -74,6 +74,12 @@ export class AiService {
       difficulty: 'Easy' | 'Medium' | 'Hard' | 'Mixed';
       extraOptions: string[] | undefined;
     },
+    previousCards: Array<{
+      question: string;
+      answer: string;
+      options: string[];
+      explanation: string;
+    }> = [],
   ) {
     type InputContent =
       { inlineData: { data: string; mimeType: 'application/pdf' } } | string;
@@ -99,6 +105,18 @@ export class AiService {
       content.push(prompt);
     }
 
+    if (previousCards.length > 0) {
+      content.push(`
+PREVIOUSLY GENERATED QUESTIONS
+
+The following questions have already been generated from this material. Do not
+repeat any question or test the same fact, even with different wording. Use the
+answers and options as additional context when avoiding duplicates:
+
+${JSON.stringify(previousCards)}
+`);
+    }
+
     let response: GenerateContentResponse;
     const questionCount = Number(options.numberOfQuestions);
     try {
@@ -106,7 +124,15 @@ export class AiService {
         model: this.model,
         contents: content,
         config: {
-          systemInstruction: systemPrompt(options),
+          systemInstruction: systemPrompt({
+            ...options,
+            extraOptions: [
+              ...(options.extraOptions ?? []),
+              ...(previousCards.length > 0
+                ? ['Avoid duplicate questions']
+                : []),
+            ],
+          }),
           responseMimeType: 'application/json',
           responseSchema: createResponseSchema(questionCount),
           tools: url ? tools : undefined,
@@ -138,6 +164,24 @@ export class AiService {
     }
 
     const result = AiConfig.parse(JSON.parse(outputText));
+    const normalizeQuestion = (question: string) =>
+      question
+        .normalize('NFKC')
+        .toLowerCase()
+        .replace(/[^\p{L}\p{N}]+/gu, ' ')
+        .trim();
+    const seenQuestions = new Set(
+      previousCards.map((card) => normalizeQuestion(card.question)),
+    );
+    for (const card of result.cards) {
+      const normalizedQuestion = normalizeQuestion(card.question);
+      if (seenQuestions.has(normalizedQuestion)) {
+        throw new InternalServerErrorException(
+          'Gemini generated a duplicate question. Please try again.',
+        );
+      }
+      seenQuestions.add(normalizedQuestion);
+    }
     if (result.cards.length !== questionCount) {
       throw new InternalServerErrorException(
         `AI generated ${result.cards.length} questions instead of ${questionCount}. Please try again.`,

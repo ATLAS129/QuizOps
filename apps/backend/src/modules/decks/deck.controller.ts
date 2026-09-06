@@ -92,6 +92,11 @@ export class DeckController {
     );
   }
 
+  @Post(':id/more')
+  async generateMoreCards(@Req() req: any, @Param('id') deckId: string) {
+    return this.deckService.generateMoreCards(deckId, req.user.id);
+  }
+
   @Patch(':id')
   async updateDesk(@Param('id') deckId: string, @Body() dto: UpdateDeckDto) {
     return this.deckService.updateDesk(deckId, dto);
