@@ -3,6 +3,7 @@ import {
   createDeck,
   deleteDeck,
   generateMoreCards,
+  getAllDecks,
   getAllMyDecks,
   getCardsFromDeck,
   getDeckHistory,
@@ -12,8 +13,17 @@ import {
 
 export function useGetAllMyDecks(limit?: number) {
   return useQuery({
-    queryKey: ["decks", limit],
+    queryKey: ["myDecks", limit],
     queryFn: () => getAllMyDecks(limit),
+    retry: false,
+  });
+}
+
+export function useGetAllDecks(limit?: number) {
+  return useQuery({
+    queryKey: ["decks", limit],
+    queryFn: () => getAllDecks(limit),
+    refetchInterval: 30000,
     retry: false,
   });
 }

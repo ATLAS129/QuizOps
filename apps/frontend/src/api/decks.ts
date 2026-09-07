@@ -2,6 +2,16 @@ import { apiFetch } from "../lib/fetchClient";
 
 export const getAllMyDecks = async (limit?: number) => {
   try {
+    const res = await apiFetch(`/decks/my${limit ? `?limit=${limit}` : ""}`);
+
+    return res;
+  } catch (err: any) {
+    throw new Error(err.message);
+  }
+};
+
+export const getAllDecks = async (limit?: number) => {
+  try {
     const res = await apiFetch(`/decks${limit ? `?limit=${limit}` : ""}`);
 
     return res;

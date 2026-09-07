@@ -9,6 +9,8 @@ import ProfilePage from "../pages/ProfilePage";
 import MyDecksPage from "../pages/MyDecksPage";
 import QuizPage from "../pages/QuizPage";
 import DeckPage from "../pages/DeckPage";
+import Protectedroute from "./ProtectedRoute";
+import ExplorePage from "../pages/ExplorePage";
 
 const AppRoutes = () => {
   const { data: user, isLoading, isError } = useCurrentUser();
@@ -17,20 +19,22 @@ const AppRoutes = () => {
 
   return (
     <Routes>
-      <Route
-        element={
-          <MainLayout
-            isAuthenticated={isAuthenticated}
-            isLoading={isLoading}
-            userId={user?.id}
-            username={user?.name}
-          />
-        }
-      >
-        <Route path="/" element={<MainPage />} />
-        <Route path="/profile/:userId/decks" element={<MyDecksPage />} />
-        <Route path="/profile/:userId" element={<ProfilePage />} />
-        <Route path="/deck/:deckId" element={<DeckPage />} />
+      <Route element={<MainLayout userId={user?.id} username={user?.name} />}>
+        <Route
+          element={
+            <Protectedroute
+              isAuthenticated={isAuthenticated}
+              isLoading={isLoading}
+            />
+          }
+        >
+          <Route path="/" element={<ExplorePage />} />
+          <Route path="/main" element={<MainPage />} />
+          <Route path="/explore" element={<ExplorePage />} />
+          <Route path="/profile/:userId/decks" element={<MyDecksPage />} />
+          <Route path="/profile/:userId" element={<ProfilePage />} />
+          <Route path="/deck/:deckId" element={<DeckPage />} />
+        </Route>
       </Route>
 
       <Route path="/deck/:deckId/take" element={<QuizPage />} />

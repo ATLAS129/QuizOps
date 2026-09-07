@@ -42,7 +42,28 @@ export class DeckService {
     return deck;
   }
 
-  async findAllDecks(userId: string, limit?: number) {
+  async getAllDecks(limit?: number) {
+    const decks = await this.prisma.deck.findMany({
+      include: {
+        _count: {
+          select: { cards: true },
+        },
+        user: {
+          select: { id: true, name: true },
+        },
+      },
+      take: limit,
+      orderBy: { createdAt: 'desc' },
+    });
+
+    if (!decks) {
+      throw new NotFoundException('Decks are not found.');
+    }
+
+    return decks;
+  }
+
+  async findAllMyDecks(userId: string, limit?: number) {
     const decks = await this.prisma.deck.findMany({
       where: { userId },
       include: {
