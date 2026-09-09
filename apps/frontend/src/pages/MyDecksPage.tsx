@@ -1,10 +1,10 @@
 import {
   useDeleteOneDeck,
-  useGetAllMyDecks,
+  useGetAllUserDecks,
   useUpdateDeck,
 } from "../hooks/useDecks";
 import LoadingSpinner from "../components/LoadingSpinner";
-import { Link } from "react-router";
+import { Link, useParams } from "react-router";
 import { FaPlay, FaRegEdit } from "react-icons/fa";
 import { formatTime } from "../lib/formatTime";
 import { FiTrash2 } from "react-icons/fi";
@@ -14,7 +14,11 @@ import type { deckInterface } from "../components/MainPage";
 import DeleteDeckModal from "../components/DeleteDeckModal";
 
 const MyDecksPage = () => {
-  const { data: decks, isLoading: isDecksLoading } = useGetAllMyDecks();
+  const { userId } = useParams();
+
+  const { data: decks, isLoading: isDecksLoading } = useGetAllUserDecks(
+    userId as string,
+  );
 
   const [editingDeck, setEditingDeck] = useState<deckInterface | null>(null);
   const [modalError, setModalError] = useState<string | null>(null);

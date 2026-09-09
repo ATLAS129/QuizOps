@@ -1,8 +1,10 @@
 import { apiFetch } from "../lib/fetchClient";
 
-export const getAllMyDecks = async (limit?: number) => {
+export const getAllUserDecks = async (profileId: string, limit?: number) => {
   try {
-    const res = await apiFetch(`/decks/my${limit ? `?limit=${limit}` : ""}`);
+    const res = await apiFetch(
+      `/decks/profile/${profileId}${limit ? `?limit=${limit}` : ""}`,
+    );
 
     return res;
   } catch (err: any) {

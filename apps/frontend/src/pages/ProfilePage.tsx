@@ -1,13 +1,15 @@
 import { useParams } from "react-router";
 import { useCurrentUser } from "../hooks/useAuth";
-import { useGetAllMyDecks } from "../hooks/useDecks";
+import { useGetAllUserDecks } from "../hooks/useDecks";
 import LoadingSpinner from "../components/LoadingSpinner";
 import ProfilePageComponent from "../components/ProfilePageComponent";
 
 const ProfilePage = () => {
   const { userId } = useParams();
   const { data: user, isLoading: isUserLoading } = useCurrentUser();
-  const { data: decks, isLoading: isDecksLoading } = useGetAllMyDecks();
+  const { data: decks, isLoading: isDecksLoading } = useGetAllUserDecks(
+    userId as string,
+  );
 
   const recentDecks = Array.isArray(decks) ? decks.slice(0, 3) : [];
 

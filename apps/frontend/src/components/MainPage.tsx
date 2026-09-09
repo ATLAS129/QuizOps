@@ -618,7 +618,7 @@ const MainPageComponent = () => {
         </div>
       </div>
 
-      <DecksSection />
+      {/* <DecksSection /> */}
     </div>
   );
 };

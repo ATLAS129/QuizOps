@@ -4,17 +4,17 @@ import {
   deleteDeck,
   generateMoreCards,
   getAllDecks,
-  getAllMyDecks,
+  getAllUserDecks,
   getCardsFromDeck,
   getDeckHistory,
   getOneDeck,
   updateDeck,
 } from "../api/decks";
 
-export function useGetAllMyDecks(limit?: number) {
+export function useGetAllUserDecks(profileId: string, limit?: number) {
   return useQuery({
     queryKey: ["myDecks", limit],
-    queryFn: () => getAllMyDecks(limit),
+    queryFn: () => getAllUserDecks(profileId, limit),
     retry: false,
   });
 }

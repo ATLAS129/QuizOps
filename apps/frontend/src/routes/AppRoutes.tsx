@@ -20,6 +20,7 @@ const AppRoutes = () => {
   return (
     <Routes>
       <Route element={<MainLayout userId={user?.id} username={user?.name} />}>
+        <Route path="/" element={<ExplorePage />} />
         <Route
           element={
             <Protectedroute
@@ -28,7 +29,6 @@ const AppRoutes = () => {
             />
           }
         >
-          <Route path="/" element={<ExplorePage />} />
           <Route path="/main" element={<MainPage />} />
           <Route path="/explore" element={<ExplorePage />} />
           <Route path="/profile/:userId/decks" element={<MyDecksPage />} />

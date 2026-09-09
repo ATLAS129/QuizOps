@@ -29,13 +29,8 @@ export class DeckController {
     private readonly cardService: CardService,
   ) {}
 
-  @Get('/my/:id')
+  @Get('/:id')
   async getOneDeck(@Req() req: any, @Param('id') deckId: string) {
-    return this.deckService.findOneDeck(deckId, req.user.id);
-  }
-
-  @Get(':id')
-  async getPublicDeck(@Req() req: any, @Param('id') deckId: string) {
     return this.deckService.findOneDeck(deckId, req.user.id);
   }
 
@@ -46,12 +41,13 @@ export class DeckController {
     return this.deckService.getAllDecks(limit);
   }
 
-  @Get('/my')
+  @Get('/profile/:profileId')
   async getAllMyDecks(
+    @Param('profileId') profileId: string,
     @Req() req: any,
     @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
   ) {
-    return this.deckService.findAllMyDecks(req.user.id, limit);
+    return this.deckService.findAllUserDecks(profileId, req.user.id, limit);
   }
 
   @Get(':id/history')

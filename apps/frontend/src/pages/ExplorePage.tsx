@@ -3,7 +3,6 @@ import { Link } from "react-router";
 import {
   FaArrowRight,
   FaBookOpen,
-  FaCalendarAlt,
   FaCheck,
   FaLayerGroup,
   FaSearch,
@@ -36,6 +35,19 @@ const formatDate = (value: string) =>
     day: "numeric",
     year: "numeric",
   });
+
+const formatRelativeDate = (value: string) => {
+  const age = Date.now() - new Date(value).getTime();
+  const minutes = Math.floor(age / 60000);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+
+  if (minutes < 1) return "Just now";
+  if (minutes < 60) return `${minutes}m ago`;
+  if (hours < 24) return `${hours}h ago`;
+  if (days < 7) return `${days}d ago`;
+  return formatDate(value);
+};
 
 const ExplorePage = () => {
   const [currentLimit, setCurrentLimit] = useState(10);
@@ -74,27 +86,27 @@ const ExplorePage = () => {
   if (isLoading) return <LoadingSpinner />;
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-5 pb-8 text-left">
-      <section className="flex flex-col gap-4 border-b border-white/10 pb-5 sm:flex-row sm:items-end sm:justify-between">
-        <div>
+    <div className="flex flex-col gap-3">
+      <section className="grid gap-4 border-b border-white/10 pb-2 sm:grid-cols-[1fr_auto_1fr] sm:items-end">
+        <div className="hidden sm:block" aria-hidden="true" />
+        <div className="flex flex-col items-center justify-center text-center sm:col-start-2">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-accent-primary">
             Explore
           </p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            All decks
+            Community feed
           </h1>
           <p className="mt-2 max-w-xl text-sm text-text-muted">
-            Fresh decks from the community.
+            Fresh quizzes from people learning alongside you.
           </p>
         </div>
         <Link
           to="/main"
-          className="inline-flex w-fit items-center gap-2 rounded-xl bg-accent-primary px-4 py-2.5 text-sm font-medium text-white transition hover:bg-accent-hover"
+          className="inline-flex w-fit items-center gap-2 justify-self-end rounded-xl bg-accent-primary px-4 py-2.5 text-sm font-medium text-white transition hover:bg-accent-hover sm:col-start-3"
         >
           Create a deck <FaArrowRight className="text-xs" />
         </Link>
       </section>
-
       <section className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-bg-surface p-3 shadow-sm sm:flex-row sm:items-center">
         <label className="relative min-w-0 flex-1">
           <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-sm text-text-muted" />
@@ -105,14 +117,14 @@ const ExplorePage = () => {
             className="w-full rounded-xl border border-transparent bg-bg-background py-3 pl-10 pr-4 text-sm outline-none transition placeholder:text-text-muted focus:border-accent-primary/50"
           />
         </label>
-        <div className="flex items-center gap-2 text-sm">
-          <FaSlidersH className="ml-2 text-text-muted" />
+        <div className="flex items-center gap-1 text-sm">
+          <FaSlidersH className="ml-2 mr-1 text-text-muted" />
           <button
             type="button"
             onClick={() => setSort("newest")}
             className={`rounded-lg px-3 py-2 transition ${sort === "newest" ? "bg-accent-primary/15 font-medium text-accent-primary" : "text-text-muted hover:bg-bg-background"}`}
           >
-            Newest
+            Latest
           </button>
           <button
             type="button"
@@ -123,7 +135,6 @@ const ExplorePage = () => {
           </button>
         </div>
       </section>
-
       {isError ? (
         <section className="rounded-3xl border border-dashed border-white/10 bg-bg-surface/70 p-10 text-center">
           <p className="font-medium">The community feed is taking a break.</p>
@@ -153,8 +164,8 @@ const ExplorePage = () => {
           </p>
         </section>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2">
-          {visibleDecks.map((deck, index) => {
+        <div className="grid grid-cols-2 gap-2">
+          {visibleDecks.map((deck) => {
             const creator = deck.user?.name ?? "QuizOps creator";
             const cardCount = deck._count?.cards ?? 0;
             const isOwnDeck = deck.user?.id === currentUser?.id;
@@ -162,57 +173,58 @@ const ExplorePage = () => {
             return (
               <article
                 key={deck.id}
-                className={`group flex min-h-55 flex-col justify-between rounded-3xl border bg-bg-surface p-5 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-lg ${isOwnDeck ? "border-accent-primary/60 ring-1 ring-accent-primary/15" : "border-white/10 hover:border-accent-primary/40"}`}
+                className={`group rounded-2xl border bg-bg-surface p-5 shadow-sm transition duration-200 hover:border-accent-primary/40 hover:shadow-md sm:p-6 ${isOwnDeck ? "border-accent-primary/60 ring-1 ring-accent-primary/15" : "border-white/10"}`}
               >
-                <div>
-                  <div className="flex items-start justify-between gap-3">
-                    <span className="inline-flex items-center gap-2 rounded-full bg-bg-background px-3 py-1.5 text-xs font-medium text-text-muted">
-                      <FaLayerGroup className="text-accent-primary" />
-                      {cardCount} {cardCount === 1 ? "card" : "cards"}
-                    </span>
-                    {isOwnDeck ? (
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-accent-primary/10 px-2.5 py-1.5 text-xs font-semibold text-accent-primary">
-                        <FaCheck className="text-[10px]" /> Your deck
-                      </span>
-                    ) : (
-                      <span className="text-xs text-text-muted">
-                        #{index + 1}
-                      </span>
-                    )}
-                  </div>
-                  <Link
-                    to={`/deck/${deck.id}`}
-                    className="mt-5 block line-clamp-2 text-xl font-semibold leading-7 transition group-hover:text-accent-primary"
-                  >
-                    {deck.title}
-                  </Link>
-                </div>
-
-                <div className="mt-7 flex items-end justify-between gap-3 border-t border-white/10 pt-4">
+                <div className="flex items-center justify-between gap-3">
                   <Link
                     to={deck.user?.id ? `/profile/${deck.user.id}` : "#"}
-                    className="flex min-w-0 items-center gap-2.5"
+                    className="flex min-w-0 items-center gap-3"
                   >
                     <span
-                      className={`flex size-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${isOwnDeck ? "bg-accent-primary text-white" : "bg-accent-primary/15 text-accent-primary"}`}
+                      className={`flex size-9 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${isOwnDeck ? "bg-accent-primary text-white" : "bg-accent-primary/15 text-accent-primary"}`}
                     >
                       {deck.user ? getInitials(creator) : <FaUser />}
                     </span>
                     <span className="min-w-0">
-                      <span className="block truncate text-sm font-medium">
-                        {creator}
+                      <span className="flex items-center gap-2">
+                        <span className="truncate text-sm font-medium">
+                          {isOwnDeck ? "You" : creator}
+                        </span>
+                        {isOwnDeck && (
+                          <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-accent-primary/10 px-2 py-0.5 text-[10px] font-semibold text-accent-primary">
+                            <FaCheck /> Your deck
+                          </span>
+                        )}
                       </span>
                       <span className="flex items-center gap-1 text-xs text-text-muted">
-                        <FaCalendarAlt className="text-[10px]" />
-                        {formatDate(deck.createdAt)}
+                        {formatRelativeDate(deck.createdAt)}
                       </span>
                     </span>
                   </Link>
+                  <span className="shrink-0 text-xs text-text-muted">
+                    {formatDate(deck.createdAt)}
+                  </span>
+                </div>
+
+                <div className="mt-5">
+                  <Link
+                    to={`/deck/${deck.id}`}
+                    className="block text-xl font-semibold leading-7 transition group-hover:text-accent-primary"
+                  >
+                    {deck.title}
+                  </Link>
+                  <div className="mt-3 flex items-center gap-2 text-sm text-text-muted">
+                    <FaLayerGroup className="text-accent-primary" />
+                    {cardCount} {cardCount === 1 ? "card" : "cards"} to practice
+                  </div>
+                </div>
+
+                <div className="mt-5 flex items-center justify-end border-t border-white/10 pt-4">
                   <Link
                     to={`/deck/${deck.id}/take`}
-                    className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-accent-primary px-3 py-2 text-xs font-semibold text-white transition hover:bg-accent-hover"
+                    className="inline-flex items-center gap-2 rounded-xl bg-accent-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-accent-hover"
                   >
-                    Take quiz <FaArrowRight className="text-[10px]" />
+                    Practice this deck <FaArrowRight className="text-xs" />
                   </Link>
                 </div>
               </article>
@@ -220,7 +232,6 @@ const ExplorePage = () => {
           })}
         </div>
       )}
-
       {!search && decks.length >= currentLimit && (
         <button
           type="button"

@@ -32,11 +32,6 @@ const Header = ({ username, userId }: { username: string; userId: string }) => {
             Main page
           </div>
         </Link>
-        <Link to="/explore">
-          <div className="px-5 py-2 rounded-lg transition hover:bg-accent-primary/10">
-            Explore
-          </div>
-        </Link>
       </div>
 
       {userId && username ? (
@@ -71,7 +66,7 @@ const Header = ({ username, userId }: { username: string; userId: string }) => {
                   Profile
                 </Link>
                 <Link
-                  to="/explore"
+                  to="/"
                   onClick={() => setIsMenuOpen(false)}
                   className="flex items-center gap-2 rounded-xl p-2 text-sm text-text-muted transition hover:bg-bg-surface-hover"
                 >
