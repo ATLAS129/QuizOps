@@ -1,6 +1,5 @@
 import { useRef, useState, type ChangeEvent, type DragEvent } from "react";
 import { FaFilePdf } from "react-icons/fa6";
-import DecksSection from "./DecksSection";
 import { useCreateDeck } from "../hooks/useDecks";
 import LoadingSpinner from "./LoadingSpinner";
 
