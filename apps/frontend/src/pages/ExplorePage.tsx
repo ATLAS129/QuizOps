@@ -88,20 +88,13 @@ const ExplorePage = () => {
   return (
     <div className="flex flex-col gap-3">
       <section className="grid gap-4 border-b border-white/10 pb-2 sm:grid-cols-[1fr_auto_1fr] sm:items-end">
-        <div className="hidden sm:block" aria-hidden="true" />
         <div className="flex flex-col items-center justify-center text-center sm:col-start-2">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-accent-primary">
-            Explore
-          </p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
             Community feed
           </h1>
-          <p className="mt-2 max-w-xl text-sm text-text-muted">
-            Fresh quizzes from people learning alongside you.
-          </p>
         </div>
         <Link
-          to="/main"
+          to="/create"
           className="inline-flex w-fit items-center gap-2 justify-self-end rounded-xl bg-accent-primary px-4 py-2.5 text-sm font-medium text-white transition hover:bg-accent-hover sm:col-start-3"
         >
           Create a deck <FaArrowRight className="text-xs" />

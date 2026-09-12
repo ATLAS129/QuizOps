@@ -10,7 +10,7 @@ export interface deckInterface {
   _count: { cards: number };
 }
 
-const MainPageComponent = () => {
+const CreatePageComponent = () => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const dragCounterRef = useRef(0);
@@ -622,4 +622,4 @@ const MainPageComponent = () => {
   );
 };
 
-export default MainPageComponent;
+export default CreatePageComponent;

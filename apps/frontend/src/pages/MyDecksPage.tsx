@@ -10,7 +10,7 @@ import { formatTime } from "../lib/formatTime";
 import { FiTrash2 } from "react-icons/fi";
 import UpdateDeckModal from "../components/UpdateDeckModal";
 import { useState } from "react";
-import type { deckInterface } from "../components/MainPage";
+import type { deckInterface } from "../components/CreatePageComponent";
 import DeleteDeckModal from "../components/DeleteDeckModal";
 
 const MyDecksPage = () => {

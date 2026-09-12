@@ -27,9 +27,9 @@ const Header = ({ username, userId }: { username: string; userId: string }) => {
             width={256}
           />
         </Link>
-        <Link to="/main">
+        <Link to="/create">
           <div className="px-5 py-2 bg-accent-primary/10 cursor-pointer rounded-lg">
-            Main page
+            Create deck
           </div>
         </Link>
       </div>

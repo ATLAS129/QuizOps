@@ -1,7 +1,7 @@
-import MainPageComponent from "../components/MainPage";
+import CreatePageComponent from "../components/CreatePageComponent";
 
-const MainPage = () => {
-  return <MainPageComponent />;
+const CreatePage = () => {
+  return <CreatePageComponent />;
 };
 
-export default MainPage;
+export default CreatePage;

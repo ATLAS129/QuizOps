@@ -29,7 +29,7 @@ const AppRoutes = () => {
             />
           }
         >
-          <Route path="/main" element={<MainPage />} />
+          <Route path="/create" element={<MainPage />} />
           <Route path="/explore" element={<ExplorePage />} />
           <Route path="/profile/:userId/decks" element={<MyDecksPage />} />
           <Route path="/profile/:userId" element={<ProfilePage />} />
