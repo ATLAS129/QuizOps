@@ -86,28 +86,26 @@ const ExplorePage = () => {
   if (isLoading) return <LoadingSpinner />;
 
   return (
-    <div className="flex flex-col gap-3">
-      <section className="grid gap-4 border-b border-white/10 pb-2 sm:grid-cols-[1fr_auto_1fr] sm:items-end">
-        <div className="flex flex-col items-center justify-center text-center sm:col-start-2">
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Community feed
-          </h1>
-        </div>
+    <div className="flex flex-col gap-4 py-1">
+      <section className="relative flex items-center justify-end gap-3 rounded-2xl border border-white/10 bg-bg-surface/80 px-3 py-3">
+        <h1 className="absolute left-1/2 -translate-x-1/2 text-2xl font-semibold tracking-tight text-text-primary sm:text-3xl">
+          Community feed
+        </h1>
         <Link
           to="/create"
-          className="inline-flex w-fit items-center gap-2 justify-self-end rounded-xl bg-accent-primary px-4 py-2.5 text-sm font-medium text-white transition hover:bg-accent-hover sm:col-start-3"
+          className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-accent-primary px-3.5 py-2 text-xs font-medium text-white shadow-lg shadow-accent-primary/20 transition hover:bg-accent-hover sm:text-sm"
         >
-          Create a deck <FaArrowRight className="text-xs" />
+          Create deck <FaArrowRight className="text-[10px]" />
         </Link>
       </section>
-      <section className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-bg-surface p-3 shadow-sm sm:flex-row sm:items-center">
+      <section className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-bg-surface/80 p-3 shadow-[0_10px_30px_rgba(0,0,0,0.03)] sm:flex-row sm:items-center">
         <label className="relative min-w-0 flex-1">
           <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-sm text-text-muted" />
           <input
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Search decks or creators"
-            className="w-full rounded-xl border border-transparent bg-bg-background py-3 pl-10 pr-4 text-sm outline-none transition placeholder:text-text-muted focus:border-accent-primary/50"
+            className="w-full rounded-xl border border-transparent bg-bg-background py-3 pl-10 pr-4 text-sm text-text-primary outline-none transition placeholder:text-text-muted focus:border-accent-primary/40"
           />
         </label>
         <div className="flex items-center gap-1 text-sm">
@@ -115,14 +113,14 @@ const ExplorePage = () => {
           <button
             type="button"
             onClick={() => setSort("newest")}
-            className={`rounded-lg px-3 py-2 transition ${sort === "newest" ? "bg-accent-primary/15 font-medium text-accent-primary" : "text-text-muted hover:bg-bg-background"}`}
+            className={`rounded-lg px-3 py-2 transition ${sort === "newest" ? "bg-accent-primary/12 font-medium text-accent-primary" : "text-text-muted hover:bg-bg-background"}`}
           >
             Latest
           </button>
           <button
             type="button"
             onClick={() => setSort("largest")}
-            className={`rounded-lg px-3 py-2 transition ${sort === "largest" ? "bg-accent-primary/15 font-medium text-accent-primary" : "text-text-muted hover:bg-bg-background"}`}
+            className={`rounded-lg px-3 py-2 transition ${sort === "largest" ? "bg-accent-primary/12 font-medium text-accent-primary" : "text-text-muted hover:bg-bg-background"}`}
           >
             Most cards
           </button>
@@ -157,7 +155,7 @@ const ExplorePage = () => {
           </p>
         </section>
       ) : (
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {visibleDecks.map((deck) => {
             const creator = deck.user?.name ?? "QuizOps creator";
             const cardCount = deck._count?.cards ?? 0;
@@ -166,58 +164,64 @@ const ExplorePage = () => {
             return (
               <article
                 key={deck.id}
-                className={`group rounded-2xl border bg-bg-surface p-5 shadow-sm transition duration-200 hover:border-accent-primary/40 hover:shadow-md sm:p-6 ${isOwnDeck ? "border-accent-primary/60 ring-1 ring-accent-primary/15" : "border-white/10"}`}
+                className={`group flex min-h-[235px] flex-col justify-between rounded-2xl border bg-bg-surface/90 p-3.5 shadow-[0_10px_24px_rgba(0,0,0,0.03)] transition duration-200 hover:-translate-y-0.5 hover:border-accent-primary/35 hover:shadow-[0_14px_32px_rgba(124,58,237,0.08)] ${isOwnDeck ? "border-accent-primary/45 ring-1 ring-accent-primary/10" : "border-white/10"}`}
               >
-                <div className="flex items-center justify-between gap-3">
-                  <Link
-                    to={deck.user?.id ? `/profile/${deck.user.id}` : "#"}
-                    className="flex min-w-0 items-center gap-3"
-                  >
-                    <span
-                      className={`flex size-9 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${isOwnDeck ? "bg-accent-primary text-white" : "bg-accent-primary/15 text-accent-primary"}`}
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-start justify-between gap-2">
+                    <Link
+                      to={deck.user?.id ? `/profile/${deck.user.id}` : "#"}
+                      className="flex min-w-0 items-center gap-2.5"
                     >
-                      {deck.user ? getInitials(creator) : <FaUser />}
-                    </span>
-                    <span className="min-w-0">
-                      <span className="flex items-center gap-2">
-                        <span className="truncate text-sm font-medium">
-                          {isOwnDeck ? "You" : creator}
-                        </span>
-                        {isOwnDeck && (
-                          <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-accent-primary/10 px-2 py-0.5 text-[10px] font-semibold text-accent-primary">
-                            <FaCheck /> Your deck
+                      <span
+                        className={`flex size-9 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold ${isOwnDeck ? "bg-accent-primary text-white" : "bg-accent-primary/12 text-accent-primary"}`}
+                      >
+                        {deck.user ? getInitials(creator) : <FaUser />}
+                      </span>
+                      <span className="min-w-0">
+                        <span className="flex items-center gap-1.5">
+                          <span className="truncate text-sm font-medium text-text-primary">
+                            {isOwnDeck ? "You" : creator}
                           </span>
-                        )}
+                          {isOwnDeck && (
+                            <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-accent-primary/10 px-1.5 py-0.5 text-[9px] font-semibold text-accent-primary">
+                              <FaCheck /> Yours
+                            </span>
+                          )}
+                        </span>
+                        <span className="mt-0.5 block text-[10px] text-text-muted">
+                          {formatRelativeDate(deck.createdAt)}
+                        </span>
                       </span>
-                      <span className="flex items-center gap-1 text-xs text-text-muted">
-                        {formatRelativeDate(deck.createdAt)}
-                      </span>
-                    </span>
-                  </Link>
-                  <span className="shrink-0 text-xs text-text-muted">
-                    {formatDate(deck.createdAt)}
-                  </span>
-                </div>
+                    </Link>
 
-                <div className="mt-5">
-                  <Link
-                    to={`/deck/${deck.id}`}
-                    className="block text-xl font-semibold leading-7 transition group-hover:text-accent-primary"
-                  >
-                    {deck.title}
-                  </Link>
-                  <div className="mt-3 flex items-center gap-2 text-sm text-text-muted">
-                    <FaLayerGroup className="text-accent-primary" />
-                    {cardCount} {cardCount === 1 ? "card" : "cards"} to practice
+                    <span className="shrink-0 pt-1 text-[10px] text-text-muted">
+                      {formatDate(deck.createdAt)}
+                    </span>
+                  </div>
+
+                  <div className="space-y-2.5">
+                    <Link
+                      to={`/deck/${deck.id}`}
+                      className="block text-[1.02rem] font-semibold leading-5 text-text-primary transition group-hover:text-accent-primary"
+                    >
+                      {deck.title}
+                    </Link>
+
+                    <div className="flex items-center gap-1.5 text-[11px] text-text-muted">
+                      <FaLayerGroup className="text-[11px] text-accent-primary" />
+                      <span>
+                        {cardCount} {cardCount === 1 ? "card" : "cards"}
+                      </span>
+                    </div>
                   </div>
                 </div>
 
-                <div className="mt-5 flex items-center justify-end border-t border-white/10 pt-4">
+                <div className="mt-4 flex items-center justify-end border-t border-white/10 pt-2.5">
                   <Link
                     to={`/deck/${deck.id}/take`}
-                    className="inline-flex items-center gap-2 rounded-xl bg-accent-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-accent-hover"
+                    className="inline-flex items-center gap-1.5 rounded-xl bg-accent-primary px-3 py-2 text-[11px] font-semibold text-white shadow-lg shadow-accent-primary/15 transition hover:bg-accent-hover"
                   >
-                    Practice this deck <FaArrowRight className="text-xs" />
+                    Practice <FaArrowRight className="text-[9px]" />
                   </Link>
                 </div>
               </article>
