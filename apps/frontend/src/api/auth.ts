@@ -1,4 +1,4 @@
-import { apiFetch, BASE_URL } from "../lib/fetchClient";
+import { apiFetch } from "../lib/fetchClient";
 
 export const fetchCurrentUser = async () => {
   try {
@@ -11,8 +11,9 @@ export const fetchCurrentUser = async () => {
 };
 
 export const login = async (data: { email: string; password: string }) => {
+  const baseUrl = import.meta.env.VITE_BASE_URL;
   try {
-    const res = await fetch(`${BASE_URL}/auth/login`, {
+    const res = await fetch(`${baseUrl}/auth/login`, {
       method: "POST",
       body: JSON.stringify(data),
       credentials: "include",
@@ -39,8 +40,9 @@ export const signup = async (data: {
   if (data.password !== data.repeatPassword) {
     throw new Error("Passwords do not match");
   }
+  const baseUrl = import.meta.env.VITE_BASE_URL;
   try {
-    const res = await fetch(`${BASE_URL}/auth/signup`, {
+    const res = await fetch(`${baseUrl}/auth/signup`, {
       method: "POST",
       body: JSON.stringify(data),
       credentials: "include",
