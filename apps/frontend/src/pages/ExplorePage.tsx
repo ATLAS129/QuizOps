@@ -164,7 +164,7 @@ const ExplorePage = () => {
             return (
               <article
                 key={deck.id}
-                className={`group flex min-h-[235px] flex-col justify-between rounded-2xl border bg-bg-surface/90 p-3.5 shadow-[0_10px_24px_rgba(0,0,0,0.03)] transition duration-200 hover:-translate-y-0.5 hover:border-accent-primary/35 hover:shadow-[0_14px_32px_rgba(124,58,237,0.08)] ${isOwnDeck ? "border-accent-primary/45 ring-1 ring-accent-primary/10" : "border-white/10"}`}
+                className={`group flex min-h-59 flex-col justify-between rounded-2xl border bg-bg-surface/90 p-3.5 shadow-[0_10px_24px_rgba(0,0,0,0.03)] transition duration-200 hover:-translate-y-0.5 hover:border-accent-primary/35 hover:shadow-[0_14px_32px_rgba(124,58,237,0.08)] ${isOwnDeck ? "border-accent-primary/45 ring-1 ring-accent-primary/10" : "border-white/10"}`}
               >
                 <div className="flex flex-col gap-3">
                   <div className="flex items-start justify-between gap-2">

@@ -8,55 +8,44 @@ datasource db {
 }
 
 model User {
-  id                             String   @id @default(uuid())
-  email                          String   @unique
-  name                           String
-  passwordHash                   String
-  
-  decks                          Deck[]
-  decksCompletionHistory         DeckCompletion[]
-
-  aiGenerationsUsed              Int      @default(0)
-
-  refreshToken                   String?
-  
-  createdAt                      DateTime @default(now())
-  updatedAt                      DateTime @updatedAt
+  id                     String           @id @default(uuid())
+  email                  String           @unique
+  name                   String
+  passwordHash           String
+  aiGenerationsUsed      Int              @default(0)
+  refreshToken           String?
+  createdAt              DateTime         @default(now())
+  updatedAt              DateTime         @updatedAt
+  decks                  Deck[]
+  decksCompletionHistory DeckCompletion[]
 }
 
 model Deck {
-  id                        String   @id @default(uuid())
-  title                     String
-  sourcePrompt              String?
-  sourceUrl                 String?
-  
-  userId                    String
-  user                      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  isCompleted               Boolean  @default(false)
-  completionHistory         DeckCompletion[]
-
-  cards                     Card[]
-  
-  createdAt                 DateTime @default(now())
-  updatedAt                 DateTime @updatedAt
+  id                String           @id @default(uuid())
+  title             String
+  userId            String
+  isCompleted       Boolean          @default(false)
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  sourcePrompt      String?
+  sourceUrl         String?
+  cards             Card[]
+  user              User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  completionHistory DeckCompletion[]
 
   @@index([userId])
 }
 
 model DeckCompletion {
-  id                        String   @id @default(uuid())
-
-  deckId                    String
-  deck                      Deck     @relation(fields: [deckId], references: [id], onDelete: Cascade)
-  
-  userId                    String
-  user                      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  completedAt               DateTime @default(now())
-  completionDuration        Int
-  correctAnswersCompleted   Int
-  totalQuestions            Int
+  id                      String   @id @default(uuid())
+  deckId                  String
+  userId                  String
+  completedAt             DateTime @default(now())
+  completionDuration      Int
+  correctAnswersCompleted Int
+  totalQuestions          Int
+  deck                    Deck     @relation(fields: [deckId], references: [id], onDelete: Cascade)
+  user                    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, deckId, completedAt])
   @@index([deckId, completedAt])
@@ -64,19 +53,15 @@ model DeckCompletion {
 
 model Card {
   id             String    @id @default(uuid())
-
   question       String
   answer         String
   options        String[]
   explanation    String
-
   nextReviewDate DateTime?
-  
   deckId         String
-  deck           Deck      @relation(fields: [deckId], references: [id], onDelete: Cascade)
-  
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
-  
+  deck           Deck      @relation(fields: [deckId], references: [id], onDelete: Cascade)
+
   @@index([deckId])
 }
