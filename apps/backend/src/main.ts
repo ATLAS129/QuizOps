@@ -9,10 +9,7 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
 
   app.enableCors({
-    origin:
-      configService.get('NODE_ENV') == 'production'
-        ? 'https://quiz-ops-frontend.vercel.app'
-        : 'http://localhost:5173',
+    origin: ['https://quiz-ops-frontend.vercel.app', 'http://localhost:5173'],
     credentials: true,
   });
 
