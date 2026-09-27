@@ -21,7 +21,6 @@ import { memoryStorage } from 'multer';
 import { CardService } from '../cards/card.service.js';
 import { type UpdateDeckDto } from './dto/update-deck.dto.js';
 
-@UseGuards(JwtAccessGuard)
 @Controller('decks')
 export class DeckController {
   constructor(
@@ -29,6 +28,7 @@ export class DeckController {
     private readonly cardService: CardService,
   ) {}
 
+  @UseGuards(JwtAccessGuard)
   @Get('/:id')
   async getOneDeck(@Req() req: any, @Param('id') deckId: string) {
     return this.deckService.findOneDeck(deckId, req.user.id);
@@ -41,6 +41,7 @@ export class DeckController {
     return this.deckService.getAllDecks(limit);
   }
 
+  @UseGuards(JwtAccessGuard)
   @Get('/profile/:profileId')
   async getAllMyDecks(
     @Param('profileId') profileId: string,
@@ -50,6 +51,7 @@ export class DeckController {
     return this.deckService.findAllUserDecks(profileId, req.user.id, limit);
   }
 
+  @UseGuards(JwtAccessGuard)
   @Get(':id/history')
   async getFullDeckCompletionHistory(
     @Req() req: any,
@@ -63,12 +65,14 @@ export class DeckController {
     );
   }
 
+  @UseGuards(JwtAccessGuard)
   @Get(':id/cards')
   async getAllCardsFromDeck(@Param('id') deckId: string) {
     return this.cardService.getCardsFromDeck(deckId);
   }
 
   @Post()
+  @UseGuards(JwtAccessGuard)
   @UseInterceptors(
     FileInterceptor('file', {
       storage: memoryStorage(),
@@ -100,16 +104,19 @@ export class DeckController {
     );
   }
 
+  @UseGuards(JwtAccessGuard)
   @Post(':id/more')
   async generateMoreCards(@Req() req: any, @Param('id') deckId: string) {
     return this.deckService.generateMoreCards(deckId, req.user.id);
   }
 
+  @UseGuards(JwtAccessGuard)
   @Patch(':id')
   async updateDesk(@Param('id') deckId: string, @Body() dto: UpdateDeckDto) {
     return this.deckService.updateDesk(deckId, dto);
   }
 
+  @UseGuards(JwtAccessGuard)
   @Delete(':id')
   async deleteDesk(@Param('id') deckId: string) {
     return this.deckService.deleteDeck(deckId);
