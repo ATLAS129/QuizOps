@@ -18,6 +18,10 @@ const CreatePageComponent = () => {
   const [prompt, setPrompt] = useState("");
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [isDragActive, setIsDragActive] = useState(false);
+  const [isSourcesPopoverOpen, setIsSourcesPopoverOpen] = useState(false);
+  const [selectedSource, setSelectedSource] = useState<"url" | "prompt" | null>(
+    null,
+  );
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { mutate: createDeck, isPending: isCreating } = useCreateDeck();
 
@@ -125,28 +129,11 @@ const CreatePageComponent = () => {
   return (
     <div className="flex flex-col gap-5">
       <div className="mx-auto w-full">
-        {/* HEADER */}
-        <header className="pb-5 flex flex-col justify-center items-center">
-          <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-accent-primary/10 px-3 py-1.5 text-sm font-medium text-accent-primary">
-            {/* <span className="text-base">✦</span> */}
-            <img src="/favicon-light.png" alt="logo" className="size-6" />
-            Quiz Generator
-          </div>
-
-          <h1 className="text-3xl font-bold tracking-tight text-text-primary md:text-4xl">
-            Create a quiz from anything
-          </h1>
-
-          <p className="mt-3 max-w-2xl text-base leading-7 text-text-muted md:text-lg">
-            Add PDF, URL or just prompt to generate quiz.
-          </p>
-        </header>
-
         {/* Main card */}
-        <div className="overflow-hidden rounded-4xl border border-white/[0.07] bg-bg-surface shadow-2xl p-5 shadow-black/20">
+        <div className="overflow-hidden rounded-4xl bg-bg-surface p-3">
           {/* STEP 1 */}
           <section className="flex flex-col items-center">
-            <div className="mb-6 flex items-center justify-center gap-4">
+            {/* <div className="mb-2 flex items-center justify-center gap-2">
               <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent-primary text-sm font-bold text-white shadow-lg shadow-accent-primary/20">
                 1
               </div>
@@ -160,16 +147,16 @@ const CreatePageComponent = () => {
                   Start with a PDF. You can add more sources below.
                 </p>
               </div>
-            </div>
+            </div> */}
 
             {/* PDF upload */}
             <div
-              className={`w-full group relative overflow-hidden rounded-3xl border transition-all duration-300 ${
+              className={`w-full group relative overflow-hidden rounded-3xl transition-all duration-300 ${
                 isDragActive
-                  ? "border-accent-primary bg-accent-primary/10 shadow-xl shadow-accent-primary/10"
+                  ? "border-accent-primary bg-bg-surface-hover"
                   : pdfFile
-                    ? "border-accent-primary/40 bg-accent-primary/5"
-                    : "border-white/8 bg-bg-background hover:border-accent-primary/30 hover:bg-bg-background/80"
+                    ? "border-accent-primary bg-accent-primary"
+                    : "bg-bg-background hover:border-accent-primary hover:bg-bg-background"
               }`}
               onDragEnter={handleDragEnter}
               onDragOver={handleDragOver}
@@ -185,10 +172,10 @@ const CreatePageComponent = () => {
                 onChange={handleFileInputChange}
               />
 
-              <div className="flex min-h-82.5 cursor-pointer flex-col items-center justify-center px-6 py-12 text-center md:min-h-95">
+              <div className="flex cursor-pointer flex-col items-center justify-center p-6 text-center">
                 {pdfFile ? (
                   <>
-                    <div className="mb-6 flex size-24 items-center justify-center rounded-[28px] bg-accent-primary/10">
+                    <div className="mb-6 flex size-24 items-center justify-center rounded-2xl bg-accent-primary/10">
                       <FaFilePdf className="size-11 text-accent-primary" />
                     </div>
 
@@ -223,10 +210,10 @@ const CreatePageComponent = () => {
                 ) : (
                   <>
                     <div
-                      className={`mb-7 flex size-24 items-center justify-center rounded-[28px] transition-all duration-300 ${
+                      className={`mb-7 flex size-24 items-center justify-center rounded-2xl transition-all duration-300 ${
                         isDragActive
                           ? "bg-accent-primary/15 scale-105"
-                          : "bg-bg-surface group-hover:bg-accent-primary/10 group-hover:scale-105"
+                          : "bg-bg-surface group-hover:bg-accent-primary/1"
                       }`}
                     >
                       <FaFilePdf
@@ -261,82 +248,113 @@ const CreatePageComponent = () => {
             </div>
 
             {/* Additional sources */}
-            <div className="p-2 gap-3 flex">
-              {/* URL */}
-              <details className="overflow-hidden rounded-2xl border border-white/7 bg-bg-background transition hover:border-white/11">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-5 md:px-6">
-                  <div className="flex items-center gap-4">
-                    <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-bg-surface text-xl">
-                      🌐
-                    </div>
+            <div className="relative mt-4 w-full">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsSourcesPopoverOpen((open) => !open);
+                  setSelectedSource(null);
+                }}
+                aria-expanded={isSourcesPopoverOpen}
+                className="flex w-full items-center justify-between rounded-2xl bg-bg-background px-5 py-4 text-left transition hover:bg-bg-surface"
+              >
+                <span>
+                  <span className="block text-sm font-semibold text-text-primary">
+                    Add another source
+                  </span>
+                  <span className="mt-1 block text-sm text-text-muted">
+                    Webpage or your own instructions
+                  </span>
+                </span>
+                <span className="flex size-9 items-center justify-center rounded-xl bg-bg-surface text-xl text-text-muted">
+                  {isSourcesPopoverOpen ? "−" : "+"}
+                </span>
+              </button>
 
-                    <div>
-                      <p className="text-base font-semibold text-text-primary md:text-lg">
-                        Add a webpage
-                      </p>
-
-                      <p className="mt-1 text-sm text-text-muted">
-                        Use content from a website
-                      </p>
-                    </div>
+              {isSourcesPopoverOpen && (
+                <div className="absolute left-0 right-0 top-full z-20 mt-2 overflow-hidden rounded-2xl border border-bg-surface-hover bg-bg-surface p-3 shadow-2xl">
+                  <p className="px-3 pb-2 pt-1 text-xs font-medium uppercase tracking-wide text-text-muted">
+                    Choose a source
+                  </p>
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedSource("url")}
+                      className={`rounded-xl border p-3 text-left transition ${selectedSource === "url" ? "border-accent-primary/50 bg-accent-primary/5" : "border-transparent bg-bg-background"}`}
+                    >
+                      <span className="block text-sm font-semibold text-text-primary">
+                        Webpage URL
+                      </span>
+                      <span className="mt-1 block text-xs text-text-muted">
+                        Use material from a website
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedSource("prompt")}
+                      className={`rounded-xl border p-3 text-left transition ${selectedSource === "prompt" ? "border-accent-primary/50 bg-accent-primary/5" : "border-transparent bg-bg-background"}`}
+                    >
+                      <span className="block text-sm font-semibold text-text-primary">
+                        Instructions
+                      </span>
+                      <span className="mt-1 block text-xs text-text-muted">
+                        Add a note about what to include
+                      </span>
+                    </button>
                   </div>
 
-                  <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-bg-surface text-lg text-text-muted transition group-open:rotate-180">
-                    ↓
-                  </div>
-                </summary>
+                  {selectedSource === "url" && (
+                    <div className="mt-3 pt-3">
+                      <label
+                        htmlFor="url"
+                        className="mb-2 block text-sm font-medium text-text-primary"
+                      >
+                        Webpage address
+                      </label>
+                      <input
+                        type="url"
+                        id="url"
+                        value={url}
+                        onChange={(event) => setUrl(event.target.value)}
+                        placeholder="Paste a webpage URL"
+                        className="w-full rounded-xl border border-bg-surface-hover bg-bg-background px-4 py-3 text-sm text-text-primary outline-none transition placeholder:text-text-muted/60 focus:border-accent-primary focus:ring-4 focus:ring-accent-primary/10"
+                      />
+                    </div>
+                  )}
 
-                <div className="border-t border-white/6 px-5 pb-5 pt-4 md:px-6">
-                  <input
-                    type="text"
-                    id="url"
-                    value={url}
-                    onChange={(event) => setUrl(event.target.value)}
-                    placeholder="Paste a webpage URL"
-                    className="w-full rounded-xl border border-bg-surface-hover bg-bg-surface px-4 py-4 text-base text-text-primary outline-none transition placeholder:text-text-muted/60 focus:border-accent-primary focus:ring-4 focus:ring-accent-primary/10"
-                  />
+                  {selectedSource === "prompt" && (
+                    <div className="mt-3  pt-3">
+                      <label
+                        htmlFor="prompt"
+                        className="mb-2 block text-sm font-medium text-text-primary"
+                      >
+                        Your instructions
+                      </label>
+                      <textarea
+                        ref={textareaRef}
+                        id="prompt"
+                        value={prompt}
+                        onChange={(event) => setPrompt(event.target.value)}
+                        onInput={handleInput}
+                        placeholder="What should the quiz focus on?"
+                        className="min-h-28 w-full resize-y rounded-xl border border-bg-surface-hover bg-bg-background px-4 py-3 text-sm leading-6 text-text-primary outline-none transition placeholder:text-text-muted/60 focus:border-accent-primary focus:ring-4 focus:ring-accent-primary/10"
+                      />
+                    </div>
+                  )}
+
+                  <div className="mt-3 flex justify-end pt-3">
+                    <button
+                      type="button"
+                      onClick={() => setIsSourcesPopoverOpen(false)}
+                      className="rounded-lg px-3 py-2 text-sm font-medium text-text-muted transition hover:bg-bg-background hover:text-text-primary"
+                    >
+                      Done
+                    </button>
+                  </div>
                 </div>
-              </details>
-
-              {/* Prompt */}
-              <details className="group overflow-hidden rounded-2xl border border-white/[0.07] bg-bg-background transition hover:border-white/11">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-5 md:px-6 [&::-webkit-details-marker]:hidden">
-                  <div className="flex items-center gap-4">
-                    <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-bg-surface text-xl">
-                      ✨
-                    </div>
-
-                    <div>
-                      <p className="text-base font-semibold text-text-primary md:text-lg">
-                        Add instructions
-                      </p>
-
-                      <p className="mt-1 text-sm text-text-muted">
-                        Tell AI what to focus on
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-bg-surface text-lg text-text-muted transition group-open:rotate-180">
-                    ↓
-                  </div>
-                </summary>
-
-                <div className="border-t border-white/6 px-5 pb-5 pt-4 md:px-6">
-                  <textarea
-                    ref={textareaRef}
-                    id="prompt"
-                    value={prompt}
-                    onChange={(event) => setPrompt(event.target.value)}
-                    onInput={handleInput}
-                    placeholder="Example: Focus on important concepts and avoid easy questions."
-                    className="min-h-36 w-full resize-none rounded-xl border border-bg-surface-hover bg-bg-surface px-4 py-4 text-base leading-6 text-text-primary outline-none transition placeholder:text-text-muted/60 focus:border-accent-primary focus:ring-4 focus:ring-accent-primary/10"
-                  />
-                </div>
-              </details>
+              )}
             </div>
 
-            {/* Added source summary */}
             {(pdfFile || url || prompt) && (
               <div className="mt-4 flex flex-wrap items-center gap-2 rounded-2xl border border-accent-primary/10 bg-accent-primary/4 px-4 py-3">
                 <span className="text-sm font-medium text-text-primary">
@@ -364,12 +382,9 @@ const CreatePageComponent = () => {
             )}
           </section>
 
-          {/* STEP 2 */}
           <section>
             <div className="flex justify-center items-center gap-5 py-5">
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent-primary text-sm font-bold text-white shadow-lg shadow-accent-primary/20">
-                2
-              </div>
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent-primary text-sm font-bold text-white shadow-lg shadow-accent-primary/20"></div>
 
               <div>
                 <h2 className="place-self-start text-xl font-semibold text-text-primary">
@@ -377,7 +392,7 @@ const CreatePageComponent = () => {
                 </h2>
 
                 <p className="place-self-start mt-1 text-sm leading-6 text-text-muted md:text-base">
-                  These settings are optional — AI will choose sensible
+                  These settings are optional - AI will choose sensible
                   defaults.
                 </p>
               </div>

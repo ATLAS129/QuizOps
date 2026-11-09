@@ -145,6 +145,7 @@ const QuizPage = () => {
   if (isLoading) return <LoadingSpinner />;
 
   if (isError) {
+    console.log(error);
     return (
       <div className="flex min-h-[70svh] flex-col items-center justify-center gap-3 px-5 text-center">
         <p className="text-lg font-semibold">Unable to load this quiz</p>
