@@ -1,14 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router";
-import {
-  FaArrowRight,
-  FaBookOpen,
-  FaCheck,
-  FaLayerGroup,
-  FaSearch,
-  FaSlidersH,
-  FaUser,
-} from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
 import { useGetAllDecks } from "../hooks/useDecks";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { useCurrentUser } from "../hooks/useAuth";
@@ -21,33 +13,12 @@ type ExploreDeck = {
   _count?: { cards: number };
 };
 
-const getInitials = (name: string) =>
-  name
-    .split(" ")
-    .map((part) => part[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
-
 const formatDate = (value: string) =>
   new Date(value).toLocaleDateString(undefined, {
     month: "short",
     day: "numeric",
     year: "numeric",
   });
-
-const formatRelativeDate = (value: string) => {
-  const age = Date.now() - new Date(value).getTime();
-  const minutes = Math.floor(age / 60000);
-  const hours = Math.floor(minutes / 60);
-  const days = Math.floor(hours / 24);
-
-  if (minutes < 1) return "Just now";
-  if (minutes < 60) return `${minutes}m ago`;
-  if (hours < 24) return `${hours}h ago`;
-  if (days < 7) return `${days}d ago`;
-  return formatDate(value);
-};
 
 const ExplorePage = () => {
   const [currentLimit, setCurrentLimit] = useState(10);
@@ -86,160 +57,179 @@ const ExplorePage = () => {
   if (isLoading) return <LoadingSpinner />;
 
   return (
-    <div className="flex flex-col gap-4 py-1">
-      <section className="relative flex items-center justify-end gap-3 rounded-2xl border border-white/10 bg-bg-surface/80 px-3 py-3">
-        <h1 className="absolute left-1/2 -translate-x-1/2 text-2xl font-semibold tracking-tight text-text-primary sm:text-3xl">
-          Community feed
-        </h1>
+    <main className="mx-auto w-full max-w-4xl space-y-5 py-5">
+      <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight text-text-primary">
+            Explore quizzes
+          </h1>
+        </div>
         <Link
           to="/create"
-          className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-accent-primary px-3.5 py-2 text-xs font-medium text-white shadow-lg shadow-accent-primary/20 transition hover:bg-accent-hover sm:text-sm"
+          className="inline-flex min-h-9 items-center justify-center rounded-lg border border-bg-surface-hover px-3 py-1.5 text-sm font-medium text-text-primary transition"
         >
-          Create deck <FaArrowRight className="text-[10px]" />
+          Create quiz
         </Link>
-      </section>
-      <section className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-bg-surface/80 p-3 shadow-[0_10px_30px_rgba(0,0,0,0.03)] sm:flex-row sm:items-center">
+      </header>
+
+      <section
+        aria-label="Find quizzes"
+        className="flex flex-col gap-3 sm:flex-row sm:items-center"
+      >
         <label className="relative min-w-0 flex-1">
-          <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-sm text-text-muted" />
+          <FaSearch
+            aria-hidden="true"
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-text-muted"
+          />
+          <span className="sr-only">Search by quiz title or creator</span>
           <input
+            type="search"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            placeholder="Search decks or creators"
-            className="w-full rounded-xl border border-transparent bg-bg-background py-3 pl-10 pr-4 text-sm text-text-primary outline-none transition placeholder:text-text-muted focus:border-accent-primary/40"
+            placeholder="Search quizzes or creators"
+            className="h-10 w-full rounded-lg border border-bg-surface-hover bg-bg-surface py-2 pl-10 pr-3 text-sm text-text-primary outline-none transition placeholder:text-text-muted focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20"
           />
         </label>
-        <div className="flex items-center gap-1 text-sm">
-          <FaSlidersH className="ml-2 mr-1 text-text-muted" />
-          <button
-            type="button"
-            onClick={() => setSort("newest")}
-            className={`rounded-lg px-3 py-2 transition ${sort === "newest" ? "bg-accent-primary/12 font-medium text-accent-primary" : "text-text-muted hover:bg-bg-background"}`}
+        <label className="flex shrink-0 items-center gap-2 text-sm text-text-muted">
+          <span>Sort by</span>
+          <select
+            value={sort}
+            onChange={(event) =>
+              setSort(event.target.value as "newest" | "largest")
+            }
+            className="h-10 rounded-lg border border-bg-surface-hover bg-bg-surface px-3 text-sm text-text-primary outline-none focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20"
           >
-            Latest
-          </button>
-          <button
-            type="button"
-            onClick={() => setSort("largest")}
-            className={`rounded-lg px-3 py-2 transition ${sort === "largest" ? "bg-accent-primary/12 font-medium text-accent-primary" : "text-text-muted hover:bg-bg-background"}`}
-          >
-            Most cards
-          </button>
-        </div>
+            <option value="newest">Newest</option>
+            <option value="largest">Most questions</option>
+          </select>
+        </label>
       </section>
+
       {isError ? (
-        <section className="rounded-3xl border border-dashed border-white/10 bg-bg-surface/70 p-10 text-center">
-          <p className="font-medium">The community feed is taking a break.</p>
-          <p className="mt-2 text-sm text-text-muted">
-            Check your connection and try loading it again.
+        <section className="rounded-xl border border-bg-surface-hover bg-bg-surface p-6">
+          <p className="font-medium text-text-primary">
+            Quizzes couldn’t be loaded.
+          </p>
+          <p className="mt-1 text-sm text-text-muted">
+            Check your connection and try again.
           </p>
           <button
             type="button"
             onClick={() => refetch()}
-            className="mt-5 rounded-xl bg-accent-primary px-4 py-2 text-sm font-medium text-white hover:bg-accent-hover"
+            className="mt-4 rounded-lg border border-bg-surface-hover px-3 py-2 text-sm font-medium text-text-primary transition hover:bg-bg-background"
           >
             Try again
           </button>
         </section>
       ) : visibleDecks.length === 0 ? (
-        <section className="rounded-3xl border border-dashed border-white/10 bg-bg-surface/70 p-10 text-center">
-          <FaBookOpen className="mx-auto text-2xl text-accent-primary" />
-          <p className="mt-4 font-medium">
+        <section className="rounded-xl border border-bg-surface-hover bg-bg-surface p-5">
+          <p className="font-medium text-text-primary">
             {search
-              ? "No decks match that search."
-              : "The feed is empty for now."}
+              ? "No matching quizzes."
+              : "No quizzes have been shared yet."}
           </p>
-          <p className="mt-2 text-sm text-text-muted">
+          <p className="mt-1 text-sm text-text-muted">
             {search
-              ? "Try a different title or creator."
-              : "Be the first to publish a deck from the main page."}
+              ? "Try another title or creator name."
+              : "Check back later, or create a quiz to get started."}
           </p>
+          {search && (
+            <button
+              type="button"
+              onClick={() => setSearch("")}
+              className="mt-3 text-sm font-medium text-accent-primary hover:underline"
+            >
+              Clear search
+            </button>
+          )}
         </section>
       ) : (
-        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-          {visibleDecks.map((deck) => {
-            const creator = deck.user?.name ?? "QuizOps creator";
-            const cardCount = deck._count?.cards ?? 0;
-            const isOwnDeck = deck.user?.id === currentUser?.id;
+        <section aria-label="Quiz results">
+          <p className="mb-3 text-sm text-text-muted" aria-live="polite">
+            {visibleDecks.length}{" "}
+            {visibleDecks.length === 1 ? "quiz" : "quizzes"}
+            {search ? " found" : ""}
+          </p>
+          <ul className="rounded-md border flex flex-col gap-10 border-bg-surface-hover bg-bg-surface">
+            {visibleDecks.map((deck) => {
+              const creator =
+                deck.user?.id === currentUser?.id
+                  ? "You"
+                  : (deck.user?.name ?? "Community member");
+              const cardCount = deck._count?.cards ?? 0;
 
-            return (
-              <article
-                key={deck.id}
-                className={`group flex min-h-59 flex-col justify-between rounded-2xl border bg-bg-surface/90 p-3.5 shadow-[0_10px_24px_rgba(0,0,0,0.03)] transition duration-200 hover:-translate-y-0.5 hover:border-accent-primary/35 hover:shadow-[0_14px_32px_rgba(124,58,237,0.08)] ${isOwnDeck ? "border-accent-primary/45 ring-1 ring-accent-primary/10" : "border-white/10"}`}
-              >
-                <div className="flex flex-col gap-3">
-                  <div className="flex items-start justify-between gap-2">
-                    <Link
-                      to={deck.user?.id ? `/profile/${deck.user.id}` : "#"}
-                      className="flex min-w-0 items-center gap-2.5"
-                    >
-                      <span
-                        className={`flex size-9 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold ${isOwnDeck ? "bg-accent-primary text-white" : "bg-accent-primary/12 text-accent-primary"}`}
-                      >
-                        {deck.user ? getInitials(creator) : <FaUser />}
+              return (
+                <li
+                  key={deck.id}
+                  className="flex flex-col items-stretch gap-3 border-b border-bg-surface-hover px-4 py-3 last:border-b-0 transition-colors hover:bg-bg-background/60 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="flex min-w-0 items-center gap-2">
+                      <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-accent-primary/10 text-xs font-semibold text-accent-primary">
+                        {creator.charAt(0).toUpperCase()}
                       </span>
-                      <span className="min-w-0">
-                        <span className="flex items-center gap-1.5">
-                          <span className="truncate text-sm font-medium text-text-primary">
-                            {isOwnDeck ? "You" : creator}
+                      <div className="min-w-0">
+                        {deck.user?.id ? (
+                          <Link
+                            to={`/profile/${deck.user.id}`}
+                            className="block truncate text-sm font-medium text-text-primary hover:text-accent-primary hover:underline"
+                          >
+                            {creator}
+                          </Link>
+                        ) : (
+                          <span className="block truncate text-sm font-medium text-text-primary">
+                            {creator}
                           </span>
-                          {isOwnDeck && (
-                            <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-accent-primary/10 px-1.5 py-0.5 text-[9px] font-semibold text-accent-primary">
-                              <FaCheck /> Yours
-                            </span>
-                          )}
+                        )}
+                        <span className="block text-xs text-text-muted">
+                          {formatDate(deck.createdAt)}
                         </span>
-                        <span className="mt-0.5 block text-[10px] text-text-muted">
-                          {formatRelativeDate(deck.createdAt)}
-                        </span>
-                      </span>
-                    </Link>
-
-                    <span className="shrink-0 pt-1 text-[10px] text-text-muted">
-                      {formatDate(deck.createdAt)}
-                    </span>
-                  </div>
-
-                  <div className="space-y-2.5">
+                      </div>
+                    </div>
                     <Link
                       to={`/deck/${deck.id}`}
-                      className="block text-[1.02rem] font-semibold leading-5 text-text-primary transition group-hover:text-accent-primary"
+                      className="line-clamp-2 text-base font-semibold leading-6 text-text-primary hover:text-accent-primary"
                     >
                       {deck.title}
                     </Link>
-
-                    <div className="flex items-center gap-1.5 text-[11px] text-text-muted">
-                      <FaLayerGroup className="text-[11px] text-accent-primary" />
-                      <span>
-                        {cardCount} {cardCount === 1 ? "card" : "cards"}
-                      </span>
-                    </div>
                   </div>
-                </div>
+                  <div className="flex shrink-0 items-center justify-between gap-3 sm:justify-end sm:gap-5">
+                    <span className="w-16 whitespace-nowrap text-right text-xs text-text-muted sm:w-20 sm:text-sm">
+                      {cardCount} {cardCount === 1 ? "question" : "questions"}
+                    </span>
+                    <Link
+                      to={`/deck/${deck.id}/take`}
+                      className="inline-flex min-h-9 w-20 items-center justify-center rounded-lg bg-accent-primary px-2 py-1.5 text-sm font-medium text-white transition hover:bg-accent-hover"
+                    >
+                      Practice
+                    </Link>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      )}
 
-                <div className="mt-4 flex items-center justify-end border-t border-white/10 pt-2.5">
-                  <Link
-                    to={`/deck/${deck.id}/take`}
-                    className="inline-flex items-center gap-1.5 rounded-xl bg-accent-primary px-3 py-2 text-[11px] font-semibold text-white shadow-lg shadow-accent-primary/15 transition hover:bg-accent-hover"
-                  >
-                    Practice <FaArrowRight className="text-[9px]" />
-                  </Link>
-                </div>
-              </article>
-            );
-          })}
+      {!isError && decks.length >= currentLimit && (
+        <div className="text-center">
+          {search && visibleDecks.length === 0 && (
+            <p className="mb-2 text-sm text-text-muted">
+              Searching the latest {decks.length} quizzes. Load more to check
+              older quizzes too.
+            </p>
+          )}
+          <button
+            type="button"
+            disabled={isFetching}
+            onClick={() => setCurrentLimit((limit) => limit + 10)}
+            className="min-h-10 rounded-lg border border-bg-surface-hover px-4 py-2 text-sm font-medium text-text-primary transition hover:border-accent-primary hover:bg-bg-surface disabled:cursor-wait disabled:opacity-60"
+          >
+            {isFetching ? "Loading…" : "Load more quizzes"}
+          </button>
         </div>
       )}
-      {!search && decks.length >= currentLimit && (
-        <button
-          type="button"
-          disabled={isFetching}
-          onClick={() => setCurrentLimit((limit) => limit + 10)}
-          className="mx-auto inline-flex items-center gap-2 rounded-xl border border-white/10 bg-bg-surface px-5 py-2.5 text-sm font-medium transition hover:border-accent-primary/40 hover:bg-bg-surface-hover disabled:cursor-wait disabled:opacity-60"
-        >
-          {isFetching ? "Loading more..." : "Load more decks"}
-        </button>
-      )}
-    </div>
+    </main>
   );
 };
 
