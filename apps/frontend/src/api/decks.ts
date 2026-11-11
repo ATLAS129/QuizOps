@@ -70,7 +70,6 @@ export const createDeck = async (data: {
   questionType?: "Mixed" | "Multiple choice" | "True / False";
   difficulty?: "Easy" | "Medium" | "Hard" | "Mixed";
   numberOfQuestions?: "5" | "10" | "15" | "20";
-  extraOptions?: string[];
 }) => {
   try {
     const formData = new FormData();
@@ -93,10 +92,6 @@ export const createDeck = async (data: {
     if (data.numberOfQuestions) {
       formData.append("numberOfQuestions", data.numberOfQuestions);
     }
-    if (data.extraOptions?.length) {
-      formData.append("extraOptions", JSON.stringify(data.extraOptions));
-    }
-
     const res = await apiFetch("/decks", {
       method: "POST",
       body: formData,

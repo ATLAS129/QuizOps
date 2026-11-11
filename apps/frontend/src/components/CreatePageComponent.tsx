@@ -18,7 +18,6 @@ const CreatePageComponent = () => {
   const [prompt, setPrompt] = useState("");
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [isDragActive, setIsDragActive] = useState(false);
-  const [isSourcesPopoverOpen, setIsSourcesPopoverOpen] = useState(false);
   const [selectedSource, setSelectedSource] = useState<"url" | "prompt" | null>(
     null,
   );
@@ -34,7 +33,6 @@ const CreatePageComponent = () => {
   const [questionType, setQuestionType] = useState<
     "Mixed" | "Multiple choice" | "True / False"
   >("Mixed");
-  const [extraOptions, setExtraOptions] = useState<string[]>([]);
 
   const handleFileSelect = (file: File | null) => {
     if (!file) {
@@ -107,14 +105,12 @@ const CreatePageComponent = () => {
         questionType: questionType || undefined,
         difficulty: difficulty || undefined,
         numberOfQuestions: numberOfQuestions || undefined,
-        extraOptions,
       },
       {
         onSuccess: () => {
           setUrl("");
           setPrompt("");
           setPdfFile(null);
-          setExtraOptions([]);
           setErrorMessage(null);
         },
         onError: (error: any) => {
@@ -133,29 +129,13 @@ const CreatePageComponent = () => {
         <div className="overflow-hidden rounded-4xl bg-bg-surface p-3">
           {/* STEP 1 */}
           <section className="flex flex-col items-center">
-            {/* <div className="mb-2 flex items-center justify-center gap-2">
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent-primary text-sm font-bold text-white shadow-lg shadow-accent-primary/20">
-                1
-              </div>
-
-              <div>
-                <h2 className="place-self-start text-xl font-semibold text-text-primary">
-                  Add your material
-                </h2>
-
-                <p className="place-self-start mt-1 text-sm leading-6 text-text-muted md:text-base">
-                  Start with a PDF. You can add more sources below.
-                </p>
-              </div>
-            </div> */}
-
             {/* PDF upload */}
             <div
               className={`w-full group relative overflow-hidden rounded-3xl transition-all duration-300 ${
                 isDragActive
                   ? "border-accent-primary bg-bg-surface-hover"
                   : pdfFile
-                    ? "border-accent-primary bg-accent-primary"
+                    ? "border-accent-primary/50 bg-accent-primary/20"
                     : "bg-bg-background hover:border-accent-primary hover:bg-bg-background"
               }`}
               onDragEnter={handleDragEnter}
@@ -202,7 +182,7 @@ const CreatePageComponent = () => {
                           fileInputRef.current.value = "";
                         }
                       }}
-                      className="mt-6 rounded-xl border border-white/8 bg-bg-surface px-5 py-3 text-sm font-medium text-text-muted transition hover:border-rose-400/30 hover:bg-rose-400/10 hover:text-rose-400"
+                      className="mt-6 rounded-xl border border-white/8 bg-accent-primary/10 px-5 py-3 text-sm font-medium text-text-muted transition hover:border-rose-400/30 hover:bg-rose-400/10 hover:text-rose-400"
                     >
                       Choose another file
                     </button>
@@ -247,388 +227,294 @@ const CreatePageComponent = () => {
               </div>
             </div>
 
-            {/* Additional sources */}
-            <div className="relative mt-4 w-full">
-              <button
-                type="button"
-                onClick={() => {
-                  setIsSourcesPopoverOpen((open) => !open);
-                  setSelectedSource(null);
-                }}
-                aria-expanded={isSourcesPopoverOpen}
-                className="flex w-full items-center justify-between rounded-2xl bg-bg-background px-5 py-4 text-left transition hover:bg-bg-surface"
-              >
-                <span>
-                  <span className="block text-sm font-semibold text-text-primary">
+            <section className="mt-4 w-full rounded-xl border border-bg-surface-hover bg-bg-background py-3 px-8">
+              <div className="sm:flex sm:items-center sm:justify-between sm:gap-4">
+                <div className="mb-3 sm:mb-0">
+                  <h3 className="text-sm font-semibold text-text-primary">
                     Add another source
-                  </span>
-                  <span className="mt-1 block text-sm text-text-muted">
-                    Webpage or your own instructions
-                  </span>
-                </span>
-                <span className="flex size-9 items-center justify-center rounded-xl bg-bg-surface text-xl text-text-muted">
-                  {isSourcesPopoverOpen ? "−" : "+"}
-                </span>
-              </button>
-
-              {isSourcesPopoverOpen && (
-                <div className="absolute left-0 right-0 top-full z-20 mt-2 overflow-hidden rounded-2xl border border-bg-surface-hover bg-bg-surface p-3 shadow-2xl">
-                  <p className="px-3 pb-2 pt-1 text-xs font-medium uppercase tracking-wide text-text-muted">
-                    Choose a source
+                  </h3>
+                  <p className="mt-0.5 text-xs text-text-muted">
+                    Webpage or note
                   </p>
-                  <div className="grid gap-2 sm:grid-cols-2">
-                    <button
-                      type="button"
-                      onClick={() => setSelectedSource("url")}
-                      className={`rounded-xl border p-3 text-left transition ${selectedSource === "url" ? "border-accent-primary/50 bg-accent-primary/5" : "border-transparent bg-bg-background"}`}
-                    >
-                      <span className="block text-sm font-semibold text-text-primary">
-                        Webpage URL
-                      </span>
-                      <span className="mt-1 block text-xs text-text-muted">
-                        Use material from a website
-                      </span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setSelectedSource("prompt")}
-                      className={`rounded-xl border p-3 text-left transition ${selectedSource === "prompt" ? "border-accent-primary/50 bg-accent-primary/5" : "border-transparent bg-bg-background"}`}
-                    >
-                      <span className="block text-sm font-semibold text-text-primary">
-                        Instructions
-                      </span>
-                      <span className="mt-1 block text-xs text-text-muted">
-                        Add a note about what to include
-                      </span>
-                    </button>
-                  </div>
+                </div>
 
-                  {selectedSource === "url" && (
-                    <div className="mt-3 pt-3">
-                      <label
-                        htmlFor="url"
-                        className="mb-2 block text-sm font-medium text-text-primary"
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    aria-expanded={selectedSource === "url"}
+                    onClick={() =>
+                      setSelectedSource((current) =>
+                        current === "url" ? null : "url",
+                      )
+                    }
+                    className={`inline-flex min-h-10 flex-1 items-center justify-center gap-2 rounded-lg border px-3 text-sm font-medium transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary sm:flex-none ${
+                      selectedSource === "url"
+                        ? "border-accent-primary bg-accent-primary/10 text-accent-primary"
+                        : "border-bg-surface-hover bg-bg-surface text-text-primary hover:border-accent-primary/50"
+                    }`}
+                  >
+                    <span
+                      aria-hidden="true"
+                      className="text-base leading-none text-accent-primary"
+                    >
+                      {url ? "↗" : "+"}
+                    </span>
+                    {url ? "Edit webpage" : "Webpage"}
+                    <span className="sr-only">
+                      {selectedSource === "url"
+                        ? "Close webpage editor"
+                        : "Open webpage editor"}
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    aria-expanded={selectedSource === "prompt"}
+                    onClick={() =>
+                      setSelectedSource((current) =>
+                        current === "prompt" ? null : "prompt",
+                      )
+                    }
+                    className={`inline-flex min-h-10 flex-1 items-center justify-center gap-2 rounded-lg border px-3 text-sm font-medium transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary sm:flex-none ${
+                      selectedSource === "prompt"
+                        ? "border-accent-primary bg-accent-primary/10 text-accent-primary"
+                        : "border-bg-surface-hover bg-bg-surface text-text-primary hover:border-accent-primary/50"
+                    }`}
+                  >
+                    <span
+                      aria-hidden="true"
+                      className="text-base leading-none text-accent-primary"
+                    >
+                      {prompt ? "Aa" : "+"}
+                    </span>
+                    {prompt ? "Edit note" : "Note"}
+                    <span className="sr-only">
+                      {selectedSource === "prompt"
+                        ? "Close note editor"
+                        : "Open note editor"}
+                    </span>
+                  </button>
+                </div>
+              </div>
+
+              {selectedSource === "url" && (
+                <div className="mt-3">
+                  <label
+                    htmlFor="url"
+                    className="mb-2 block text-sm font-medium text-text-primary"
+                  >
+                    Webpage link
+                  </label>
+                  <input
+                    type="url"
+                    id="url"
+                    value={url}
+                    onChange={(event) => setUrl(event.target.value)}
+                    placeholder="https://example.com/article"
+                    className="w-full rounded-lg border border-bg-surface-hover bg-bg-background px-3 py-2.5 text-sm text-text-primary outline-none transition placeholder:text-text-muted/60 focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20"
+                  />
+                  <div className="mt-2 flex gap-4">
+                    {url && (
+                      <button
+                        type="button"
+                        onClick={() => setUrl("")}
+                        className="py-1 text-sm text-text-muted underline underline-offset-4 hover:text-text-primary"
                       >
-                        Webpage address
-                      </label>
-                      <input
-                        type="url"
-                        id="url"
-                        value={url}
-                        onChange={(event) => setUrl(event.target.value)}
-                        placeholder="Paste a webpage URL"
-                        className="w-full rounded-xl border border-bg-surface-hover bg-bg-background px-4 py-3 text-sm text-text-primary outline-none transition placeholder:text-text-muted/60 focus:border-accent-primary focus:ring-4 focus:ring-accent-primary/10"
-                      />
-                    </div>
-                  )}
-
-                  {selectedSource === "prompt" && (
-                    <div className="mt-3  pt-3">
-                      <label
-                        htmlFor="prompt"
-                        className="mb-2 block text-sm font-medium text-text-primary"
-                      >
-                        Your instructions
-                      </label>
-                      <textarea
-                        ref={textareaRef}
-                        id="prompt"
-                        value={prompt}
-                        onChange={(event) => setPrompt(event.target.value)}
-                        onInput={handleInput}
-                        placeholder="What should the quiz focus on?"
-                        className="min-h-28 w-full resize-y rounded-xl border border-bg-surface-hover bg-bg-background px-4 py-3 text-sm leading-6 text-text-primary outline-none transition placeholder:text-text-muted/60 focus:border-accent-primary focus:ring-4 focus:ring-accent-primary/10"
-                      />
-                    </div>
-                  )}
-
-                  <div className="mt-3 flex justify-end pt-3">
+                        Remove link
+                      </button>
+                    )}
                     <button
                       type="button"
-                      onClick={() => setIsSourcesPopoverOpen(false)}
-                      className="rounded-lg px-3 py-2 text-sm font-medium text-text-muted transition hover:bg-bg-background hover:text-text-primary"
+                      onClick={() => setSelectedSource(null)}
+                      className="py-1 text-sm font-medium text-text-primary underline underline-offset-4 hover:text-accent-primary"
                     >
-                      Done
+                      Close
                     </button>
                   </div>
                 </div>
               )}
-            </div>
+
+              {selectedSource === "prompt" && (
+                <div className="mt-3">
+                  <label
+                    htmlFor="prompt"
+                    className="mb-2 block text-sm font-medium text-text-primary"
+                  >
+                    Note for the quiz
+                  </label>
+                  <textarea
+                    ref={textareaRef}
+                    id="prompt"
+                    value={prompt}
+                    onChange={(event) => setPrompt(event.target.value)}
+                    onInput={handleInput}
+                    placeholder="Anything specific to include or focus on?"
+                    className="min-h-24 w-full resize-y rounded-lg border border-bg-surface-hover bg-bg-background px-3 py-2.5 text-sm leading-6 text-text-primary outline-none transition placeholder:text-text-muted/60 focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20"
+                  />
+                  <div className="mt-2 flex gap-4">
+                    {prompt && (
+                      <button
+                        type="button"
+                        onClick={() => setPrompt("")}
+                        className="py-1 text-sm text-text-muted underline underline-offset-4 hover:text-text-primary"
+                      >
+                        Remove note
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => setSelectedSource(null)}
+                      className="py-1 text-sm font-medium text-text-primary underline underline-offset-4 hover:text-accent-primary"
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
+              )}
+            </section>
 
             {(pdfFile || url || prompt) && (
-              <div className="mt-4 flex flex-wrap items-center gap-2 rounded-2xl border border-accent-primary/10 bg-accent-primary/4 px-4 py-3">
-                <span className="text-sm font-medium text-text-primary">
-                  Added:
-                </span>
-
+              <div className="mt-2 flex flex-wrap gap-1.5">
                 {pdfFile && (
-                  <span className="rounded-lg bg-bg-surface px-3 py-1.5 text-sm text-text-muted">
-                    PDF
+                  <span
+                    title={pdfFile.name}
+                    className="max-w-full truncate rounded-md bg-bg-background px-2 py-1 text-xs text-text-muted"
+                  >
+                    PDF · {pdfFile.name}
                   </span>
                 )}
-
                 {url && (
-                  <span className="rounded-lg bg-bg-surface px-3 py-1.5 text-sm text-text-muted">
-                    Webpage
+                  <span
+                    title={url}
+                    className="max-w-full truncate rounded-md bg-bg-background px-2 py-1 text-xs text-text-muted"
+                  >
+                    Webpage · {url}
                   </span>
                 )}
-
                 {prompt && (
-                  <span className="rounded-lg bg-bg-surface px-3 py-1.5 text-sm text-text-muted">
-                    Instructions
+                  <span
+                    title={prompt}
+                    className="max-w-full truncate rounded-md bg-bg-background px-2 py-1 text-xs text-text-muted"
+                  >
+                    Note · {prompt}
                   </span>
                 )}
               </div>
             )}
           </section>
 
-          <section>
-            <div className="flex justify-center items-center gap-5 py-5">
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent-primary text-sm font-bold text-white shadow-lg shadow-accent-primary/20"></div>
-
-              <div>
-                <h2 className="place-self-start text-xl font-semibold text-text-primary">
-                  Customize your quiz
-                </h2>
-
-                <p className="place-self-start mt-1 text-sm leading-6 text-text-muted md:text-base">
-                  These settings are optional - AI will choose sensible
-                  defaults.
-                </p>
-              </div>
+          <section className="mt-5 rounded-2xl border border-white/[0.07] bg-bg-background p-5 md:p-6">
+            <div className="mb-6">
+              <h2 className="text-lg font-semibold text-text-primary">
+                Generation preferences
+              </h2>
+              <p className="mt-1 text-sm text-text-muted">
+                Choose how long and what kind of quiz you’d like.
+              </p>
             </div>
 
-            <details className="group overflow-hidden rounded-2xl border border-white/[0.07] bg-bg-background">
-              <summary className="flex cursor-pointer list-none items-center justify-between px-5 py-5 md:px-6 [&::-webkit-details-marker]:hidden">
-                <div className="flex items-center gap-2">
-                  <div className="flex size-12 items-center justify-center rounded-2xl bg-bg-surface text-xl">
-                    ⚙
-                  </div>
+            <div className="grid gap-4 sm:grid-cols-3">
+              <label className="flex flex-col">
+                <span className="text-sm font-semibold text-text-primary">
+                  Questions
+                </span>
+                <span className="mt-1 min-h-8 text-xs leading-4 text-text-muted">
+                  How many questions?
+                </span>
+                <select
+                  id="numberOfQuestions"
+                  className="mt-2 h-11 w-full rounded-xl border border-bg-surface-hover bg-bg-surface px-3 text-sm text-text-primary outline-none transition focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20"
+                  value={numberOfQuestions}
+                  onChange={(event) =>
+                    setNumberOfQuestions(
+                      event.target.value as "5" | "10" | "15" | "20",
+                    )
+                  }
+                >
+                  <option value="5">5 questions</option>
+                  <option value="10">10 questions</option>
+                  <option value="15">15 questions</option>
+                  <option value="20">20 questions</option>
+                </select>
+              </label>
 
-                  <div>
-                    <p className="place-self-start text-base font-semibold text-text-primary md:text-lg">
-                      Generation preferences
-                    </p>
+              <label className="flex flex-col">
+                <span className="text-sm font-semibold text-text-primary">
+                  Difficulty
+                </span>
+                <span className="mt-1 min-h-8 text-xs leading-4 text-text-muted">
+                  How challenging should it be?
+                </span>
+                <select
+                  id="difficulty"
+                  className="mt-2 h-11 w-full rounded-xl border border-bg-surface-hover bg-bg-surface px-3 text-sm text-text-primary outline-none transition focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20"
+                  value={difficulty}
+                  onChange={(event) =>
+                    setDifficulty(
+                      event.target.value as
+                        | "Easy"
+                        | "Medium"
+                        | "Hard"
+                        | "Mixed",
+                    )
+                  }
+                >
+                  <option value="Mixed">Mixed</option>
+                  <option value="Easy">Easy</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Hard">Hard</option>
+                </select>
+              </label>
 
-                    <p className="text-sm text-text-muted">
-                      Questions, types, difficulty, and more
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <span className="hidden rounded-full bg-bg-surface px-3 py-1.5 text-xs font-medium text-text-muted sm:block">
-                    Optional
-                  </span>
-
-                  <div className="flex size-10 items-center justify-center rounded-xl bg-bg-surface text-lg text-text-muted transition group-open:rotate-180">
-                    ↓
-                  </div>
-                </div>
-              </summary>
-
-              <div className="border-t border-white/6 p-5 md:p-6">
-                {/* Quantity */}
-                <div className="mb-4 rounded-2xl border border-white/6 bg-bg-surface p-5">
-                  <div className="mb-5 flex items-center justify-between">
-                    <div>
-                      <p className="place-self-start text-base font-semibold text-text-primary md:text-lg">
-                        Number of questions
-                      </p>
-
-                      <p className="mt-1 text-sm text-text-muted">
-                        Choose how many questions to create.
-                      </p>
-                    </div>
-
-                    <div className="rounded-xl bg-accent-primary/10 px-4 py-2 text-lg font-bold text-accent-primary">
-                      {numberOfQuestions}
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-4 gap-2 rounded-xl bg-bg-background p-1.5">
-                    {["5", "10", "15", "20"].map((value) => (
-                      <button
-                        key={value}
-                        type="button"
-                        className={`rounded-lg py-3 text-sm font-semibold transition md:text-base ${
-                          value === numberOfQuestions
-                            ? "bg-accent-primary text-white shadow-lg shadow-accent-primary/20"
-                            : "text-text-muted hover:bg-bg-surface hover:text-text-primary"
-                        }`}
-                        onClick={() =>
-                          setNumberOfQuestions(
-                            value as "5" | "10" | "15" | "20",
-                          )
-                        }
-                      >
-                        {value}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Other settings */}
-                <div className="flex justify-center items-center gap-4">
-                  <div className="w-full flex flex-col gap-4">
-                    <div className="rounded-2xl border border-white/6 bg-bg-surface p-5">
-                      <label htmlFor="difficulty">
-                        <p className="text-base font-semibold text-text-primary md:text-lg">
-                          Difficulty
-                        </p>
-
-                        <span className="mt-1 block text-sm text-text-muted">
-                          How challenging should the questions be?
-                        </span>
-                      </label>
-
-                      <select
-                        id="difficulty"
-                        className="mt-4 w-full rounded-xl border border-bg-surface-hover bg-bg-background px-4 py-3.5 text-base text-text-primary outline-none transition focus:border-accent-primary focus:ring-4 focus:ring-accent-primary/10"
-                        value={difficulty}
-                        onChange={(e) =>
-                          setDifficulty(
-                            e.target.value as
-                              | "Easy"
-                              | "Medium"
-                              | "Hard"
-                              | "Mixed",
-                          )
-                        }
-                      >
-                        <option value="Easy">Easy</option>
-                        <option value="Medium">Medium</option>
-                        <option value="Hard">Hard</option>
-                        <option value="Mixed">Mixed</option>
-                      </select>
-                    </div>
-
-                    <div className="rounded-2xl border border-white/6 bg-bg-surface p-5">
-                      <label htmlFor="questionType">
-                        <p className="text-base font-semibold text-text-primary md:text-lg">
-                          Question type
-                        </p>
-
-                        <span className="mt-1 block text-sm text-text-muted">
-                          Choose how users will answer.
-                        </span>
-                      </label>
-
-                      <select
-                        id="questionType"
-                        defaultValue="mixed"
-                        className="mt-4 w-full rounded-xl border border-bg-surface-hover bg-bg-background px-4 py-3.5 text-base text-text-primary outline-none transition focus:border-accent-primary focus:ring-4 focus:ring-accent-primary/10"
-                        value={questionType}
-                        onChange={(e) =>
-                          setQuestionType(
-                            e.target.value as
-                              | "Mixed"
-                              | "Multiple choice"
-                              | "True / False",
-                          )
-                        }
-                      >
-                        <option value="Mixed">Mixed</option>
-                        <option value="Multiple choice">Multiple choice</option>
-                        <option value="True / False">True / False</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="w-full rounded-2xl border border-white/6 bg-bg-surface p-5">
-                    <p className="text-base font-semibold text-text-primary md:text-lg">
-                      Extra options
-                    </p>
-
-                    <p className="mt-1 text-sm text-text-muted">
-                      Fine-tune the generated questions.
-                    </p>
-
-                    <div className="mt-4 space-y-2">
-                      {[
-                        "Include explanations",
-                        "Avoid duplicate questions",
-                        "Focus on key concepts",
-                      ].map((option) => (
-                        <label
-                          key={option}
-                          className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-3 transition hover:bg-bg-background"
-                        >
-                          <span className="text-sm text-text-primary">
-                            {option}
-                          </span>
-
-                          <div className="relative">
-                            <input
-                              type="checkbox"
-                              checked={extraOptions.includes(option)}
-                              onChange={(e) => {
-                                setExtraOptions((prev) =>
-                                  e.target.checked
-                                    ? [...prev, option]
-                                    : prev.filter((opt) => opt !== option),
-                                );
-                              }}
-                              className="peer sr-only"
-                            />
-
-                            <div className="h-6 w-11 rounded-full bg-bg-surface-hover transition peer-checked:bg-accent-primary" />
-
-                            <div className="absolute left-1 top-1 size-4 rounded-full bg-white shadow transition peer-checked:translate-x-5" />
-                          </div>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </details>
+              <label className="flex flex-col">
+                <span className="text-sm font-semibold text-text-primary">
+                  Answer format
+                </span>
+                <span className="mt-1 min-h-8 text-xs leading-4 text-text-muted">
+                  How should answers work?
+                </span>
+                <select
+                  id="questionType"
+                  className="mt-2 h-11 w-full rounded-xl border border-bg-surface-hover bg-bg-surface px-3 text-sm text-text-primary outline-none transition focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20"
+                  value={questionType}
+                  onChange={(event) =>
+                    setQuestionType(
+                      event.target.value as
+                        | "Mixed"
+                        | "Multiple choice"
+                        | "True / False",
+                    )
+                  }
+                >
+                  <option value="Mixed">Mixed</option>
+                  <option value="Multiple choice">Multiple choice</option>
+                  <option value="True / False">True / False</option>
+                </select>
+              </label>
+            </div>
           </section>
 
-          {/* Bottom CTA */}
-          <div className="mt-9 rounded-3xl border border-accent-primary/15 bg-accent-primary/5 p-5 md:p-6">
-            <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
-              <div>
-                <h3 className="text-lg font-semibold text-text-primary md:text-xl">
-                  Everything looks good?
-                </h3>
-
-                <p className="mt-1.5 text-sm text-text-muted md:text-base">
-                  Your quiz will be generated using the material you've added.
-                </p>
-              </div>
-
-              <button
-                type="button"
-                disabled={isCreating}
-                onClick={handleCreateDeck}
-                className="group flex h-14 w-full shrink-0 items-center justify-center gap-3 rounded-2xl bg-accent-primary px-8 text-base font-semibold text-white shadow-xl shadow-accent-primary/25 transition-all duration-300 hover:-translate-y-0.5 hover:bg-accent-hover hover:shadow-2xl hover:shadow-accent-primary/30 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 md:w-auto md:text-lg"
-              >
-                {isCreating ? (
-                  <>
-                    <span className="size-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                    Creating quiz…
-                  </>
-                ) : (
-                  <>
-                    Generate quiz
-                    <span className="text-xl transition-transform duration-300 group-hover:translate-x-1">
-                      →
-                    </span>
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-
-          {errorMessage ? (
-            <p className="mt-4 text-sm text-rose-400">{errorMessage}</p>
-          ) : (
-            <p className="mt-4 text-xs text-text-muted">
-              Start with a PDF or add another source above. The other settings
-              are optional.
-            </p>
-          )}
+          <section className="flex justify-end border-t border-bg-surface-hover pt-5">
+            <button
+              type="button"
+              disabled={isCreating}
+              onClick={handleCreateDeck}
+              className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-lg bg-accent-primary px-10 py-2.5 text-sm font-semibold text-white transition hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+            >
+              {isCreating ? (
+                <>
+                  <span className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                  Creating…
+                </>
+              ) : (
+                "Generate quiz"
+              )}
+            </button>
+            {errorMessage && (
+              <p role="alert" className="mt-3 text-sm text-rose-400">
+                {errorMessage}
+              </p>
+            )}
+          </section>
         </div>
       </div>
 
