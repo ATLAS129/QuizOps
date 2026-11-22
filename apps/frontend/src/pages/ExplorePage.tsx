@@ -57,7 +57,7 @@ const ExplorePage = () => {
   if (isLoading) return <LoadingSpinner />;
 
   return (
-    <main className="mx-auto w-full max-w-4xl space-y-5 py-5">
+    <main className="mx-auto w-full space-y-5 py-5">
       <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-text-primary">
