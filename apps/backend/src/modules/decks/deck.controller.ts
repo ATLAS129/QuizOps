@@ -65,7 +65,6 @@ export class DeckController {
     );
   }
 
-  @UseGuards(JwtAccessGuard)
   @Get(':id/cards')
   async getAllCardsFromDeck(@Param('id') deckId: string) {
     return this.cardService.getCardsFromDeck(deckId);
