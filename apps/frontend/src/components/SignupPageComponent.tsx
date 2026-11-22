@@ -22,10 +22,12 @@ const SignupPageComponent = ({
   >;
 }) => {
   return (
-    <div className="w-1/2 bg-bg-surface p-4 rounded-lg">
-      <h1 className="text-3xl text-left">Welcome to my app!</h1>
-      <h2 className="text-sm text-left text-text-muted">
-        I hope my app will make your study easier😊
+    <div className="w-full max-w-md rounded-lg border border-border-color bg-bg-surface p-5 sm:p-7">
+      <h1 className="text-left text-2xl font-semibold sm:text-3xl">
+        Create an account
+      </h1>
+      <h2 className="text-left text-sm text-text-muted">
+        Make quizzes from the material you’re studying.
       </h2>
       <form onSubmit={handleSubmit}>
         <div className="flex flex-col items-start gap-2 pt-3">
@@ -42,7 +44,7 @@ const SignupPageComponent = ({
                 email: e.target.value,
               }))
             }
-            className="w-full border-border-color border rounded-lg px-2 py-2"
+            className="min-h-11 w-full rounded-lg border border-border-color bg-bg-background px-3 py-2 text-text-primary outline-none focus:border-accent-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary"
             placeholder="JohnDoe@example.com"
           />
         </div>
@@ -60,7 +62,7 @@ const SignupPageComponent = ({
                 name: e.target.value,
               }))
             }
-            className="w-full border-border-color border rounded-lg px-2 py-2"
+            className="min-h-11 w-full rounded-lg border border-border-color bg-bg-background px-3 py-2 text-text-primary outline-none focus:border-accent-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary"
             placeholder="John Doe"
           />
         </div>
@@ -78,7 +80,7 @@ const SignupPageComponent = ({
                 password: e.target.value,
               }))
             }
-            className="w-full border-border-color border rounded-lg px-2 py-2"
+            className="min-h-11 w-full rounded-lg border border-border-color bg-bg-background px-3 py-2 text-text-primary outline-none focus:border-accent-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary"
             placeholder="••••••••"
           />
         </div>
@@ -96,14 +98,14 @@ const SignupPageComponent = ({
                 repeatPassword: e.target.value,
               }))
             }
-            className="w-full border-border-color border rounded-lg px-2 py-2"
+            className="min-h-11 w-full rounded-lg border border-border-color bg-bg-background px-3 py-2 text-text-primary outline-none focus:border-accent-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary"
             placeholder="••••••••"
           />
         </div>
-        <button className="w-full flex justify-center items-center mx-auto py-2 px-32 text-white bg-accent-primary hover:bg-accent-hover cursor-pointer rounded-lg mt-5">
+        <button className="mt-5 flex min-h-11 w-full items-center justify-center rounded-lg bg-accent-primary px-4 py-2 text-white transition hover:bg-accent-hover">
           Signup
         </button>
-        <p className="pt-4 text-sm">
+        <p className="pt-4 text-sm leading-6">
           Already have an account?{" "}
           <Link
             to="/login"

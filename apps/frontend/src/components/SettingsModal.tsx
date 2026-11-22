@@ -53,14 +53,21 @@ const SettingsModal = ({
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4 py-6 backdrop-blur-sm">
-      <div className="w-full max-w-md rounded-3xl border border-white/10 bg-bg-background p-8 shadow-2xl backdrop-blur-xl">
+    <div
+      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 px-4 py-4 backdrop-blur-sm sm:items-center sm:py-6"
+      onClick={(event) => {
+        if (event.target === event.currentTarget) {
+          onClose();
+        }
+      }}
+    >
+      <div className="my-auto max-h-full w-full max-w-md overflow-y-auto rounded-3xl border border-white/10 bg-bg-background p-5 backdrop-blur-xl sm:p-8">
         {/* Header */}
         <div className="relative mb-8">
           <button
             type="button"
             aria-label="Close modal"
-            className="absolute right-0 top-0 rounded-full border border-border-color bg-bg-surface/90 p-2 text-text-muted transition-all hover:bg-bg-surface-hover hover:text-text-primary"
+            className="absolute right-0 top-0 flex size-11 items-center justify-center rounded-full border border-border-color bg-bg-surface/90 text-text-muted transition-colors hover:bg-bg-surface-hover hover:text-text-primary"
             onClick={onClose}
           >
             <FiX className="size-5" />
@@ -83,15 +90,16 @@ const SettingsModal = ({
             <h3 className="text-sm font-semibold text-text-primary uppercase tracking-wide opacity-80">
               Appearance
             </h3>
-            <div className="flex justify-center items-center gap-3">
+            <div className="grid w-full grid-cols-3 items-stretch gap-2 sm:gap-3">
               {themeOptions.map((option) => (
                 <button
                   key={option.value}
                   type="button"
+                  aria-pressed={theme === option.value}
                   onClick={() => onThemeChange(option.value)}
-                  className={`group relative flex flex-col items-center gap-2 rounded-2xl border-2 p-6 px-10 transition-all duration-200 ${
+                  className={`group relative flex min-w-0 flex-col items-center gap-2 rounded-2xl border-2 p-3 transition-colors duration-200 sm:p-5 ${
                     theme === option.value
-                      ? "border-accent-primary bg-accent-primary/10 shadow-lg shadow-accent-primary/20"
+                      ? "border-accent-primary bg-accent-primary/10"
                       : "border-border-color bg-bg-surface/50 hover:border-accent-primary/40 hover:bg-bg-surface-hover"
                   }`}
                 >
@@ -113,9 +121,6 @@ const SettingsModal = ({
                   >
                     {option.label}
                   </span>
-                  {theme === option.value && (
-                    <div className="absolute inset-0 rounded-2xl ring-2 ring-accent-primary/50" />
-                  )}
                 </button>
               ))}
             </div>

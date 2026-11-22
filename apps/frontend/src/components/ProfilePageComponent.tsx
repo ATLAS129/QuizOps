@@ -25,25 +25,29 @@ const ProfilePageComponent = ({
     .toUpperCase();
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="mx-auto flex w-full max-w-6xl flex-col gap-5">
       <section className="relative overflow-hidden rounded-lg border border-border-color bg-bg-surface">
-        <div className="relative flex flex-col gap-6 rounded-md bg-bg-surface p-7 sm:p-8 lg:flex-row lg:items-end lg:justify-between">
-          <div className="flex items-center gap-4">
-            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-linear-to-br from-accent-primary to-accent-hover text-2xl font-semibold text-white">
+        <div className="relative flex flex-col items-center gap-5 rounded-md bg-bg-surface p-5 md:p-8">
+          <div className="flex min-w-0 flex-col items-center gap-4 text-center md:flex-row md:justify-center">
+            <div className="flex size-16 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-accent-primary to-accent-hover text-xl font-semibold text-white sm:size-20 sm:text-2xl">
               {initials}
             </div>
 
-            <div>
+            <div className="min-w-0">
               <p className="text-sm uppercase tracking-[0.25em] text-accent-primary">
                 Profile
               </p>
-              <h1 className="text-2xl font-semibold">{user.name}</h1>
-              <p className="mt-1 text-sm text-text-muted">{user.email}</p>
+              <h1 className="break-words text-xl font-semibold sm:text-2xl">
+                {user.name}
+              </h1>
+              <p className="mt-1 break-all text-sm text-text-muted">
+                {user.email}
+              </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="rounded-full border border-white/10 bg-bg-background/70 px-3 py-2 text-xs font-medium text-text-muted lg:absolute lg:right-4 lg:top-4">
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <div className="whitespace-nowrap rounded-full border border-white/10 bg-bg-background/70 px-3 py-2 text-xs font-medium text-text-muted">
               Joined{" "}
               {new Date(
                 user.createdAt?.toString() || Date.now().toString(),
@@ -56,7 +60,7 @@ const ProfilePageComponent = ({
             <button
               type="button"
               onClick={() => setIsOpen(true)}
-              className="rounded-full bg-accent-primary px-4 py-2.5 text-sm font-medium text-white transition hover:bg-accent-hover cursor-pointer"
+              className="min-h-11 rounded-full bg-accent-primary px-4 py-2.5 text-sm font-medium text-white transition hover:bg-accent-hover"
             >
               Edit profile
             </button>
@@ -64,8 +68,8 @@ const ProfilePageComponent = ({
         </div>
       </section>
 
-      <section className="rounded-lg border border-white/10 bg-bg-surface/90 p-6 shadow-[0_18px_60px_rgba(0,0,0,0.2)]">
-        <div className="mb-5 flex flex-col gap-3 text-center sm:flex-row sm:items-center sm:justify-between sm:text-left">
+      <section className="rounded-lg border border-white/10 bg-bg-surface/90 p-4 sm:p-6">
+        <div className="mb-5 flex flex-col gap-3 text-center md:flex-row md:items-center md:justify-between md:text-left">
           <div className="flex-1">
             <h2 className="text-xl font-semibold">Recent decks</h2>
             <p className="mt-1 text-sm text-text-muted">Last three decks</p>
@@ -73,21 +77,21 @@ const ProfilePageComponent = ({
 
           <Link
             to={`/profile/${userId}/decks`}
-            className="rounded-full border border-white/10 bg-bg-background/80 px-4 py-2.5 text-sm font-medium transition hover:border-accent-primary/40 hover:bg-bg-surface-hover"
+            className="inline-flex min-h-11 self-center items-center justify-center rounded-full border border-white/10 bg-bg-background/80 px-4 py-2.5 text-sm font-medium transition hover:border-accent-primary/40 hover:bg-bg-surface-hover md:self-auto"
           >
             All my decks
           </Link>
         </div>
 
         {recentDecks.length > 0 ? (
-          <div className="grid gap-4 lg:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {recentDecks.map((deck: any) => (
               <div
                 key={deck.id}
-                className="rounded-3xl flex flex-col justify-center items-center gap-2 border border-white/10 bg-bg-background/80 p-5 backdrop-blur-sm transition duration-200 hover:-translate-y-1 hover:border-accent-primary/40 hover:shadow-lg hover:shadow-accent-primary/10"
+                className="flex min-w-0 flex-col items-center justify-center gap-2 rounded-3xl border border-white/10 bg-bg-background/80 p-4 backdrop-blur-sm transition-colors duration-200 hover:border-accent-primary/40 sm:p-5"
               >
-                <div className="flex items-center justify-between w-full ">
-                  <div>
+                <div className="flex w-full flex-wrap items-center justify-between gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
                     <span
                       className={`rounded-full px-3 py-1 text-xs font-medium ${
                         deck.isCompleted
@@ -111,26 +115,26 @@ const ProfilePageComponent = ({
                       </span>
                     )}
                   </div>
-                  <span className="text-xs text-text-muted">
+                  <span className="whitespace-nowrap text-xs text-text-muted">
                     {deck._count.cards} cards
                   </span>
                 </div>
 
-                <div className="w-full h-full flex flex-col justify-center items-center">
+                <div className="flex h-full w-full min-w-0 flex-col items-center justify-center">
                   <Link
                     to={`/deck/${deck.id}`}
-                    className="text-base font-semibold hover:underline"
+                    className="w-full break-words text-center text-base font-semibold hover:underline"
                   >
                     {deck.title}
                   </Link>
-                  <p className="text-sm text-text-muted">
+                  <p className="text-center text-sm text-text-muted">
                     Created {new Date(deck.createdAt).toLocaleDateString()}
                   </p>
                 </div>
 
                 <Link
                   to={`/deck/${deck.id}/take`}
-                  className="w-full mt-auto inline-flex items-center justify-center gap-2 rounded-lg text-white bg-accent-primary px-3 py-2 text-sm font-medium transition hover:bg-accent-hover"
+                  className="mt-auto inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-lg bg-accent-primary px-3 py-2 text-sm font-medium text-white transition hover:bg-accent-hover"
                 >
                   <FaPlay className="text-xs" />
                   Take quiz

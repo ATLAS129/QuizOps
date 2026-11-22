@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { FaCompass, FaLightbulb, FaUser } from "react-icons/fa";
+import { useEffect, useRef, useState } from "react";
+import { FaCompass, FaLightbulb, FaPlus, FaUser } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
 import { IoLogOut } from "react-icons/io5";
 import { Link, useNavigate } from "react-router";
@@ -14,10 +14,29 @@ const Header = ({ username, userId }: { username: string; userId: string }) => {
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isMenuOpen) return;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      if (
+        event.target instanceof Node &&
+        !menuRef.current?.contains(event.target)
+      ) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+    };
+  }, [isMenuOpen]);
 
   return (
-    <header className="h-14 w-full bg-bg-surface flex items-center justify-between px-6">
-      <div className="flex justify-center items-center gap-2">
+    <header className="flex min-h-14 w-full items-center justify-between gap-3 bg-bg-surface px-3 py-2 sm:px-6">
+      <div className="flex min-w-0 items-center gap-2">
         <Link to={"/"}>
           <img
             rel="preload"
@@ -25,28 +44,35 @@ const Header = ({ username, userId }: { username: string; userId: string }) => {
             alt="logo"
             height={170}
             width={256}
+            className="h-auto w-20 shrink-0 sm:w-24"
           />
         </Link>
-        <Link to="/create">
-          <div className="px-5 py-2 bg-accent-primary/10 cursor-pointer rounded-lg">
-            Create deck
-          </div>
+        <Link
+          to="/create"
+          aria-label="Create deck"
+          className={`min-h-11 shrink-0 items-center justify-center gap-2 rounded-lg bg-accent-primary px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-hover sm:px-4 ${
+            userId ? "inline-flex" : "hidden sm:inline-flex"
+          }`}
+        >
+          <FaPlus aria-hidden="true" className="size-3.5" />
+          <span className="hidden sm:inline">Create deck</span>
         </Link>
       </div>
 
       {userId && username ? (
-        <div className="flex items-center justify-center gap-6 text-sm">
-          <Link to={`/profile/${userId}/decks`}>
-            <div className="py-2 px-3 bg-accent-primary rounded-lg text-white">
-              All my decks
-            </div>
+        <div className="flex shrink-0 items-center justify-center gap-2 text-sm sm:gap-6">
+          <Link
+            to={`/profile/${userId}/decks`}
+            className="hidden min-h-11 items-center justify-center whitespace-nowrap rounded-lg border border-bg-surface-hover px-4 py-2 font-medium text-text-primary transition-colors hover:border-accent-primary/50 hover:bg-bg-surface-hover sm:inline-flex"
+          >
+            All my decks
           </Link>
 
-          <div className="relative">
+          <div ref={menuRef} className="relative">
             <button
               type="button"
               onClick={() => setIsMenuOpen((prev) => !prev)}
-              className="size-8 rounded-full bg-accent-primary flex items-center justify-center text-xs font-semibold text-white select-none cursor-pointer"
+              className="flex size-10 cursor-pointer select-none items-center justify-center rounded-full bg-accent-primary text-xs font-semibold text-white sm:size-8"
             >
               {username
                 .split(" ")
@@ -108,16 +134,18 @@ const Header = ({ username, userId }: { username: string; userId: string }) => {
           </div>
         </div>
       ) : (
-        <div className="flex items-center justify-center gap-6 text-sm">
-          <Link to="login">
-            <button className="px-5 py-3 rounded-lg bg-accent-primary/10">
-              Login
-            </button>
+        <div className="flex shrink-0 items-center justify-center gap-2 text-sm sm:gap-6">
+          <Link
+            to="login"
+            className="inline-flex min-h-11 items-center justify-center whitespace-nowrap rounded-lg border border-bg-surface-hover px-3 py-2 font-medium transition-colors hover:border-accent-primary/50 hover:bg-bg-surface-hover sm:px-5"
+          >
+            Login
           </Link>
-          <Link to="signup">
-            <button className="px-5 py-3 rounded-lg bg-accent-primary/10">
-              Sign up
-            </button>
+          <Link
+            to="signup"
+            className="inline-flex min-h-11 items-center justify-center whitespace-nowrap rounded-lg bg-accent-primary px-3 py-2 font-medium text-white transition-colors hover:bg-accent-hover sm:px-5"
+          >
+            Sign up
           </Link>
         </div>
       )}

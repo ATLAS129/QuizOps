@@ -31,14 +31,14 @@ const UpdateModal = ({
 }: UpdateModalProps) => {
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 py-6"
+      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/40 px-4 py-4 sm:items-center sm:py-6"
       onClick={(event) => {
         if (event.target === event.currentTarget) {
           onClose();
         }
       }}
     >
-      <div className="w-full max-w-lg rounded-3xl border border-white/10 bg-bg-background p-6 shadow-2xl backdrop-blur-xl">
+      <div className="my-auto max-h-full w-full max-w-lg overflow-y-auto rounded-3xl border border-white/10 bg-bg-background p-5 backdrop-blur-xl sm:p-6">
         <div className="relative mb-5">
           <button
             type="button"
@@ -68,7 +68,7 @@ const UpdateModal = ({
                 onChange={(event) =>
                   setTitle ? setTitle(event.target.value) : null
                 }
-                className="mt-2 w-full rounded-2xl border border-white/10 bg-bg-surface px-4 py-3 outline-none transition focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20"
+                className="mt-2 w-full rounded-2xl border border-white/10 bg-bg-surface px-4 py-3 outline-none transition focus:border-accent-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary"
                 placeholder="Enter deck title"
               />
             </label>
@@ -82,7 +82,7 @@ const UpdateModal = ({
                   onChange={(event) =>
                     setEmail ? setEmail(event.target.value) : null
                   }
-                  className="mt-2 w-full rounded-2xl border border-white/10 bg-bg-surface px-4 py-3 outline-none transition focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20"
+                  className="mt-2 w-full rounded-2xl border border-white/10 bg-bg-surface px-4 py-3 outline-none transition focus:border-accent-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary"
                   placeholder="Enter new email"
                 />
               </label>
@@ -95,7 +95,7 @@ const UpdateModal = ({
                   onChange={(event) =>
                     setName ? setName(event.target.value) : null
                   }
-                  className="mt-2 w-full rounded-2xl border border-white/10 bg-bg-surface px-4 py-3 outline-none transition focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20"
+                  className="mt-2 w-full rounded-2xl border border-white/10 bg-bg-surface px-4 py-3 outline-none transition focus:border-accent-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary"
                   placeholder="Enter new username"
                 />
               </label>

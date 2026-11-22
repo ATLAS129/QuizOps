@@ -13,7 +13,7 @@ const AuthLayout = ({
 
   return (
     <>
-      <main className="flex items-center justify-center min-h-screen">
+      <main className="flex min-h-[100svh] w-full items-center justify-center px-4 py-8">
         <Outlet />
       </main>
     </>

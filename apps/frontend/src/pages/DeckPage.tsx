@@ -100,7 +100,7 @@ const DeckPage = () => {
 
   return (
     <div className="flex flex-col gap-5 pb-8 text-left">
-      <section className="relative overflow-hidden rounded-3xl border border-white/10 bg-bg-surface p-5 shadow-xl shadow-black/5 sm:p-8">
+      <section className="relative overflow-hidden rounded-3xl border border-white/10 bg-bg-surface p-5 sm:p-8">
         <div className="absolute right-0 top-0 h-40 w-40 translate-x-1/3 -translate-y-1/3 rounded-full bg-accent-primary/10 blur-2xl" />
         <div className="relative flex flex-col gap-7 lg:flex-row lg:items-end lg:justify-between">
           <div className="min-w-0">
@@ -131,7 +131,7 @@ const DeckPage = () => {
 
           <Link
             to={`/deck/${typedDeck.id}/take`}
-            className="inline-flex min-h-12 w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-accent-primary px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-accent-primary/20 transition hover:-translate-y-0.5 hover:bg-accent-hover sm:w-auto"
+            className="inline-flex min-h-12 w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-accent-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-accent-hover sm:w-auto"
           >
             <FaPlay className="text-xs" />
             {typedDeck.isCompleted ? "Retake quiz" : "Start quiz"}
@@ -173,7 +173,7 @@ const DeckPage = () => {
       )}
 
       {latestCompletion ? (
-        <section className="rounded-3xl border border-white/10 bg-bg-surface p-5 shadow-xl shadow-black/5 sm:p-7">
+        <section className="rounded-3xl border border-white/10 bg-bg-surface p-5 sm:p-7">
           <div className="flex flex-col gap-2 border-b border-border-color pb-5 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-accent-primary">
@@ -195,7 +195,7 @@ const DeckPage = () => {
                   <FaTrophy className="text-sm" />
                 </span>
                 <span
-                  className={`text-2xl font-semibold ${getScoreTone(bestPercentage)}`}
+                  className={`text-xl font-semibold sm:text-2xl ${getScoreTone(bestPercentage)}`}
                 >
                   {bestPercentage}%
                 </span>
@@ -215,7 +215,7 @@ const DeckPage = () => {
                   <FaCheck className="text-sm" />
                 </span>
                 <span
-                  className={`text-2xl font-semibold ${getScoreTone(latestPercentage)}`}
+                  className={`text-xl font-semibold sm:text-2xl ${getScoreTone(latestPercentage)}`}
                 >
                   {latestPercentage}%
                 </span>
@@ -234,7 +234,7 @@ const DeckPage = () => {
                 <span className="flex size-9 items-center justify-center rounded-xl bg-sky-500/10 text-sky-500">
                   <FaClock className="text-sm" />
                 </span>
-                <span className="text-2xl font-semibold text-text-primary">
+                <span className="text-xl font-semibold text-text-primary sm:text-2xl">
                   {formatTime(latestCompletion.completionDuration)}
                 </span>
               </div>
@@ -273,7 +273,7 @@ const DeckPage = () => {
       )}
 
       {history.length > 0 && (
-        <section className="rounded-3xl border border-white/10 bg-bg-surface p-5 shadow-xl shadow-black/5 sm:p-7">
+        <section className="rounded-3xl border border-white/10 bg-bg-surface p-5 sm:p-7">
           <div className="mb-5 flex items-end justify-between border-b border-border-color pb-5">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-text-muted">

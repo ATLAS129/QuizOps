@@ -1,5 +1,5 @@
 import { useRef, useState, type ChangeEvent, type DragEvent } from "react";
-import { FaFilePdf } from "react-icons/fa6";
+import { FaArrowUpRightFromSquare, FaFilePdf, FaPlus } from "react-icons/fa6";
 import { useCreateDeck } from "../hooks/useDecks";
 import LoadingSpinner from "./LoadingSpinner";
 
@@ -124,7 +124,7 @@ const CreatePageComponent = () => {
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="mx-auto w-full">
+      <div className="mx-auto w-full max-w-5xl">
         {/* Main card */}
         <div className="overflow-hidden rounded-4xl bg-bg-surface p-3">
           {/* STEP 1 */}
@@ -227,7 +227,7 @@ const CreatePageComponent = () => {
               </div>
             </div>
 
-            <section className="mt-4 w-full rounded-xl border border-bg-surface-hover bg-bg-background py-3 px-8">
+            <section className="mt-4 w-full rounded-xl border border-bg-surface-hover bg-bg-background px-4 py-3 sm:px-8">
               <div className="sm:flex sm:items-center sm:justify-between sm:gap-4">
                 <div className="mb-3 sm:mb-0">
                   <h3 className="text-sm font-semibold text-text-primary">
@@ -238,7 +238,7 @@ const CreatePageComponent = () => {
                   </p>
                 </div>
 
-                <div className="flex gap-2">
+                <div className="grid grid-cols-2 gap-2 sm:flex">
                   <button
                     type="button"
                     aria-expanded={selectedSource === "url"}
@@ -247,18 +247,23 @@ const CreatePageComponent = () => {
                         current === "url" ? null : "url",
                       )
                     }
-                    className={`inline-flex min-h-10 flex-1 items-center justify-center gap-2 rounded-lg border px-3 text-sm font-medium transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary sm:flex-none ${
+                    className={`inline-flex min-h-10 min-w-0 items-center justify-center gap-2 rounded-lg border px-2 text-sm font-medium transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary sm:flex-none sm:px-3 ${
                       selectedSource === "url"
                         ? "border-accent-primary bg-accent-primary/10 text-accent-primary"
                         : "border-bg-surface-hover bg-bg-surface text-text-primary hover:border-accent-primary/50"
                     }`}
                   >
-                    <span
-                      aria-hidden="true"
-                      className="text-base leading-none text-accent-primary"
-                    >
-                      {url ? "↗" : "+"}
-                    </span>
+                    {url ? (
+                      <FaArrowUpRightFromSquare
+                        aria-hidden="true"
+                        className="shrink-0 text-accent-primary"
+                      />
+                    ) : (
+                      <FaPlus
+                        aria-hidden="true"
+                        className="shrink-0 text-accent-primary"
+                      />
+                    )}
                     {url ? "Edit webpage" : "Webpage"}
                     <span className="sr-only">
                       {selectedSource === "url"
@@ -274,7 +279,7 @@ const CreatePageComponent = () => {
                         current === "prompt" ? null : "prompt",
                       )
                     }
-                    className={`inline-flex min-h-10 flex-1 items-center justify-center gap-2 rounded-lg border px-3 text-sm font-medium transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary sm:flex-none ${
+                    className={`inline-flex min-h-10 min-w-0 items-center justify-center gap-2 rounded-lg border px-2 text-sm font-medium transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary sm:flex-none sm:px-3 ${
                       selectedSource === "prompt"
                         ? "border-accent-primary bg-accent-primary/10 text-accent-primary"
                         : "border-bg-surface-hover bg-bg-surface text-text-primary hover:border-accent-primary/50"
@@ -284,7 +289,11 @@ const CreatePageComponent = () => {
                       aria-hidden="true"
                       className="text-base leading-none text-accent-primary"
                     >
-                      {prompt ? "Aa" : "+"}
+                      {prompt ? (
+                        "Aa"
+                      ) : (
+                        <FaPlus aria-hidden="true" className="shrink-0" />
+                      )}
                     </span>
                     {prompt ? "Edit note" : "Note"}
                     <span className="sr-only">
@@ -310,7 +319,7 @@ const CreatePageComponent = () => {
                     value={url}
                     onChange={(event) => setUrl(event.target.value)}
                     placeholder="https://example.com/article"
-                    className="w-full rounded-lg border border-bg-surface-hover bg-bg-background px-3 py-2.5 text-sm text-text-primary outline-none transition placeholder:text-text-muted/60 focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20"
+                    className="w-full rounded-lg border border-bg-surface-hover bg-bg-background px-3 py-2.5 text-sm text-text-primary outline-none transition placeholder:text-text-muted/60 focus:border-accent-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary"
                   />
                   <div className="mt-2 flex gap-4">
                     {url && (
@@ -348,7 +357,7 @@ const CreatePageComponent = () => {
                     onChange={(event) => setPrompt(event.target.value)}
                     onInput={handleInput}
                     placeholder="Anything specific to include or focus on?"
-                    className="min-h-24 w-full resize-y rounded-lg border border-bg-surface-hover bg-bg-background px-3 py-2.5 text-sm leading-6 text-text-primary outline-none transition placeholder:text-text-muted/60 focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20"
+                    className="min-h-24 w-full resize-y rounded-lg border border-bg-surface-hover bg-bg-background px-3 py-2.5 text-sm leading-6 text-text-primary outline-none transition placeholder:text-text-muted/60 focus:border-accent-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary"
                   />
                   <div className="mt-2 flex gap-4">
                     {prompt && (
@@ -422,7 +431,7 @@ const CreatePageComponent = () => {
                 </span>
                 <select
                   id="numberOfQuestions"
-                  className="mt-2 h-11 w-full rounded-xl border border-bg-surface-hover bg-bg-surface px-3 text-sm text-text-primary outline-none transition focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20"
+                  className="mt-2 h-11 w-full rounded-xl border border-bg-surface-hover bg-bg-surface px-3 text-sm text-text-primary outline-none transition focus:border-accent-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary"
                   value={numberOfQuestions}
                   onChange={(event) =>
                     setNumberOfQuestions(
@@ -446,7 +455,7 @@ const CreatePageComponent = () => {
                 </span>
                 <select
                   id="difficulty"
-                  className="mt-2 h-11 w-full rounded-xl border border-bg-surface-hover bg-bg-surface px-3 text-sm text-text-primary outline-none transition focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20"
+                  className="mt-2 h-11 w-full rounded-xl border border-bg-surface-hover bg-bg-surface px-3 text-sm text-text-primary outline-none transition focus:border-accent-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary"
                   value={difficulty}
                   onChange={(event) =>
                     setDifficulty(
@@ -474,7 +483,7 @@ const CreatePageComponent = () => {
                 </span>
                 <select
                   id="questionType"
-                  className="mt-2 h-11 w-full rounded-xl border border-bg-surface-hover bg-bg-surface px-3 text-sm text-text-primary outline-none transition focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20"
+                  className="mt-2 h-11 w-full rounded-xl border border-bg-surface-hover bg-bg-surface px-3 text-sm text-text-primary outline-none transition focus:border-accent-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary"
                   value={questionType}
                   onChange={(event) =>
                     setQuestionType(

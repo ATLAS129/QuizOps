@@ -97,7 +97,7 @@ const QuizPage = () => {
 
   const score = answerHistory.filter((answer) => answer.isCorrect).length;
   const progress = cards.length
-    ? Math.round((currentQuestionIndex / cards.length) * 100)
+    ? Math.round(((currentQuestionIndex + 1) / cards.length) * 100)
     : 0;
 
   const handleAnswer = (selectedAnswer: string) => {
@@ -187,8 +187,8 @@ const QuizPage = () => {
     const percentage = Math.round((score / cards.length) * 100);
 
     return (
-      <main className="mx-auto flex w-full max-w-3xl flex-col gap-5 pb-10 text-left">
-        <section className="overflow-hidden rounded-3xl border border-white/10 bg-bg-surface shadow-xl shadow-black/5">
+      <main className="mx-auto flex w-full max-w-3xl flex-col gap-5 px-4 pb-10 text-left sm:px-0">
+        <section className="overflow-hidden rounded-3xl border border-white/10 bg-bg-surface">
           <div className="bg-accent-primary px-5 py-8 text-center text-white sm:px-8 sm:py-10">
             <span className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-white/15">
               <FaTrophy className="text-2xl" />
@@ -206,19 +206,19 @@ const QuizPage = () => {
 
           <div className="grid grid-cols-2 gap-3 p-5 sm:grid-cols-3 sm:p-7">
             <div className="rounded-2xl bg-bg-background p-4 text-center">
-              <p className="text-3xl font-semibold text-accent-primary">
+              <p className="text-2xl font-semibold text-accent-primary sm:text-3xl">
                 {percentage}%
               </p>
               <p className="mt-1 text-xs text-text-muted">Accuracy</p>
             </div>
             <div className="rounded-2xl bg-bg-background p-4 text-center">
-              <p className="text-3xl font-semibold text-text-primary">
+              <p className="text-2xl font-semibold text-text-primary sm:text-3xl">
                 {score}/{cards.length}
               </p>
               <p className="mt-1 text-xs text-text-muted">Correct answers</p>
             </div>
             <div className="col-span-2 rounded-2xl bg-bg-background p-4 text-center sm:col-span-1">
-              <p className="text-3xl font-semibold text-text-primary">
+              <p className="text-2xl font-semibold text-text-primary sm:text-3xl">
                 {formatTime(seconds)}
               </p>
               <p className="mt-1 text-xs text-text-muted">Time spent</p>
@@ -246,7 +246,7 @@ const QuizPage = () => {
           </div>
         </section>
 
-        <section className="rounded-3xl border border-white/10 bg-bg-surface p-5 shadow-xl shadow-black/5 sm:p-7">
+        <section className="rounded-3xl border border-white/10 bg-bg-surface p-5 sm:p-7">
           <div className="mb-5 border-b border-border-color pb-5">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-text-muted">
               Review
@@ -273,8 +273,10 @@ const QuizPage = () => {
                       <p className="text-xs font-medium text-text-muted">
                         Question {index + 1}
                       </p>
-                      <p className="mt-1 font-medium">{item.question}</p>
-                      <p className="mt-3 text-sm">
+                      <p className="mt-1 wrap-break-word font-medium">
+                        {item.question}
+                      </p>
+                      <p className="mt-3 wrap-break-word text-sm">
                         Your answer:{" "}
                         <span
                           className={
@@ -287,7 +289,7 @@ const QuizPage = () => {
                         </span>
                       </p>
                       {!item.isCorrect && (
-                        <p className="mt-1 text-sm">
+                        <p className="mt-1 wrap-break-word text-sm">
                           Correct answer:{" "}
                           <span className="font-semibold text-emerald-600">
                             {item.correctAnswer}
@@ -311,24 +313,24 @@ const QuizPage = () => {
   }
 
   return (
-    <main className="mx-auto flex min-h-[calc(100svh-3.5rem)] w-full max-w-3xl flex-col gap-4 pb-8 text-left">
+    <main className="mx-auto flex min-h-[calc(100svh-3.5rem)] w-full max-w-3xl flex-col gap-4 px-4 pb-8 pt-2 text-left sm:px-0 sm:pt-0">
       <header className="flex items-center justify-between gap-4 px-1 py-1">
         <button
           type="button"
           onClick={() => navigate(-1)}
-          className="inline-flex items-center gap-2 rounded-lg px-2 py-2 text-sm font-medium text-text-muted transition hover:bg-bg-surface-hover hover:text-text-primary"
+          className="inline-flex min-h-11 items-center gap-2 rounded-lg px-2 py-2 text-sm font-medium text-text-muted transition hover:bg-bg-surface-hover hover:text-text-primary"
         >
           <FaArrowLeft className="text-xs" />
           Exit quiz
         </button>
-        <div className="inline-flex items-center gap-2 rounded-lg bg-bg-surface px-3 py-2 text-sm font-semibold text-text-primary shadow-sm">
+        <div className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-lg bg-bg-surface px-3 py-2 text-sm font-semibold text-text-primary">
           <FaClock className="text-xs text-accent-primary" />
           {formatTime(seconds)}
         </div>
       </header>
 
-      <section className="rounded-3xl border border-white/10 bg-bg-surface p-5 shadow-xl shadow-black/5 sm:p-8">
-        <div className="flex items-center justify-between gap-4 text-xs font-medium text-text-muted">
+      <section className="rounded-3xl border border-white/10 bg-bg-surface p-4 sm:p-8">
+        <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-medium text-text-muted">
           <span>
             {isTrueFalseCard(currentCard) ? "True / False" : "Multiple choice"}
           </span>
@@ -336,13 +338,20 @@ const QuizPage = () => {
             Question {currentQuestionIndex + 1} of {cards.length}
           </span>
         </div>
-        <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-bg-surface-hover">
+        <div
+          role="progressbar"
+          aria-label="Quiz progress"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={progress}
+          className="mt-3 h-1.5 overflow-hidden rounded-full bg-bg-surface-hover"
+        >
           <div
             className="h-full rounded-full bg-accent-primary transition-all duration-300"
-            style={{ width: `${Math.max(progress, 5)}%` }}
+            style={{ width: `${progress}%` }}
           />
         </div>
-        <h1 className="mt-10 max-w-2xl text-2xl font-semibold leading-tight tracking-tight text-text-primary sm:text-4xl sm:leading-tight">
+        <h1 className="mt-6 max-w-2xl wrap-break-word text-2xl font-semibold leading-tight tracking-tight text-text-primary sm:mt-8 sm:text-4xl sm:leading-tight">
           {currentCard.question}
         </h1>
       </section>
@@ -354,15 +363,15 @@ const QuizPage = () => {
             type="button"
             disabled={answeringRef.current}
             onClick={() => handleAnswer(answer)}
-            className="group flex min-h-20 items-center gap-4 rounded-2xl border border-border-color bg-bg-surface p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-accent-primary/50 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60 sm:min-h-24 sm:p-5"
+            className="group flex min-h-20 min-w-0 items-center gap-3 rounded-2xl border border-border-color bg-bg-surface p-4 text-left transition hover:border-accent-primary/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary disabled:cursor-not-allowed disabled:opacity-60 sm:min-h-24 sm:gap-4 sm:p-5"
           >
             <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-bg-background text-sm font-semibold text-text-muted transition group-hover:bg-accent-primary group-hover:text-white">
               {String.fromCharCode(65 + index)}
             </span>
-            <span className="text-base font-medium leading-6 text-text-primary sm:text-lg">
+            <span className="min-w-0 flex-1 wrap-break-word text-base font-medium leading-6 text-text-primary sm:text-lg">
               {answer}
             </span>
-            <FaArrowRight className="ml-auto shrink-0 text-xs text-text-muted opacity-0 transition group-hover:translate-x-0.5 group-hover:opacity-100" />
+            <FaArrowRight className="ml-auto shrink-0 text-xs text-text-muted opacity-0 transition group-hover:translate-x-0.5 group-hover:opacity-100 group-focus-visible:opacity-100" />
           </button>
         ))}
       </section>

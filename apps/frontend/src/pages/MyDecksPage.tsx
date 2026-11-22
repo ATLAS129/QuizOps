@@ -34,12 +34,12 @@ const MyDecksPage = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="rounded-3xl border border-white/10 bg-bg-surface p-8 shadow-xl shadow-black/10">
+      <div className="rounded-3xl border border-white/10 bg-bg-surface p-5 sm:p-8">
         <div className="flex flex-col justify-center items-center gap-2">
           <p className="text-sm uppercase tracking-[0.2em] text-text-muted">
             Your decks
           </p>
-          <h1 className="text-4xl font-semibold px-3 py-2 rounded-xl text-white bg-accent-primary">
+          <h1 className="rounded-xl bg-accent-primary px-3 py-2 text-center text-2xl font-semibold text-white sm:text-4xl">
             All active decks
           </h1>
         </div>
@@ -50,24 +50,22 @@ const MyDecksPage = () => {
           {decks.map((deck: any) => (
             <div
               key={deck.id}
-              className="rounded-3xl border border-white/10 bg-bg-background/80 p-6 transition hover:-translate-y-1 hover:border-accent-primary/40"
+              className="rounded-3xl border border-white/10 bg-bg-background/80 p-4 transition-colors hover:border-accent-primary/40 sm:p-6"
             >
-              <div className="mb-4 flex items-center justify-center gap-3">
-                <div>
-                  <p className="text-xs text-text-muted">
-                    Created {new Date(deck.createdAt).toLocaleDateString()}
-                  </p>
-                  <Link
-                    to={`/deck/${deck.id}`}
-                    className="text-xl font-semibold hover:underline"
-                  >
-                    {deck.title}
-                  </Link>
-                </div>
+              <div className="mb-4 min-w-0">
+                <p className="text-xs text-text-muted">
+                  Created {new Date(deck.createdAt).toLocaleDateString()}
+                </p>
+                <Link
+                  to={`/deck/${deck.id}`}
+                  className="mt-1 block break-words text-lg font-semibold hover:underline sm:text-xl"
+                >
+                  {deck.title}
+                </Link>
               </div>
 
-              <div className="relative flex items-center justify-between text-xs">
-                <div className="flex justify-center items-center gap-3">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                <div className="flex flex-wrap items-center gap-2 text-xs">
                   <span className="rounded-full bg-bg-surface px-3 py-2 text-left">
                     {deck._count?.cards ?? 0} cards
                   </span>
@@ -80,8 +78,8 @@ const MyDecksPage = () => {
 
                       return completion ? (
                         <>
-                          <p>Last completion:</p>
-                          <div>
+                          <span>Last completion:</span>
+                          <div className="flex flex-wrap items-center gap-2">
                             <span className="px-3 py-2 rounded-full bg-bg-surface text-xs text-text-muted">
                               Time spent
                             </span>
@@ -115,23 +113,25 @@ const MyDecksPage = () => {
                     {deck.isCompleted ? "Completed" : "Not completed"}
                   </span>
                 </div>
-                <div className="flex justify-center items-center gap-2">
+                <div className="grid grid-cols-[1fr_auto_auto] gap-2 sm:flex">
                   <Link
                     to={`/deck/${deck.id}/take`}
-                    className="flex justify-center items-center gap-2 rounded-lg text-white bg-accent-primary px-3 py-2 text-sm font-medium transition hover:bg-accent-hover"
+                    className="flex min-h-11 whitespace-nowrap items-center justify-center gap-1 rounded-lg bg-accent-primary px-2 py-2 text-xs font-medium text-white transition hover:bg-accent-hover sm:gap-2 sm:px-3 sm:text-sm"
                   >
                     <FaPlay className="text-xs" />
                     Take quiz
                   </Link>
                   <button
                     onClick={() => setEditingDeck(deck)}
-                    className="cursor-pointer flex justify-center items-center gap-2 rounded-lg text-white bg-accent-primary px-3 py-2 text-sm font-medium transition hover:bg-accent-hover"
+                    className="flex min-h-11 whitespace-nowrap items-center justify-center gap-1 rounded-lg bg-accent-primary px-2 py-2 text-xs font-medium text-white transition hover:bg-accent-hover sm:gap-2 sm:px-3 sm:text-sm"
                   >
                     <FaRegEdit className="text-xs" />
                     Edit deck
                   </button>
                   <button
-                    className="cursor-pointer p-3 border border-red-500/70 rounded-lg"
+                    type="button"
+                    aria-label={`Delete ${deck.title}`}
+                    className="flex size-11 items-center justify-center rounded-lg border border-red-500/70 text-red-500 transition hover:bg-red-500/10"
                     onClick={() => setDeletingDeck(deck)}
                   >
                     <FiTrash2 className="text-xs" />
@@ -142,7 +142,7 @@ const MyDecksPage = () => {
           ))}
         </div>
       ) : (
-        <div className="rounded-3xl border border-dashed border-white/10 bg-bg-background/70 p-10 text-center text-text-muted">
+        <div className="rounded-3xl border border-dashed border-white/10 bg-bg-background/70 p-6 text-center text-text-muted sm:p-10">
           There are no decks yet. Create one from the main page.
         </div>
       )}

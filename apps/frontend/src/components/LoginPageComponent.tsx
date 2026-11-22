@@ -15,10 +15,12 @@ const LoginPageComponent = ({
   >;
 }) => {
   return (
-    <div className="w-1/2 bg-bg-surface p-4 rounded-lg">
-      <h1 className="text-3xl text-left">Welcome back!</h1>
-      <h2 className="text-sm text-left text-text-muted">
-        It's nice to see you again!
+    <div className="w-full max-w-md rounded-lg border border-border-color bg-bg-surface p-5 sm:p-7">
+      <h1 className="text-left text-2xl font-semibold sm:text-3xl">
+        Welcome back
+      </h1>
+      <h2 className="text-left text-sm text-text-muted">
+        Sign in to pick up where you left off.
       </h2>
       <form onSubmit={handleSubmit}>
         <div className="flex flex-col items-start gap-2 pt-3">
@@ -35,7 +37,7 @@ const LoginPageComponent = ({
                 email: e.target.value,
               }))
             }
-            className="w-full border-border-color border rounded-lg px-2 py-2"
+            className="min-h-11 w-full rounded-lg border border-border-color bg-bg-background px-3 py-2 text-text-primary outline-none focus:border-accent-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary"
             placeholder="JohnDoe@example.com"
           />
         </div>
@@ -53,14 +55,14 @@ const LoginPageComponent = ({
                 password: e.target.value,
               }))
             }
-            className="w-full border-border-color border rounded-lg px-2 py-2"
+            className="min-h-11 w-full rounded-lg border border-border-color bg-bg-background px-3 py-2 text-text-primary outline-none focus:border-accent-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary"
             placeholder="••••••••"
           />
         </div>
-        <button className="w-full flex justify-center items-center mx-auto text-white py-2 px-32 bg-accent-primary hover:bg-accent-hover cursor-pointer rounded-lg mt-5">
+        <button className="mt-5 flex min-h-11 w-full items-center justify-center rounded-lg bg-accent-primary px-4 py-2 text-white transition hover:bg-accent-hover">
           Login
         </button>
-        <p className="pt-4 text-sm">
+        <p className="pt-4 text-sm leading-6">
           Don't have an account yet?{" "}
           <Link
             to="/signup"
